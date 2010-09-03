@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CoffeeKup in the browser</title>
+
+    <script src="coffee-script.js"></script>
+    <script src="coffeekup.js"></script>
+    <!-- jQuery is NOT required, just used here for convenience -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+    <script>
+      var render = function(template){
+        $('body').append(CoffeeKup.render(template));
+      };
+    </script>
+
+    <script>
+      $(document).ready(function(){
+        render(
+          "h1 'Works with good ol\\' JavaScript too, if you\\'re masochist enough'\n\n" +
+          "table ->\n" +
+          "  tr ->\n" +
+          "    th 'Language used'\n" +
+          "    th 'Template provided as'\n" +
+          "  tr ->\n" +
+          "    td -> a href: 'http://coffeescript.org', -> 'CoffeeScript'\n" +
+          "    td 'Raw string'");
+      });
+    </script>
+
+    <script type="text/coffeescript">
+      $(document).ready ->
+        render """
+          h1 'Template as raw string'
+
+          table ->
+            tr ->
+              th 'Language'
+              th 'Template provided as'
+            tr ->
+              td -> a href: 'http://coffeescript.org', -> 'CoffeeScript'
+              td 'Raw string'
+        """
+
+        render ->
+          h1 'Template as literal code'
+
+          table ->
+            tr ->
+              th 'Language'
+              th 'Template provided as'
+            tr ->
+              td -> a href: 'http://coffeescript.org', -> 'CoffeeScript'
+              td 'Function'
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
