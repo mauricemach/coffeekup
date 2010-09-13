@@ -44,7 +44,7 @@ In (shamelessly late) celebration of [whyday](http://whyday.org/), here goes a l
 
 Just grab [node.js](http://nodejs.org/#download) and [npm](http://github.com/isaacs/npm) and you're set:
 
-    [sudo] npm install coffeekup
+    npm install coffeekup
 
 ## Using
 
