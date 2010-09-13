@@ -1,62 +1,63 @@
-#!/usr/bin/env coffee
-
 jade = require 'jade'
 coffeekup = require 'coffeekup'
 
 jade_template = '''
-!!! 5
-html(lang="en")
-  head
-    title= pageTitle
-    :javascript
-      | if (foo) {
-      |    bar()
-      | }
-  body
-    h1 Jade - node template engine
-    #container
-      - if (youAreUsingJade)
-        p You are amazing
-      - else
-        p Get on it!
+  !!! 5
+  html(lang="en")
+    head
+      meta(charset="utf-8")
+      title= title
+      style
+        | body {font-family: "sans-serif"}
+        | section, header {display: block}
+    body
+      section
+        header
+          h1= title
+        - if (inspired)
+          p Create a witty example
+        - else
+          p Go meta
 '''
 
 coffeekup_template = ->
   doctype 5
   html lang: 'en', ->
     head ->
+      meta charset: 'utf-8'
       title @title
-      script '''
-        if (foo) {
-           bar()
-        }
+      style '''
+        body {font-family: "sans-serif"}
+        section, header {display: block}
       '''
     body ->
-      h1 'Jade - node template engine'
-      div id: 'container', ->
-        if @you_are_using_coffeekup
-          p 'You are amazing'
+      section ->
+        header ->
+          h1 @title
+        if @inspired
+          p 'Create a witty example'
         else
-          p 'Get on it!'
+          p 'Go meta'
 
-#coffeekup_template = """
-#  doctype 5
-#  html lang: 'en', ->
-#    head ->
-#      title @title
-#      script '''
-#        if (foo) {
-#           bar()
-#        }
-#      '''
-#    body ->
-#      h1 'Jade - node template engine'
-#      div id: 'container', ->
-#        if @you_are_using_coffeekup
-#          p 'You are amazing'
-#        else
-#          p 'Get on it!'
-#"""
+coffeekup_string_template = """
+  doctype 5
+  html lang: 'en', ->
+    head ->
+      meta charset: 'utf-8'
+      title @title
+      style '''
+        body {font-family: "sans-serif"}
+        section, header {display: block}
+      '''
+    body ->
+      section ->
+        header ->
+          h1 @title
+        if @inspired
+          p 'Create a witty example'
+        else
+          p 'Go meta'
+"""
 
 benchmark = (title, code) ->
   start = new Date
@@ -64,14 +65,18 @@ benchmark = (title, code) ->
     code()
   puts "#{title}: #{new Date - start} ms"
 
-benchmark 'Jade', ->
-  jade.render jade_template, {locals: {pageTitle: 'pageTitle', youAreUsingJade: yes}}
+exports.run = ->
+  benchmark 'CoffeeKup (code)', ->
+    coffeekup.render coffeekup_template, {context: {title: 'test', inspired: no}}
 
-benchmark 'CoffeeKup', ->
-  coffeekup.render coffeekup_template, {context: {title: 'title', you_are_using_coffeekup: yes}}
+  benchmark 'CoffeeKup (string)', ->
+    coffeekup.render coffeekup_string_template, {context: {title: 'test', inspired: no}}
 
-benchmark 'Jade (cached)', ->
-  jade.render jade_template, {locals: {pageTitle: 'pageTitle', youAreUsingJade: yes}, cache: yes, filename: 'aaa'}
+  benchmark 'CoffeeKup (string, cache on)', ->
+    coffeekup.render coffeekup_template, {context: {title: 'test', inspired: no}, cache: on}
 
-benchmark 'CoffeeKup (cached)', ->
-  coffeekup.render coffeekup_template, {context: {title: 'title', you_are_using_coffeekup: yes}, cache: yes}
+  benchmark 'Jade', ->
+    jade.render jade_template, {locals: {title: 'test', inspired: no}}
+
+  benchmark 'Jade (cache on)', ->
+    jade.render jade_template, {locals: {title: 'test', inspired: no}, cache: on, filename: 'test'}

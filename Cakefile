@@ -1,6 +1,7 @@
 exec = require('child_process').exec
 coffeekup = require 'coffeekup'
 render = coffeekup.render
+benchmark = require './benchmark'
 
 task 'build', ->
   exec 'coffee -c lib/coffeekup.coffee', (err) ->
@@ -68,3 +69,6 @@ task 'test', ->
       comment 'Comment'
 
   puts "\nTests: #{tests.length} | Passed: #{passed.length} | Failed: #{failed.length} | Errors: #{errors.length}"
+
+task 'benchmark', ->
+  benchmark.run()

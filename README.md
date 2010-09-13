@@ -77,7 +77,7 @@ Please note that even though examples were given in coffeescript, you can also u
 
 ## Caveats
 
-Like Markaby, not the fastest horse in the stable. Run benchmark.coffee for details. In the context of node's screaming performance though, maybe it won't matter as much as it did for Markaby in the MRI. Your feedback is appreciated.
+Like Markaby, not the fastest horse in the stable. Run "cake benchmark" for details. In the context of node's screaming performance though, maybe it won't matter as much as it did for Markaby in the MRI. Your feedback is appreciated.
 
 ## Compatibility
 
