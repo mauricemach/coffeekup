@@ -1,5 +1,5 @@
 # CoffeeKup
-Caffeinated Templates
+Markup as CoffeeScript
 
 In (shamelessly late) celebration of [whyday](http://whyday.org/), here goes a little experiment in revisiting Markaby's concept, this time with the fine flavour of fresh [CoffeeScript](http://coffeescript.org):
 
@@ -73,8 +73,12 @@ Command-line:
 
     coffeekup FILE [> OUTPUT]
 
-Please note that even though all examples were written in coffeescript, their javascript counterparts will also work just fine.
+Please note that even though examples were given in coffeescript, you can also use their javascript counterparts just fine.
 
 ## Caveats
 
-* Like Markaby, not the fastest horse in the stable. Run benchmark.coffee for details. In the context of node's screaming performance though, maybe it won't matter as much as it did for Markaby in the MRI. Your feedback is appreciated.
+Like Markaby, not the fastest horse in the stable. Run benchmark.coffee for details. In the context of node's screaming performance though, maybe it won't matter as much as it did for Markaby in the MRI. Your feedback is appreciated.
+
+## Compatibility
+
+Tested with node 0.2.0-0.2.1 and CoffeeScript 0.9.2.
