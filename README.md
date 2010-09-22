@@ -96,4 +96,4 @@ Note: javascript versions of the examples above will also do just fine!
 
 ## Compatibility
 
-Latest version tested with node 0.2.2 and CoffeeScript 0.9.3.
+Latest version tested with node 0.2.2 and CoffeeScript 0.9.4.

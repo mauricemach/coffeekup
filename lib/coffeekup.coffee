@@ -3,7 +3,7 @@ root = if browser then window else exports
 coffee = if browser then CoffeeScript else require 'coffee-script'
 
 class CoffeeKup
-  @version: '0.1.2'
+  @version: '0.1.3'
 
   @doctypes: {
     '5': '<!DOCTYPE html>'
