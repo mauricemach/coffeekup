@@ -34,10 +34,31 @@ exports.run = ->
       """
 
   test 'CoffeeScript', ->
-    "<script>$(document).ready(function() {\n            return alert('hi!');\n          });</script>" is render ->
+    expected = """
+      <script>(function () {
+                return $(document).ready(function() {
+                  return alert('hi!');
+                });
+              })();</script>"""
+    rendered = render ->
       coffeescript ->
         $(document).ready ->
           alert 'hi!'
+
+    rendered is expected
+
+  test 'Context vars', ->
+    expected = """
+      <h1>bar</h1>
+      <ul><li>pong</li>
+      </ul>
+    """
+    tpl = ->
+      h1 @foo
+      ul ->
+        li @ping
+        
+    expected is render tpl, context: {foo: 'bar', ping: 'pong'}
 
   test 'Comments', ->
     '<!--Comment-->' is render ->

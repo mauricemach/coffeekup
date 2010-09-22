@@ -1,7 +1,7 @@
 # CoffeeKup
 Markup as CoffeeScript
 
-In (shamelessly late) celebration of [whyday](http://whyday.org/), here goes a little experiment in revisiting Markaby's concept, this time with the fine flavour of fresh [CoffeeScript](http://coffeescript.org):
+In celebration of [whyday](http://whyday.org/), here's a revisiting of Markaby's concept, this time with the fine flavour of fresh [CoffeeScript](http://coffeescript.org):
 
     doctype 5
     html ->
@@ -14,7 +14,7 @@ In (shamelessly late) celebration of [whyday](http://whyday.org/), here goes a l
           body {font-family: sans-serif}
           header, nav, section, footer {display: block}
         '''
-        script src: "/javascripts/jquery.js"
+        script src: '/javascripts/jquery.js'
         coffeescript ->
           $(document).ready ->
             alert 'Alerts are so annoying...'
@@ -34,11 +34,21 @@ In (shamelessly late) celebration of [whyday](http://whyday.org/), here goes a l
 
 ## _Why?
 
-* Profit from a hell of a terse and expressive language in your templates.
-* Keep the dignity of templates when embedding them in your app.
-* Feels like an extensible language, as there's no syntactic distiction between your "helpers" and the original "vocabulary" of elements.
-* Use it from coffeescript or javascript apps, in node.js or in the browser.
-* It's just coffeescript! It doesn't need separate syntax highlighting, syntax checking, etc.
+* Your template logic in a hell of a clean, expressive and flexible language.
+
+* The most efficient CoffeeScript "filter" possible in a template engine (based on cutting edge ".toString()" technology).
+
+* Embedded templates (one-file apps FTW!) that you can still recognize.
+
+* Easily extend it into your own higher-level "dsl" by defining helpers as locals.
+
+* The same template language in node.js and the browser.
+
+* Works with both coffeescript and javascript apps.
+
+* HTML 5 ready! Boring legacy doctypes and elements also available.
+
+* It's just coffeescript! Syntax checking, syntax highlighting and other goodies are [already available](http://jashkenas.github.com/coffee-script/#resources).
 
 ## Installing
 
@@ -49,21 +59,24 @@ Just grab [node.js](http://nodejs.org/#download) and [npm](http://github.com/isa
 ## Using
 
     coffeekup = require 'coffeekup'
-    coffeekup.render "h1 'You can feed me raw strings!'"
-    coffeekup.render -> h1 "Or live code. I'm not too picky."
+
+    puts coffeekup.render "h1 'You can feed me raw strings!'"
+    puts coffeekup.render -> h1 "Or live code. I'm not too picky."
 
 With [express](http://expressjs.com):
 
     app.register '.coffee', require('coffeekup')
     app.set 'view engine', 'coffee'
+
     app.get '/', (req, res) ->
       # Will render views/index.coffee:
       res.render 'index', context: {foo: 'bar'}
 
 In the browser (see /examples dir):
 
-    <script src="/coffee-script.js"></script>
-    <script src="/coffeekup.js"></script>
+    <script src="coffee-script.js"></script>
+    <script src="coffeekup.js"></script>
+
     <script type="text/coffeescript">
       template = -> h1 "Hello #{@world}"
       alert(CoffeeKup.render template, context: {world: 'mars'})
@@ -73,12 +86,14 @@ Command-line:
 
     coffeekup FILE [> OUTPUT]
 
-Please note that even though examples were given in coffeescript, you can also use their javascript counterparts just fine.
+Note: javascript versions of the examples above will also do just fine!
 
 ## Caveats
 
-Like Markaby, not the fastest horse in the stable. Run `cake benchmark` for details. In the context of node's screaming performance though, maybe it won't matter as much as it did for Markaby in the MRI. Your feedback is appreciated.
+* Like Markaby, not the fastest horse in the stable. Run `cake benchmark` for details. Performance seems to be pretty acceptable though while rendering templates as code, or as strings with cache on.
+
+* No special syntax for ids and classes. Less of a big deal though if you're trying to shake off "divitis" and getting into html 5 semantic goodness already.
 
 ## Compatibility
 
-Tested with node 0.2.0-0.2.1 and CoffeeScript 0.9.3.
+Latest version tested with node 0.2.2 and CoffeeScript 0.9.3.

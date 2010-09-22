@@ -3,7 +3,7 @@ root = if browser then window else exports
 coffee = if browser then CoffeeScript else require 'coffee-script'
 
 class CoffeeKup
-  @version: '0.1.1'
+  @version: '0.1.2'
 
   @doctypes: {
     '5': '<!DOCTYPE html>'
@@ -22,20 +22,20 @@ class CoffeeKup
   @self_closing: 'area|base|basefont|br|hr|img|input|link|meta'.split '|'
 
   @render: (template, options) ->
-    str = String(template)
-  
-    if options?.cache is on
-      @inst ?= new CoffeeKup
-      if typeof template is 'function'
-        @js ?= String(template) + '();'
-      else
-        @js ?= coffee.compile String(template), {'noWrap'}
-    else
+    options ?= {}
+    options.cache ?= off
+    
+    if options?.cache is off or not @inst?
       @inst = new CoffeeKup
-      if typeof template is 'function'
-        @js = '(' + String(template) + ')();'
-      else
-        @js = coffee.compile String(template), {'noWrap'}
+      switch typeof template
+        when 'function'
+          code = String(template)
+          code = code.replace /^function \(\) \{/, ''
+          code = code.replace /\n( )*\}$/, ''
+        when 'string'
+          code = coffee.compile String(template), {'noWrap'}
+        else code = ''
+      @func = Function('locals', "with(locals) {#{code}}")
 
     context = options?.context or {}
     locals = options?.locals or {}
@@ -55,11 +55,10 @@ class CoffeeKup
     for t in @tags
       locals[t] = (opts...) -> @tag t, opts
   
-    @inst.buffer = []
-    fn = Function('locals', "with(locals) {#{@js}}")
-    fn.call @inst, locals
-    @inst.buffer.pop() if @inst.buffer[@inst.buffer.length-1] is "\n"
-    @inst.buffer.join ''
+    b = @inst.buffer = []
+    @func.call @inst, locals
+    b.pop() if b[b.length-1] is "\n"
+    b.join ''
 
   text: (txt) => @buffer.push txt; null
 
@@ -69,7 +68,7 @@ class CoffeeKup
       @text @render_attrs(o) if typeof o is 'object'
 
     if name in CoffeeKup.self_closing
-      @text ' />'    
+      @text ' />'
     else
       @text '>'
       for o in opts
@@ -101,9 +100,7 @@ class CoffeeKup
   coffeescript: (func) ->
     @script ->
       code = String(func)
-      code = code.replace /^function \(\) \{\n( )*return /, ''
-      code = code.replace /\n( )*\}$/, ''
-      @text code
+      @text "(#{code})();"
 
 root.CoffeeKup = CoffeeKup
 root.version = CoffeeKup.version

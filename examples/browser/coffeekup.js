@@ -13,7 +13,7 @@
     this.text = function(){ return CoffeeKup.prototype.text.apply(_a, arguments); };
     return this;
   };
-  CoffeeKup.version = '0.1.1';
+  CoffeeKup.version = '0.1.2';
   CoffeeKup.doctypes = {
     '5': '<!DOCTYPE html>',
     'xml': '<?xml version="1.0" encoding="utf-8" ?>',
@@ -28,36 +28,36 @@
   CoffeeKup.tags = 'a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont|bdo|big|blockquote|body|br|button|canvas|caption|center|cite|code|col|colgroup|command|datalist|dd|del|details|dfn|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr|html|i|iframe|img|input|ins|keygen|kbd|label|legend|li|link|map|mark|menu|meta|meter|nav|noframes|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|tt|u|ul|var|video|xmp'.split('|');
   CoffeeKup.self_closing = 'area|base|basefont|br|hr|img|input|link|meta'.split('|');
   CoffeeKup.render = function(template, options) {
-    var _a, _b, _c, _d, _e, context, fn, k, locals, str, v;
-    str = String(template);
-    if (((typeof options === "undefined" || options === null) ? undefined : options.cache) === true) {
-      this.inst = (typeof this.inst !== "undefined" && this.inst !== null) ? this.inst : new CoffeeKup();
-      if (typeof template === 'function') {
-        this.js = (typeof this.js !== "undefined" && this.js !== null) ? this.js : (String(template) + '();');
-      } else {
-        this.js = (typeof this.js !== "undefined" && this.js !== null) ? this.js : coffee.compile(String(template), {
-          'noWrap': 'noWrap'
-        });
-      }
-    } else {
+    var _a, _b, _c, _d, _e, _f, b, code, context, k, locals, v;
+    options = (typeof options !== "undefined" && options !== null) ? options : {};
+    options.cache = (typeof options.cache !== "undefined" && options.cache !== null) ? options.cache : false;
+    if (((typeof options === "undefined" || options === null) ? undefined : options.cache) === false || !(typeof (_a = this.inst) !== "undefined" && _a !== null)) {
       this.inst = new CoffeeKup();
-      if (typeof template === 'function') {
-        this.js = '(' + String(template) + ')();';
-      } else {
-        this.js = coffee.compile(String(template), {
+      switch (typeof template) {
+      case 'function':
+        code = String(template);
+        code = code.replace(/^function \(\) \{/, '');
+        code = code.replace(/\n( )*\}$/, '');
+        break;
+      case 'string':
+        code = coffee.compile(String(template), {
           'noWrap': 'noWrap'
         });
+        break;
+      default:
+        code = '';
       }
+      this.func = Function('locals', "with(locals) {" + (code) + "}");
     }
     context = ((typeof options === "undefined" || options === null) ? undefined : options.context) || {};
     locals = ((typeof options === "undefined" || options === null) ? undefined : options.locals) || {};
-    _a = context;
-    for (k in _a) {
-      if (!__hasProp.call(_a, k)) continue;
-      v = _a[k];
+    _b = context;
+    for (k in _b) {
+      if (!__hasProp.call(_b, k)) continue;
+      v = _b[k];
       this.inst[k] = v;
     }
-    if (typeof (_b = locals.body) !== "undefined" && _b !== null) {
+    if (typeof (_c = locals.body) !== "undefined" && _c !== null) {
       this.inst.body = locals.body;
       delete locals.body;
     }
@@ -66,10 +66,10 @@
     locals.text = this.inst.text;
     locals.tag = this.inst.tag;
     locals.coffeescript = this.inst.coffeescript;
-    _d = this.tags;
-    for (_c = 0, _e = _d.length; _c < _e; _c++) {
+    _e = this.tags;
+    for (_d = 0, _f = _e.length; _d < _f; _d++) {
       (function() {
-        var t = _d[_c];
+        var t = _e[_d];
         return (locals[t] = function() {
           var opts;
           opts = __slice.call(arguments, 0);
@@ -77,13 +77,12 @@
         });
       })();
     }
-    this.inst.buffer = [];
-    fn = Function('locals', "with(locals) {" + (this.js) + "}");
-    fn.call(this.inst, locals);
-    if (this.inst.buffer[this.inst.buffer.length - 1] === "\n") {
-      this.inst.buffer.pop();
+    b = (this.inst.buffer = []);
+    this.func.call(this.inst, locals);
+    if (b[b.length - 1] === "\n") {
+      b.pop();
     }
-    return this.inst.buffer.join('');
+    return b.join('');
   };
   CoffeeKup.prototype.text = function(txt) {
     this.buffer.push(txt);
@@ -150,9 +149,7 @@
     return this.script(function() {
       var code;
       code = String(func);
-      code = code.replace(/^function \(\) \{\n( )*return /, '');
-      code = code.replace(/\n( )*\}$/, '');
-      return this.text(code);
+      return this.text("(" + (code) + ")();");
     });
   };
   root.CoffeeKup = CoffeeKup;
