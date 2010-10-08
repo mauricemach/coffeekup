@@ -1,9 +1,12 @@
 browser = window?
 root = if browser then window else exports
-coffee = if browser then CoffeeScript else require 'coffee-script'
+if browser
+  coffee = if CoffeeScript? then CoffeeScript else null
+else
+  coffee = require 'coffee-script'
 
 class CoffeeKup
-  @version: '0.1.3'
+  @version: '0.1.4'
 
   @doctypes: {
     '5': '<!DOCTYPE html>'
@@ -21,6 +24,12 @@ class CoffeeKup
 
   @self_closing: 'area|base|basefont|br|hr|img|input|link|meta'.split '|'
 
+  @unwrap: (code) ->
+    code = String(code)
+    if code.search /^(\s)*function/ > -1
+      code = code.replace /^(\s)*function(\s)*\(\)(\s)*\{/, ''
+      code = code.replace /\}(\s)*$/, ''
+
   @render: (template, options) ->
     options ?= {}
     options.cache ?= off
@@ -29,11 +38,12 @@ class CoffeeKup
       @inst = new CoffeeKup
       switch typeof template
         when 'function'
-          code = String(template)
-          code = code.replace /^function \(\) \{/, ''
-          code = code.replace /\n( )*\}$/, ''
+          code = @unwrap(template)
         when 'string'
-          code = coffee.compile String(template), {'noWrap'}
+          if coffee?
+            code = coffee.compile String(template), {'noWrap'}
+          else
+            code = @unwrap(template)
         else code = ''
       @func = Function('locals', "with(locals) {#{code}}")
 
@@ -74,8 +84,8 @@ class CoffeeKup
       for o in opts
         switch typeof o
           when 'function'
-            result =  o.call(@)
-            @text result.toString() if result?
+            result = o.call(@)
+            @text result.toString() if result is 'string'
           when 'string' then @text o
       @text "</#{name}>"
 
