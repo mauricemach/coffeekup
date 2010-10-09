@@ -33,8 +33,8 @@ class CoffeeKup
   @render: (template, options) ->
     options ?= {}
     options.cache ?= off
-    
-    if options?.cache is off or not @inst?
+
+    if options.cache is off or not @inst?
       @inst = new CoffeeKup
       switch typeof template
         when 'function'
@@ -45,10 +45,11 @@ class CoffeeKup
           else
             code = @unwrap(template)
         else code = ''
+        return code if options.compile
       @func = Function('locals', "with(locals) {#{code}}")
 
-    context = options?.context or {}
-    locals = options?.locals or {}
+    context = options.context or {}
+    locals = options.locals or {}
 
     for k, v of context
       @inst[k] = v
