@@ -45,7 +45,7 @@ class CoffeeKup
           else
             code = @unwrap(template)
         else code = ''
-        return code if options.compile
+      return code if options.compile
       @func = Function('locals', "with(locals) {#{code}}")
 
     context = options.context or {}
