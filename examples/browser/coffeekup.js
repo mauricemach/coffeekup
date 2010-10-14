@@ -42,7 +42,7 @@
     var _i, _len, _ref, b, code, context, k, locals, v;
     options = (typeof options !== "undefined" && options !== null) ? options : {};
     options.cache = (typeof options.cache !== "undefined" && options.cache !== null) ? options.cache : false;
-    if (((typeof options === "undefined" || options === null) ? undefined : options.cache) === false || !(typeof (_ref = this.inst) !== "undefined" && _ref !== null)) {
+    if (options.cache === false || !(typeof (_ref = this.inst) !== "undefined" && _ref !== null)) {
       this.inst = new CoffeeKup();
       switch (typeof template) {
         case 'function':
@@ -62,8 +62,8 @@
       }
       this.func = Function('locals', "with(locals) {" + (code) + "}");
     }
-    context = ((typeof options === "undefined" || options === null) ? undefined : options.context) || {};
-    locals = ((typeof options === "undefined" || options === null) ? undefined : options.locals) || {};
+    context = options.context || {};
+    locals = options.locals || {};
     _ref = context;
     for (k in _ref) {
       if (!__hasProp.call(_ref, k)) continue;
