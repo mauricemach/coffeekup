@@ -72,21 +72,33 @@ With [express](http://expressjs.com):
       # Will render views/index.coffee:
       res.render 'index', context: {foo: 'bar'}
 
-In the browser (see /examples dir):
+With [meryl](http://github.com/coffeemate/meryl/blob/master/examples/jade-template/app.js) (see also [their own take](http://github.com/coffeemate/meryl/blob/master/examples/coffeekup-template)):
 
-    <script src="coffee-script.js"></script>
+    meryl.h 'GET /', (req, resp) ->
+      context = {people: ['bob', 'alice', 'meryl']}
+      resp.render 'layout', content: 'index', context: context
+
+    meryl.run
+      templateDir: 'templates'
+      templateExt: '.coffee'
+      templateFunc: (src, data) -> coffeekup.render src, context: data
+
+In the browser:
+
     <script src="coffeekup.js"></script>
+    <script src="app.js"></script>
 
-    <script type="text/coffeescript">
-      template = -> h1 "Hello #{@world}"
-      alert(CoffeeKup.render template, context: {world: 'mars'})
-    </script>
+    # app.coffee before compiling:
+    template = -> h1 "Hello #{@world}"
+    alert CoffeeKup.render template, context: {world: 'mars'}
+
+Note: this is one of many client-side deployment possibilities, compiling on the server, thus requiring only coffeekup.js (under 2k minified, gzipped) in the browser. To see all serving suggestions, check out [regular](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/regular.html), [decaf](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/decaf.html) and [crème](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/creme.html).
 
 Command-line:
 
     coffeekup FILE [> OUTPUT]
 
-Note: javascript versions of the examples above will also do just fine!
+See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions. Please note that even though all examples are given in coffeescript, you can also their plain javascript counterparts just fine.
 
 ## Caveats
 
@@ -96,4 +108,4 @@ Note: javascript versions of the examples above will also do just fine!
 
 ## Compatibility
 
-Latest version tested with node 0.2.2 and CoffeeScript 0.9.4.
+Latest version tested with node 0.2.3 and CoffeeScript 0.9.4.
