@@ -86,7 +86,7 @@ class CoffeeKup
         switch typeof o
           when 'function'
             result = o.call(@)
-            @text result.toString() if result is 'string'
+            @text result if typeof result is 'string'
           when 'string' then @text o
       @text "</#{name}>"
 
