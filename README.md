@@ -75,13 +75,13 @@ With [express](http://expressjs.com):
 With [meryl](http://github.com/coffeemate/meryl/blob/master/examples/jade-template/app.js) (see also [their own take](http://github.com/coffeemate/meryl/blob/master/examples/coffeekup-template)):
 
     meryl.h 'GET /', (req, resp) ->
-      context = {people: ['bob', 'alice', 'meryl']}
-      resp.render 'layout', content: 'index', context: context
+      people = ['bob', 'alice', 'meryl']
+      resp.render 'layout', content: 'index', context: {people: people}
 
     meryl.run
       templateDir: 'templates'
       templateExt: '.coffee'
-      templateFunc: (src, data) -> coffeekup.render src, context: data
+      templateFunc: coffeekup.adapters.meryl
 
 In the browser:
 

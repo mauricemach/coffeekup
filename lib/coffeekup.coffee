@@ -6,7 +6,7 @@ else
   coffee = require 'coffee-script'
 
 class CoffeeKup
-  @version: '0.1.4'
+  @version: '0.1.5'
 
   @doctypes: {
     '5': '<!DOCTYPE html>'
@@ -115,4 +115,14 @@ class CoffeeKup
 
 root.CoffeeKup = CoffeeKup
 root.version = CoffeeKup.version
-root.render = (template, options) -> root.CoffeeKup.render(template, options) unless browser
+
+unless browser
+  root.render = (template, options) ->
+    CoffeeKup.render(template, options) 
+
+  root.adapters = {}
+
+  root.adapters.simple = (template, data) ->
+    CoffeeKup.render(template, {context: data})
+
+  root.adapters.meryl = root.adapters.simple
