@@ -63,6 +63,15 @@ Just grab [node.js](http://nodejs.org/#download) and [npm](http://github.com/isa
     puts coffeekup.render "h1 'You can feed me raw strings!'"
     puts coffeekup.render -> h1 "Or live code. I'm not too picky."
 
+With [zappa](http://github.com/mauricemach/zappa):
+
+    get '/': ->
+      @title = 'Zappa example'
+      render 'default'
+
+    view ->
+      h1 @title
+
 With [express](http://expressjs.com):
 
     app.register '.coffee', require('coffeekup')
@@ -98,7 +107,7 @@ Command-line:
 
     coffeekup FILE [> OUTPUT]
 
-See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions. Please note that even though all examples are given in coffeescript, you can also their plain javascript counterparts just fine.
+See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions. Please note that even though all examples are given in coffeescript, you can also use their plain javascript counterparts just fine.
 
 ## Caveats
 
