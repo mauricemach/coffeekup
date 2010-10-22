@@ -73,7 +73,7 @@ exports.run = ->
     coffeekup.render coffeekup_string_template, {context: {title: 'test', inspired: no}}
 
   benchmark 'CoffeeKup (string, cache on)', ->
-    coffeekup.render coffeekup_template, {context: {title: 'test', inspired: no}, cache: on}
+    coffeekup.render coffeekup_string_template, {context: {title: 'test', inspired: no}, cache: on}
 
   benchmark 'Jade', ->
     jade.render jade_template, {locals: {title: 'test', inspired: no}}

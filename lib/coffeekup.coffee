@@ -6,7 +6,7 @@ else
   coffee = require 'coffee-script'
 
 class CoffeeKup
-  @version: '0.1.5'
+  @version: '0.1.6'
 
   @doctypes: {
     '5': '<!DOCTYPE html>'
@@ -30,12 +30,20 @@ class CoffeeKup
       code = code.replace /^(\s)*function(\s)*\(\)(\s)*\{/, ''
       code = code.replace /\}(\s)*$/, ''
 
+  @cache: {}
+
   @render: (template, options) ->
     options ?= {}
     options.cache ?= off
+    options.compact ?= off
 
-    if options.cache is off or not @inst?
-      @inst = new CoffeeKup
+    buffer = []
+    context = options.context or {}
+    locals = options.locals or {}
+
+    if options.cache and @cache[template]?
+      scoped_template = @cache[template]
+    else
       switch typeof template
         when 'function'
           code = @unwrap(template)
@@ -44,74 +52,69 @@ class CoffeeKup
             code = coffee.compile String(template), {'noWrap'}
           else
             code = @unwrap(template)
-        else code = ''
+        else
+          code = ''
 
-      @func = Function('locals', "with(locals) {#{code}}")
-
-    context = options.context or {}
-    locals = options.locals or {}
-
-    for k, v of context
-      @inst[k] = v
+      scoped_template = Function('locals', "with(locals) {#{code}}")
+      @cache[template] = scoped_template if options.cache
 
     if locals.body?
-      @inst.body = locals.body
+      context.body = locals.body
       delete locals.body
 
-    locals.doctype = @inst.doctype
-    locals.comment = @inst.comment
-    locals.text = @inst.text
-    locals.tag = @inst.tag
-    locals.coffeescript = @inst.coffeescript
-    for t in @tags
-      locals[t] = (opts...) -> @tag t, opts
-  
-    b = @inst.buffer = []
-    @func.call @inst, locals
-    b.pop() if b[b.length-1] is "\n"
-    b.join ''
+    text = (txt) -> buffer.push txt; null
 
-  text: (txt) => @buffer.push txt; null
+    render_attrs = (obj) ->
+      str = ''
+      for k, v of obj
+        str += " #{k}=\"#{v}\""
+      str
 
-  tag: (name, opts) =>
-    @text "<#{name}"
-    for o in opts
-      @text @render_attrs(o) if typeof o is 'object'
+    doctype = (type) ->
+      type ?= 5
+      text CoffeeKup.doctypes[type]
+      text "\n" unless options.compact
 
-    if name in CoffeeKup.self_closing
-      @text ' />'
-    else
-      @text '>'
+    comment = (cmt) ->
+      text "<!--#{cmt}-->"
+
+    tag = (name, opts) ->
+      text "<#{name}"
       for o in opts
-        switch typeof o
-          when 'function'
-            result = o.call(@)
-            @text result if typeof result is 'string'
-          when 'string' then @text o
-      @text "</#{name}>"
+        text render_attrs(o) if typeof o is 'object'
 
-    @text "\n" unless @compact
+      if name in CoffeeKup.self_closing
+        text ' />'
+      else
+        text '>'
+        for o in opts
+          switch typeof o
+            when 'function'
+              result = o.call(context)
+              text result if typeof result is 'string'
+            when 'string' then text o
+        text "</#{name}>"
 
-    null
+      text "\n" unless options.compact
 
-  render_attrs: (obj) ->
-    str = ''
-    for k, v of obj
-      str += " #{k}=\"#{v}\""
-    str
+      null
 
-  doctype: (type) =>
-    type ?= 5
-    @text CoffeeKup.doctypes[type]
-    @text "\n" unless @compact
+    coffeescript = (code) ->
+      tag 'script', "(#{code})();"
 
-  comment: (text) =>
-    @text "<!--#{text}-->"
+    locals.text = text
+    locals.render_attrs = render_attrs
+    locals.doctype = doctype
+    locals.comment = comment
+    locals.tag = tag
+    locals.coffeescript = coffeescript
 
-  coffeescript: (func) ->
-    @script ->
-      code = String(func)
-      @text "(#{code})();"
+    for t in @tags
+      locals[t] = (opts...) -> tag t, opts
+  
+    scoped_template.call context, locals
+    buffer.pop() if buffer[buffer.length-1] is "\n"
+    buffer.join ''
 
 root.CoffeeKup = CoffeeKup
 root.version = CoffeeKup.version

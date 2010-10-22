@@ -65,11 +65,10 @@ Just grab [node.js](http://nodejs.org/#download) and [npm](http://github.com/isa
 
 With [zappa](http://github.com/mauricemach/zappa):
 
-    get '/': ->
-      @title = 'Zappa example'
-      render 'default'
+    get '/': -> render 'default'
 
     view ->
+      @title = 'Zappa example'
       h1 @title
 
 With [express](http://expressjs.com):
