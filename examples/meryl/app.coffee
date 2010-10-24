@@ -9,3 +9,5 @@ meryl.run
   templateDir: 'templates'
   templateExt: '.coffee'
   templateFunc: coffeekup.adapters.meryl
+#  templateFunc: (template, data) ->
+#    coffeekup.render template, context: data

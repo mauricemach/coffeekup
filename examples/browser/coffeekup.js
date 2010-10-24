@@ -1,5 +1,5 @@
 (function() {
-  var CoffeeKup, _i, _len, _ref, cached, coffee, context, doctypes, locals, render, self_closing, tags, unwrap, version;
+  var CoffeeKup, Locals, _i, _len, _ref, cached, coffee, doctypes, render, self_closing, tags, unwrap, version;
   var __hasProp = Object.prototype.hasOwnProperty;
   version = '0.1.6';
   if (typeof window !== "undefined" && window !== null) {
@@ -27,83 +27,86 @@
       return (code = code.replace(/\}(\s)*$/, ''));
     }
   };
-  locals = {
-    render_attrs: function(obj) {
-      var _ref, k, str, v;
-      str = '';
-      _ref = obj;
-      for (k in _ref) {
-        if (!__hasProp.call(_ref, k)) continue;
-        v = _ref[k];
-        str += (" " + (k) + "=\"" + (v) + "\"");
+  Locals = function(_arg, _arg2) {
+    this.context = _arg2;
+    this.buffer = _arg;
+    return this;
+  };
+  Locals.prototype.text = function(txt) {
+    this.buffer.push(String(txt));
+    return null;
+  };
+  Locals.prototype.render_attrs = function(obj) {
+    var _ref, k, str, v;
+    str = '';
+    _ref = obj;
+    for (k in _ref) {
+      if (!__hasProp.call(_ref, k)) continue;
+      v = _ref[k];
+      str += (" " + (k) + "=\"" + (v) + "\"");
+    }
+    return str;
+  };
+  Locals.prototype.doctype = function(type) {
+    type = (typeof type !== "undefined" && type !== null) ? type : 5;
+    return this.text(doctypes[type]);
+  };
+  Locals.prototype.comment = function(cmt) {
+    return this.text("<!--" + (cmt) + "-->");
+  };
+  Locals.prototype.tag = function(name, opts) {
+    var _i, _len, _ref, o, result, t;
+    this.text("<" + (name));
+    _ref = opts;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      o = _ref[_i];
+      if (typeof o === 'object') {
+        this.text(this.render_attrs(o));
       }
-      return str;
-    },
-    doctype: function(type) {
-      type = (typeof type !== "undefined" && type !== null) ? type : 5;
-      return this.text(doctypes[type]);
-    },
-    comment: function(cmt) {
-      return this.text("<!--" + (cmt) + "-->");
-    },
-    tag: function(name, opts) {
-      var _i, _len, _ref, o, result, t;
-      this.text("<" + (name));
+    }
+    if ((function(){ for (var _i=0, _len=self_closing.length; _i<_len; _i++) { if (self_closing[_i] === name) return true; } return false; }).call(this)) {
+      this.text(' />');
+    } else {
+      this.text('>');
       _ref = opts;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         o = _ref[_i];
-        if (typeof o === 'object') {
-          this.text(this.render_attrs(o));
-        }
-      }
-      if ((function(){ for (var _i=0, _len=self_closing.length; _i<_len; _i++) { if (self_closing[_i] === name) return true; } return false; }).call(this)) {
-        this.text(' />');
-      } else {
-        this.text('>');
-        _ref = opts;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          o = _ref[_i];
-          t = typeof o;
-          if (t === 'function') {
-            result = o.call(context);
-            if (typeof result === 'string') {
-              this.text(result);
-            }
-          } else if (t === 'string' || t === 'number') {
-            this.text(o);
+        t = typeof o;
+        if (t === 'function') {
+          result = o.call(this.context);
+          if (typeof result === 'string') {
+            this.text(result);
           }
+        } else if (t === 'string' || t === 'number') {
+          this.text(o);
         }
-        this.text("</" + (name) + ">");
       }
-      return null;
-    },
-    coffeescript: function(code) {
-      return this.script(";(" + (code) + ")();");
+      this.text("</" + (name) + ">");
     }
+    return null;
+  };
+  Locals.prototype.coffeescript = function(code) {
+    return this.script(";(" + (code) + ")();");
   };
   _ref = tags;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     (function() {
       var t = _ref[_i];
-      return (locals[t] = function() {
+      return (Locals.prototype[t] = function() {
         return this.tag(t, arguments);
       });
     })();
   }
   cached = {};
-  context = {};
   render = function(template, options) {
-    var _ref2, buffer, code, scoped_template;
+    var _ref2, buffer, code, context, locals, scoped_template;
     options = (typeof options !== "undefined" && options !== null) ? options : {};
     options.context = (typeof options.context !== "undefined" && options.context !== null) ? options.context : {};
     options.locals = (typeof options.locals !== "undefined" && options.locals !== null) ? options.locals : {};
     options.cache = (typeof options.cache !== "undefined" && options.cache !== null) ? options.cache : true;
     buffer = [];
-    locals.text = function(txt) {
-      buffer.push(String(txt));
-      return null;
-    };
     context = options.context;
+    locals = new Locals(buffer, context);
     if (typeof (_ref2 = options.locals.body) !== "undefined" && _ref2 !== null) {
       context.body = options.locals.body;
       delete options.locals.body;

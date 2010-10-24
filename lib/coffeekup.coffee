@@ -23,7 +23,11 @@ unwrap = (code) ->
     code = code.replace /^(\s)*function(\s)*\(\)(\s)*\{/, ''
     code = code.replace /\}(\s)*$/, ''
 
-locals =
+class Locals
+  constructor: (@buffer, @context) ->
+
+  text: (txt) -> @buffer.push String(txt); null
+
   render_attrs: (obj) ->
     str = ''
     for k, v of obj
@@ -49,7 +53,7 @@ locals =
       for o in opts
         t = typeof o
         if t is 'function'
-          result = o.call context
+          result = o.call @context
           @text result if typeof result is 'string'
         else if t is 'string' or t is 'number' then @text o
       @text "</#{name}>"
@@ -60,10 +64,9 @@ locals =
     @script ";(#{code})();"
 
 for t in tags
-  locals[t] = -> @tag t, arguments
+  Locals::[t] = -> @tag t, arguments
 
 cached = {}
-context = {}
 
 render = (template, options) ->
   options ?= {}
@@ -72,8 +75,8 @@ render = (template, options) ->
   options.cache ?= on
 
   buffer = []
-  locals.text = (txt) -> buffer.push String(txt); null
   context = options.context
+  locals = new Locals(buffer, context)
 
   if options.locals.body?
     context.body = options.locals.body
