@@ -49,7 +49,7 @@ locals =
       for o in opts
         t = typeof o
         if t is 'function'
-          result = o.call @context
+          result = o.call context
           @text result if typeof result is 'string'
         else if t is 'string' or t is 'number' then @text o
       @text "</#{name}>"
@@ -63,14 +63,21 @@ for t in tags
   locals[t] = -> @tag t, arguments
 
 cached = {}
+context = {}
 
 render = (template, options) ->
   options ?= {}
+  options.context ?= {}
+  options.locals ?= {}
   options.cache ?= on
 
   buffer = []
   locals.text = (txt) -> buffer.push String(txt); null
-  locals.context = options.context or {}
+  context = options.context
+
+  if options.locals.body?
+    context.body = options.locals.body
+    delete options.locals.body
 
   if options.cache and cached[template]?
     scoped_template = cached[template]
@@ -85,7 +92,7 @@ render = (template, options) ->
     scoped_template = new Function('locals', "with(locals){#{code}}")
     cached[template] = scoped_template if options.cache
 
-  scoped_template.call locals.context, locals
+  scoped_template.call context, locals
   buffer.pop() if buffer[buffer.length-1] is "\n"
   buffer.join ''
 
