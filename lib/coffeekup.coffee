@@ -107,9 +107,7 @@ class CoffeeKup
         when 'function' then code = @unwrap(template)
         else code = ''
 
-      vars = []
-      `for(k in locals) {vars.push('var ' + k + ' = locals.' + k + ';')}`
-      scoped_template = new Function('locals', (vars.join '') + code)
+      scoped_template = new Function('locals', "with(locals){#{code}}")
       @cache[template] = scoped_template if options.cache
   
     scoped_template.call context, locals

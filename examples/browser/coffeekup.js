@@ -32,7 +32,7 @@
   };
   CoffeeKup.cache = {};
   CoffeeKup.render = function(template, options) {
-    var _i, _len, _ref, buffer, code, coffeescript, comment, context, doctype, locals, render_attrs, scoped_template, tag, text, vars;
+    var _i, _len, _ref, buffer, code, coffeescript, comment, context, doctype, locals, render_attrs, scoped_template, tag, text;
     options = (typeof options !== "undefined" && options !== null) ? options : {};
     options.cache = (typeof options.cache !== "undefined" && options.cache !== null) ? options.cache : false;
     options.compact = (typeof options.compact !== "undefined" && options.compact !== null) ? options.compact : false;
@@ -143,9 +143,7 @@
         default:
           code = '';
       }
-      vars = [];
-      for(k in locals) {vars.push('var ' + k + ' = locals.' + k + ';')};
-      scoped_template = new Function('locals', (vars.join('')) + code);
+      scoped_template = new Function('locals', "with(locals){" + (code) + "}");
       if (options.cache) {
         this.cache[template] = scoped_template;
       }
