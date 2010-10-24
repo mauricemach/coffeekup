@@ -85,12 +85,13 @@ class CoffeeKup
     coffeescript = (code) ->
       tag 'script', "(#{code})();"
 
-    locals.text = text
-    locals.render_attrs = render_attrs
-    locals.doctype = doctype
-    locals.comment = comment
-    locals.tag = tag
-    locals.coffeescript = coffeescript
+    locals = 
+      text: text
+      render_attrs: render_attrs
+      doctype: doctype
+      comment: comment
+      tag: tag
+      coffeescript: coffeescript
 
     for t in @tags
       locals[t] = -> tag t, arguments
@@ -100,23 +101,16 @@ class CoffeeKup
       scoped_template = @cache[template]
     else
       switch typeof template
-        when 'function'
-          code = @unwrap(template)
         when 'string'
-          if coffee?
-            code = coffee.compile String(template), {'noWrap'}
-          else
-            code = @unwrap(template)
-        else
-          code = ''
+          if coffee? then code = coffee.compile template, {'noWrap'}
+          else code = @unwrap(template)
+        when 'function' then code = @unwrap(template)
+        else code = ''
 
       vars = []
-#      for k, v of locals
-#        vars.push "var #{k} = locals.#{k};"
       `for(k in locals) {vars.push('var ' + k + ' = locals.' + k + ';')}`
       scoped_template = new Function('locals', (vars.join '') + code)
       @cache[template] = scoped_template if options.cache
-
   
     scoped_template.call context, locals
     buffer.pop() if buffer[buffer.length-1] is "\n"
