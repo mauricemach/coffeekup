@@ -78,6 +78,9 @@ render = (template, options) ->
   context = options.context
   locals = new Locals(buffer, context)
 
+  for k, v of options.locals
+    locals[k] = v
+
   if options.locals.body?
     context.body = options.locals.body
     delete options.locals.body

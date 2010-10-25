@@ -99,7 +99,7 @@
   }
   cached = {};
   render = function(template, options) {
-    var _ref2, buffer, code, context, locals, scoped_template;
+    var _ref2, buffer, code, context, k, locals, scoped_template, v;
     options = (typeof options !== "undefined" && options !== null) ? options : {};
     options.context = (typeof options.context !== "undefined" && options.context !== null) ? options.context : {};
     options.locals = (typeof options.locals !== "undefined" && options.locals !== null) ? options.locals : {};
@@ -107,6 +107,12 @@
     buffer = [];
     context = options.context;
     locals = new Locals(buffer, context);
+    _ref2 = options.locals;
+    for (k in _ref2) {
+      if (!__hasProp.call(_ref2, k)) continue;
+      v = _ref2[k];
+      locals[k] = v;
+    }
     if (typeof (_ref2 = options.locals.body) !== "undefined" && _ref2 !== null) {
       context.body = options.locals.body;
       delete options.locals.body;
