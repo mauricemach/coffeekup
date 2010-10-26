@@ -1,5 +1,5 @@
 (function() {
-  var CoffeeKup, Locals, _i, _len, _ref, cached, coffee, doctypes, render, self_closing, tags, unwrap, version;
+  var CoffeeKup, Locals, _i, _len, _ref, cached, coffee, doctypes, render, render_attrs, self_closing, tags, unwrap, version;
   var __hasProp = Object.prototype.hasOwnProperty;
   version = '0.1.6';
   if (typeof window !== "undefined" && window !== null) {
@@ -27,16 +27,7 @@
       return (code = code.replace(/\}(\s)*$/, ''));
     }
   };
-  Locals = function(_arg, _arg2) {
-    this.context = _arg2;
-    this.buffer = _arg;
-    return this;
-  };
-  Locals.prototype.text = function(txt) {
-    this.buffer.push(String(txt));
-    return null;
-  };
-  Locals.prototype.render_attrs = function(obj) {
+  render_attrs = function(obj) {
     var _ref, k, str, v;
     str = '';
     _ref = obj;
@@ -47,41 +38,69 @@
     }
     return str;
   };
+  Locals = function(_arg) {
+    this.__options = _arg;
+    return this;
+  };
   Locals.prototype.doctype = function(type) {
     type = (typeof type !== "undefined" && type !== null) ? type : 5;
-    return this.text(doctypes[type]);
+    this.text(doctypes[type]);
+    if (this.__options.format) {
+      return this.text('\n');
+    }
   };
   Locals.prototype.comment = function(cmt) {
-    return this.text("<!--" + (cmt) + "-->");
+    this.text("<!--" + (cmt) + "-->");
+    if (this.__options.format) {
+      return this.text('\n');
+    }
   };
   Locals.prototype.tag = function(name, opts) {
-    var _i, _len, _ref, o, result, t;
+    var _i, _len, _ref, o, result;
     this.text("<" + (name));
     _ref = opts;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       o = _ref[_i];
       if (typeof o === 'object') {
-        this.text(this.render_attrs(o));
+        this.text(render_attrs(o));
       }
     }
     if ((function(){ for (var _i=0, _len=self_closing.length; _i<_len; _i++) { if (self_closing[_i] === name) return true; } return false; }).call(this)) {
       this.text(' />');
+      if (this.__options.format) {
+        this.text('\n');
+      }
     } else {
       this.text('>');
+      if (this.__options.format) {
+        this.text('\n');
+      }
       _ref = opts;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         o = _ref[_i];
-        t = typeof o;
-        if (t === 'function') {
-          result = o.call(this.context);
-          if (typeof result === 'string') {
-            this.text(result);
-          }
-        } else if (t === 'string' || t === 'number') {
-          this.text(o);
+        switch (typeof o) {
+          case 'string':
+          case 'number':
+            this.text(o);
+            if (this.__options.format) {
+              this.text('\n');
+            }
+            break;
+          case 'function':
+            result = o.call(this.__options.context);
+            if (typeof result === 'string') {
+              this.text(result);
+              if (this.__options.format) {
+                this.text('\n');
+              }
+            }
+            break;
         }
       }
       this.text("</" + (name) + ">");
+      if (this.__options.format) {
+        this.text('\n');
+      }
     }
     return null;
   };
@@ -99,23 +118,27 @@
   }
   cached = {};
   render = function(template, options) {
-    var _ref2, buffer, code, context, k, locals, scoped_template, v;
+    var _ref2, buffer, code, k, locals, scoped_template, v;
     options = (typeof options !== "undefined" && options !== null) ? options : {};
     options.context = (typeof options.context !== "undefined" && options.context !== null) ? options.context : {};
     options.locals = (typeof options.locals !== "undefined" && options.locals !== null) ? options.locals : {};
+    options.compact = (typeof options.compact !== "undefined" && options.compact !== null) ? options.compact : false;
     options.cache = (typeof options.cache !== "undefined" && options.cache !== null) ? options.cache : true;
+    if (typeof (_ref2 = options.locals.body) !== "undefined" && _ref2 !== null) {
+      options.context.body = options.locals.body;
+      delete options.locals.body;
+    }
     buffer = [];
-    context = options.context;
-    locals = new Locals(buffer, context);
+    locals = new Locals(options);
+    locals.text = function(txt) {
+      buffer.push(String(txt));
+      return null;
+    };
     _ref2 = options.locals;
     for (k in _ref2) {
       if (!__hasProp.call(_ref2, k)) continue;
       v = _ref2[k];
       locals[k] = v;
-    }
-    if (typeof (_ref2 = options.locals.body) !== "undefined" && _ref2 !== null) {
-      context.body = options.locals.body;
-      delete options.locals.body;
     }
     if (options.cache && (typeof (_ref2 = cached[template]) !== "undefined" && _ref2 !== null)) {
       scoped_template = cached[template];
@@ -141,8 +164,8 @@
         cached[template] = scoped_template;
       }
     }
-    scoped_template.call(context, locals);
-    if (buffer[buffer.length - 1] === "\n") {
+    scoped_template.call(options.context, locals);
+    if (buffer[buffer.length - 1] === '\n') {
       buffer.pop();
     }
     return buffer.join('');

@@ -23,40 +23,49 @@ unwrap = (code) ->
     code = code.replace /^(\s)*function(\s)*\(\)(\s)*\{/, ''
     code = code.replace /\}(\s)*$/, ''
 
+render_attrs = (obj) ->
+  str = ''
+  for k, v of obj
+    str += " #{k}=\"#{v}\""
+  str
+
 class Locals
-  constructor: (@buffer, @context) ->
-
-  text: (txt) -> @buffer.push String(txt); null
-
-  render_attrs: (obj) ->
-    str = ''
-    for k, v of obj
-      str += " #{k}=\"#{v}\""
-    str
+  constructor: (@__options) ->
 
   doctype: (type) ->
     type ?= 5
     @text doctypes[type]
+    @text '\n' if @__options.format
 
   comment: (cmt) ->
     @text "<!--#{cmt}-->"
+    @text '\n' if @__options.format
 
   tag: (name, opts) ->
     @text "<#{name}"
+
     for o in opts
-      @text @render_attrs(o) if typeof o is 'object'
+      @text render_attrs(o) if typeof o is 'object'
 
     if name in self_closing
       @text ' />'
+      @text '\n' if @__options.format
     else
       @text '>'
+      @text '\n' if @__options.format
+
       for o in opts
-        t = typeof o
-        if t is 'function'
-          result = o.call @context
-          @text result if typeof result is 'string'
-        else if t is 'string' or t is 'number' then @text o
+        switch typeof o
+          when 'string', 'number'
+            @text o
+            @text '\n' if @__options.format
+          when 'function'
+            result = o.call @__options.context
+            if typeof result is 'string'
+              @text result 
+              @text '\n' if @__options.format
       @text "</#{name}>"
+      @text '\n' if @__options.format
 
     null
 
@@ -72,18 +81,19 @@ render = (template, options) ->
   options ?= {}
   options.context ?= {}
   options.locals ?= {}
+  options.compact ?= off
   options.cache ?= on
 
+  if options.locals.body?
+    options.context.body = options.locals.body
+    delete options.locals.body
+
   buffer = []
-  context = options.context
-  locals = new Locals(buffer, context)
+  locals = new Locals(options)
+  locals.text = (txt) -> buffer.push String(txt); null
 
   for k, v of options.locals
     locals[k] = v
-
-  if options.locals.body?
-    context.body = options.locals.body
-    delete options.locals.body
 
   if options.cache and cached[template]?
     scoped_template = cached[template]
@@ -98,8 +108,8 @@ render = (template, options) ->
     scoped_template = new Function('locals', "with(locals){#{code}}")
     cached[template] = scoped_template if options.cache
 
-  scoped_template.call context, locals
-  buffer.pop() if buffer[buffer.length-1] is "\n"
+  scoped_template.call options.context, locals
+  buffer.pop() if buffer[buffer.length-1] is '\n'
   buffer.join ''
 
 CoffeeKup = version: version, render: render
