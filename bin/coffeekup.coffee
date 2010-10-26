@@ -2,26 +2,50 @@
 
 coffeekup = require 'coffeekup'
 fs = require 'fs'
+path = require 'path'
+OptionParser = require('coffee-script/optparse').OptionParser
+
+render = (input_path) ->
+  fs.readFile input_path, (err, contents) ->
+    throw err if err
+    html = coffeekup.render String(contents), options
+    write input_path, html
+
+write = (input_path, html) ->
+  filename = path.basename(input_path, path.extname(input_path)) + '.html'
+  dir = path.dirname input_path
+  output_path = path.join dir, filename
+  html = ' ' if html.length <= 0
+  fs.writeFile output_path, html, (err) ->
+    puts html if options.print
+    puts "Compiled #{input_path}" if options.watch
 
 usage = '''
   Usage:
-    coffeekup INPUT_FILE
-
-  Options:
-    -v, --version
-    -h, --help
+    coffeekup [OPTIONS] path/to/template.coffee
 '''
 
-args = process.argv
+switches = [
+  ['-h', '--help', 'Prints this help message']
+  ['-v', '--version', 'Shows CoffeeKup version']
+  ['-f', '--format', 'Applies line breaks to HTML output']
+  ['-w', '--watch', 'Keeps watching the file and recompiling it when it changes']
+  ['-p', '--print', 'Prints the compiled html to stdout']
+]
 
-if args.length is 0
-  puts usage
-else
-  input = args[0]
-  if input in ['-v', '--version']
-    puts coffeekup.version
-  else if input in ['-h', '--help']
-    puts usage
-  else
-    code = fs.readFileSync input, 'utf8'
-    puts coffeekup.render(code)
+parser = new OptionParser switches, usage
+options = parser.parse process.argv
+args = options.arguments
+delete options.arguments
+
+puts parser.help() if options.help or process.argv.length is 0
+puts coffeekup.version if options.version
+
+if args.length > 0
+  file = args[0]
+
+  if options.watch
+    fs.watchFile file, {persistent: true, interval: 500}, (curr, prev) ->
+      return if curr.size is prev.size and curr.mtime.getTime() is prev.mtime.getTime()
+      render file
+  else render file
