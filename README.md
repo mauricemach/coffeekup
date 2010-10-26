@@ -125,10 +125,21 @@ Note: this is one of many browser deployment possibilities, compiling on the ser
 
 Command-line:
 
-    coffeekup FILE [> OUTPUT]
+    $ coffeekup -h
+
+    Usage:
+      coffeekup [OPTIONS] path/to/template.coffee
+
+    Available options:
+      -w, --watch        Keeps watching the file and recompiling it when it changes
+      -p, --print        Prints the compiled html to stdout
+      -f, --format       Applies line breaks to html output
+      -u, --utils        Adds helper locals (currently only "render")
+      -h, --help         Prints this help message
+      -v, --version      Shows CoffeeKup version
 
 See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions. Please note that even though all examples are given in coffeescript, you can also use their plain javascript counterparts just fine.
 
 ## Compatibility
 
-Latest version tested with node 0.2.3 and CoffeeScript 0.9.4.
+Latest version tested with node 0.2.4/0.3.0 and CoffeeScript 0.9.4.

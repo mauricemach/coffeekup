@@ -26,11 +26,12 @@ usage = '''
 '''
 
 switches = [
-  ['-h', '--help', 'Prints this help message']
-  ['-v', '--version', 'Shows CoffeeKup version']
-  ['-f', '--format', 'Applies line breaks to HTML output']
   ['-w', '--watch', 'Keeps watching the file and recompiling it when it changes']
   ['-p', '--print', 'Prints the compiled html to stdout']
+  ['-f', '--format', 'Applies line breaks to html output']
+  ['-u', '--utils', 'Adds helper locals (currently only "render")']
+  ['-h', '--help', 'Prints this help message']
+  ['-v', '--version', 'Shows CoffeeKup version']
 ]
 
 parser = new OptionParser switches, usage
@@ -40,6 +41,11 @@ delete options.arguments
 
 puts parser.help() if options.help or process.argv.length is 0
 puts coffeekup.version if options.version
+if options.utils
+  options.locals ?= {}
+  options.locals.render = (file) ->
+    contents = fs.readFileSync file
+    coffeekup.render String(contents), options
 
 if args.length > 0
   file = args[0]
