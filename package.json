@@ -11,5 +11,5 @@
   "keywords": ["template", "view", "coffeescript"],
   "bin": {"coffeekup": "./bin/coffeekup.coffee"},
   "directories": {"lib": "./lib"},
-  "engines": {"node": ">= 0.2.3"}
+  "engines": {"node": ">= 0.2.4"}
 }
