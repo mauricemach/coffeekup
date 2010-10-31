@@ -2,6 +2,7 @@ coffeekup = require 'coffeekup'
 jade = require 'jade'
 ejs = require 'ejs'
 eco = require 'eco'
+haml = require 'haml'
 
 data = 
   title: 'test'
@@ -80,7 +81,7 @@ jade_template = '''
           - each user in users
             li= user.name
             li
-              a(href=user.email)= user.email
+              a(href="mailto:"+user.email)= user.email
 '''
 
 ejs_template = '''
@@ -107,7 +108,7 @@ ejs_template = '''
         <ul>
           <% for (user in users) { %>
             <li><%= user.name %></li>
-            <li><a href="<%= user.email %>"><%= user.email %></a></li>
+            <li><a href="mailto:<%= user.email %>"><%= user.email %></a></li>
           <% } %>
         </ul>
       </section>
@@ -139,13 +140,39 @@ eco_template = '''
         <ul>
           <% for user in @users: %>
             <li><%= user.name %></li>
-            <li><a href="<%= user.email %>"><%= user.email %></a></li>
+            <li><a href="mailto:<%= user.email %>"><%= user.email %></a></li>
           <% end %>
         </ul>
       </section>
     </body>
   </html>
 '''
+
+haml_template = '''
+  !!! 5
+  %html{lang: "en"}
+    %head
+      %meta{charset: "utf-8"}
+      %title= title
+      :css
+        body {font-family: "sans-serif"}
+        section, header {display: block}
+    %body
+      %section
+        %header
+          %h1= title
+        :if inspired
+          %p Create a witty example
+        :if !inspired
+          %p Go meta
+        %ul
+          :each user in users
+            %li= user.name
+            %li
+              %a{href: "mailto:#{user.email}"}= user.email
+'''
+
+haml_template_compiled = haml(haml_template)
 
 benchmark = (title, code) ->
   start = new Date
@@ -163,3 +190,5 @@ exports.run = ->
   benchmark 'ejs (cache off)', -> ejs.render ejs_template, locals: data
   benchmark 'ejs (cache on)', -> ejs.render ejs_template, locals: data, cache: on, filename: 'test'
   benchmark 'Eco', -> eco.render eco_template, data
+  benchmark 'haml-js', -> haml.render haml_template, locals: data
+  benchmark 'haml-js (pre-compiled)', -> haml_template_compiled(data)
