@@ -9,8 +9,8 @@ app.get '/', (req, res) ->
 app.get '/login', (req, res) ->
   res.render 'login', locals: {a_local_var: 'local'}, context: {a_context_var: 'context'}
 
-app.get '/embedded', (req, res) ->
+app.get '/inline', (req, res) ->
   res.send require('coffeekup').render ->
-    h1 'This template is embedded right within the express app.'
+    h1 'This is an inline template.'
 
 app.listen 8000

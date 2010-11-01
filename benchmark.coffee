@@ -60,6 +60,8 @@ coffeekup_string_template = """
             li -> a href: "mailto:\#{user.email}", -> user.email
 """
 
+coffeekup_compiled_template = coffeekup.compile coffeekup_template
+
 jade_template = '''
   !!! 5
   html(lang="en")
@@ -181,14 +183,15 @@ benchmark = (title, code) ->
   puts "#{title}: #{new Date - start} ms"
 
 exports.run = ->
+  benchmark 'CoffeeKup (precompiled)', -> coffeekup_compiled_template context: data
   benchmark 'CoffeeKup (code)', -> coffeekup.render coffeekup_template, context: data
-  benchmark 'CoffeeKup (string)', -> coffeekup.render coffeekup_string_template, context: data
   benchmark 'CoffeeKup (code, cache off)', -> coffeekup.render coffeekup_template, context: data, cache: off
+  benchmark 'CoffeeKup (string)', -> coffeekup.render coffeekup_string_template, context: data
   benchmark 'CoffeeKup (string, cache off)', -> coffeekup.render coffeekup_string_template, context: data, cache: off
   benchmark 'Jade (cache off)', -> jade.render jade_template, locals: data
   benchmark 'Jade (cache on)', -> jade.render jade_template, locals: data, cache: on, filename: 'test'
   benchmark 'ejs (cache off)', -> ejs.render ejs_template, locals: data
   benchmark 'ejs (cache on)', -> ejs.render ejs_template, locals: data, cache: on, filename: 'test'
-  benchmark 'Eco', -> eco.render eco_template, data
   benchmark 'haml-js', -> haml.render haml_template, locals: data
-  benchmark 'haml-js (pre-compiled)', -> haml_template_compiled(data)
+  benchmark 'haml-js (precompiled)', -> haml_template_compiled(data)
+  benchmark 'Eco', -> eco.render eco_template, data
