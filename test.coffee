@@ -1,5 +1,3 @@
-render = require('coffeekup').render
-
 exports.run = ->
   test 'Literal text', ->
     'Just text' is render ->
@@ -14,12 +12,12 @@ exports.run = ->
       doctype 'xml'
 
   test 'Self-closing tags', ->
-    '<br />' is (render -> br()) and
+    '<br />' is render(-> br()) and
     '<img src="icon.png" alt="Icon" />' is render -> img src: 'icon.png', alt: 'Icon'
 
-  test 'Normal tags', ->
-    '<h1>hi</h1>' is render ->
-      h1 'hi'
+  test 'Common tag', ->
+    '<p>hi</p>' is render ->
+      p 'hi'
 
   test 'Attributes', ->
     '<a href="/" title="Home"></a>' is render ->
@@ -34,32 +32,53 @@ exports.run = ->
       """
 
   test 'CoffeeScript', ->
-    expected = """
+    """
       <script>;(function () {
                 return $(document).ready(function() {
                   return alert('hi!');
                 });
-              })();</script>"""
-    rendered = render ->
+              })();</script>""" is render ->
       coffeescript ->
         $(document).ready ->
           alert 'hi!'
 
-    rendered is expected
-
   test 'Context vars', ->
-    tpl = ->
-      h1 @foo
-      ul ->
-        li @ping
-        
-    '<h1>bar</h1><ul><li>pong</li></ul>' is render tpl, context: {foo: 'bar', ping: 'pong'}
+    '<h1>bar</h1>' is render (-> h1 @foo), context: {foo: 'bar'}
+
+  test 'Local vars, hard-coded', ->
+    obj = foo: 'bar'
+    render (-> h1 obj.foo), locals: {obj: obj}
+    obj.foo = 'baz'
+    '<h1>bar</h1>' is render (-> h1 obj.foo), locals: {obj: obj}
+
+  test 'Local vars, hard-coded (functions)', ->
+    '<h1>The sum is: 3</h1>' is render(
+      -> h1 "The sum is: #{sum 1, 2}"
+      locals: {sum: (a, b) -> a + b}
+    )
+
+  test 'Local vars, hard-coded ("helpers")', ->
+    textbox = (attrs) ->
+      attrs.name = attrs.id
+      attrs.type = 'text'
+      tag 'input', [attrs]
+
+    '<input id="foo" name="foo" type="text" />' is render (-> textbox id: 'foo'), locals: {textbox: textbox}
+
+  test 'Local vars, dynamic', ->
+    obj = ping: 'pong'
+    render (-> h1 obj.ping), locals: {obj: obj}, dynamic_locals: yes
+    obj.ping = 'pang'
+    '<h1>pang</h1>' is render (-> h1 obj.ping), locals: {obj: obj}, dynamic_locals: yes
 
   test 'Comments', ->
     '<!--Comment-->' is render ->
       comment 'Comment'
 
   puts "\nTests: #{tests.length} | Passed: #{passed.length} | Failed: #{failed.length} | Errors: #{errors.length}"
+
+ck = require 'coffeekup'
+render = ck.render
 
 [tests, passed, failed, errors] = [[], [], [], []]
 
