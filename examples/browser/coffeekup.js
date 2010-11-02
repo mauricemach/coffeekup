@@ -143,10 +143,10 @@
     for (k in _ref) {
       if (!__hasProp.call(_ref, k)) continue;
       v = _ref[k];
-      if (typeof v === 'string') {
-        code += ("var " + (k) + " = '" + (v) + "';");
-      } else {
+      if (typeof v === 'function') {
         code += ("var " + (k) + " = " + (v) + ";");
+      } else {
+        code += ("var " + (k) + " = " + (JSON.stringify(v)) + ";");
       }
     }
     if (options.dynamic_locals) {

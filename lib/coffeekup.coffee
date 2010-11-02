@@ -105,8 +105,8 @@ coffeekup.compile = (template, options) ->
     code += "#{t} = function(){return tag('#{t}', arguments)};"
   
   for k, v of options.locals
-    if typeof v is 'string' then code += "var #{k} = '#{v}';"
-    else code += "var #{k} = #{v};"
+    if typeof v is 'function' then code += "var #{k} = #{v};"
+    else code += "var #{k} = #{JSON.stringify v};"
   
   code += 'with(ck_options.locals){' if options.dynamic_locals
   code += "(#{template}).call(ck_options.context);"
