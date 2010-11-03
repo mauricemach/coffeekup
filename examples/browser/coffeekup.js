@@ -10,10 +10,11 @@
   }
   coffeekup.version = '0.1.7';
   skeleton = function(ck_options) {
-    var ck_buffer, ck_doctypes, ck_esc, ck_render_attrs, ck_self_closing, coffeescript, comment, doctype, h, tag, text;
+    var ck_buffer, ck_doctypes, ck_esc, ck_indent, ck_render_attrs, ck_repeat, ck_self_closing, ck_tabs, coffeescript, comment, doctype, h, tag, text;
     ck_options = (typeof ck_options !== "undefined" && ck_options !== null) ? ck_options : {};
     ck_options.context = (typeof ck_options.context !== "undefined" && ck_options.context !== null) ? ck_options.context : {};
     ck_options.locals = (typeof ck_options.locals !== "undefined" && ck_options.locals !== null) ? ck_options.locals : {};
+    ck_options.format = (typeof ck_options.format !== "undefined" && ck_options.format !== null) ? ck_options.format : false;
     ck_options.autoescape = (typeof ck_options.autoescape !== "undefined" && ck_options.autoescape !== null) ? ck_options.autoescape : false;
     ck_buffer = [];
     ck_render_attrs = function(obj) {
@@ -42,6 +43,15 @@
     ck_esc = function(txt) {
       return ck_options.autoescape ? h(txt) : String(txt);
     };
+    ck_tabs = 0;
+    ck_repeat = function(string, count) {
+      return Array(count + 1).join(string);
+    };
+    ck_indent = function() {
+      if (ck_options.format) {
+        return text(ck_repeat('  ', ck_tabs));
+      }
+    };
     h = function(txt) {
       return String(txt).replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     };
@@ -64,6 +74,7 @@
     };
     tag = function(name, opts) {
       var _i, _len, _ref, o, result;
+      ck_indent();
       text("<" + (name));
       _ref = opts;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -79,9 +90,6 @@
         }
       } else {
         text('>');
-        if (ck_options.format) {
-          text('\n');
-        }
         _ref = opts;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           o = _ref[_i];
@@ -89,18 +97,22 @@
             case 'string':
             case 'number':
               text(ck_esc(o));
+              break;
+            case 'function':
               if (ck_options.format) {
                 text('\n');
               }
-              break;
-            case 'function':
+              ck_tabs++;
               result = o.call(ck_options.context);
               if (typeof result === 'string') {
+                ck_indent();
                 text(ck_esc(result));
                 if (ck_options.format) {
                   text('\n');
                 }
               }
+              ck_tabs--;
+              ck_indent();
               break;
           }
         }

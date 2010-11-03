@@ -11,6 +11,7 @@ skeleton = (ck_options) ->
   ck_options ?= {}
   ck_options.context ?= {}
   ck_options.locals ?= {}
+  ck_options.format ?= off
   ck_options.autoescape ?= off
   ck_buffer = []
 
@@ -36,6 +37,12 @@ skeleton = (ck_options) ->
   ck_esc = (txt) ->
     if ck_options.autoescape then h(txt) else String(txt)
 
+  ck_tabs = 0
+
+  ck_repeat = (string, count) -> Array(count + 1).join string
+
+  ck_indent = -> text ck_repeat('  ', ck_tabs) if ck_options.format
+
   h = (txt) ->
     String(txt).replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
     
@@ -53,6 +60,7 @@ skeleton = (ck_options) ->
     text '\n' if ck_options.format
   
   tag = (name, opts) ->
+    ck_indent()
     text "<#{name}"
   
     for o in opts
@@ -63,18 +71,21 @@ skeleton = (ck_options) ->
       text '\n' if ck_options.format
     else
       text '>'
-      text '\n' if ck_options.format
   
       for o in opts
         switch typeof o
           when 'string', 'number'
             text ck_esc(o)
-            text '\n' if ck_options.format
           when 'function'
+            text '\n' if ck_options.format
+            ck_tabs++
             result = o.call ck_options.context
             if typeof result is 'string'
+              ck_indent()
               text ck_esc(result)
               text '\n' if ck_options.format
+            ck_tabs--
+            ck_indent()
       text "</#{name}>"
       text '\n' if ck_options.format
   

@@ -20,7 +20,7 @@ In celebration of [whyday](http://whyday.org/), here's a revisiting of Markaby's
             alert 'Alerts are so annoying...'
       body ->
         header ->
-          h1 (@title or 'No Title')
+          h1 @title or 'No Title'
           nav ->
             ul ->
               (li -> a href: '/', -> 'Home') unless @path is '/'
