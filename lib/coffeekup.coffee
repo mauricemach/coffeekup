@@ -11,12 +11,13 @@ skeleton = (ck_options) ->
   ck_options ?= {}
   ck_options.context ?= {}
   ck_options.locals ?= {}
+  ck_options.autoescape ?= off
   ck_buffer = []
 
   ck_render_attrs = (obj) ->
     str = ''
     for k, v of obj
-      str += " #{k}=\"#{v}\""
+      str += " #{k}=\"#{ck_esc(v)}\""
     str
 
   ck_doctypes =
@@ -29,14 +30,23 @@ skeleton = (ck_options) ->
     '1.1': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
     'basic': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">'
     'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
+
   ck_self_closing = ['area', 'base', 'basefont', 'br', 'hr', 'img', 'input', 'link', 'meta']
+
+  ck_esc = (txt) ->
+    if ck_options.autoescape then h(txt) else String(txt)
+
+  h = (txt) ->
+    String(txt).replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
     
   doctype = (type) ->
     type ?= 5
     text ck_doctypes[type]
     text '\n' if ck_options.format
     
-  text = (txt) -> ck_buffer.push String(txt); null
+  text = (txt) ->
+    ck_buffer.push String(txt)
+    null
 
   comment = (cmt) ->
     text "<!--#{cmt}-->"
@@ -58,12 +68,12 @@ skeleton = (ck_options) ->
       for o in opts
         switch typeof o
           when 'string', 'number'
-            text o
+            text ck_esc(o)
             text '\n' if ck_options.format
           when 'function'
             result = o.call ck_options.context
             if typeof result is 'string'
-              text result 
+              text ck_esc(result)
               text '\n' if ck_options.format
       text "</#{name}>"
       text '\n' if ck_options.format

@@ -10,10 +10,11 @@
   }
   coffeekup.version = '0.1.7';
   skeleton = function(ck_options) {
-    var ck_buffer, ck_doctypes, ck_render_attrs, ck_self_closing, coffeescript, comment, doctype, tag, text;
+    var ck_buffer, ck_doctypes, ck_esc, ck_render_attrs, ck_self_closing, coffeescript, comment, doctype, h, tag, text;
     ck_options = (typeof ck_options !== "undefined" && ck_options !== null) ? ck_options : {};
     ck_options.context = (typeof ck_options.context !== "undefined" && ck_options.context !== null) ? ck_options.context : {};
     ck_options.locals = (typeof ck_options.locals !== "undefined" && ck_options.locals !== null) ? ck_options.locals : {};
+    ck_options.autoescape = (typeof ck_options.autoescape !== "undefined" && ck_options.autoescape !== null) ? ck_options.autoescape : false;
     ck_buffer = [];
     ck_render_attrs = function(obj) {
       var _ref, k, str, v;
@@ -22,7 +23,7 @@
       for (k in _ref) {
         if (!__hasProp.call(_ref, k)) continue;
         v = _ref[k];
-        str += (" " + (k) + "=\"" + (v) + "\"");
+        str += (" " + (k) + "=\"" + (ck_esc(v)) + "\"");
       }
       return str;
     };
@@ -38,6 +39,12 @@
       'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
     };
     ck_self_closing = ['area', 'base', 'basefont', 'br', 'hr', 'img', 'input', 'link', 'meta'];
+    ck_esc = function(txt) {
+      return ck_options.autoescape ? h(txt) : String(txt);
+    };
+    h = function(txt) {
+      return String(txt).replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    };
     doctype = function(type) {
       type = (typeof type !== "undefined" && type !== null) ? type : 5;
       text(ck_doctypes[type]);
@@ -81,7 +88,7 @@
           switch (typeof o) {
             case 'string':
             case 'number':
-              text(o);
+              text(ck_esc(o));
               if (ck_options.format) {
                 text('\n');
               }
@@ -89,7 +96,7 @@
             case 'function':
               result = o.call(ck_options.context);
               if (typeof result === 'string') {
-                text(result);
+                text(ck_esc(result));
                 if (ck_options.format) {
                   text('\n');
                 }
