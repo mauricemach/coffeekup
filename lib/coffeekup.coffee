@@ -59,7 +59,9 @@ skeleton = (ck_options) ->
     text "<!--#{cmt}-->"
     text '\n' if ck_options.format
   
-  tag = (name, opts) ->
+  tag = -> name = arguments[0]; delete arguments[0]; ck_tag(name, arguments)
+
+  ck_tag = (name, opts) ->
     ck_indent()
     text "<#{name}"
   
@@ -122,8 +124,9 @@ coffeekup.compile = (template, options) ->
       tags_here.push t
 
   code = skeleton.replace ', text;', ", text, #{tags_here.join ','};"
+  code += 'var arrayCreator = Array;'
   for t in tags_here
-    code += "#{t} = function(){return tag('#{t}', arguments)};"
+    code += "#{t} = function(){return ck_tag('#{t}', arguments)};"
   
   for k, v of options.locals
     if typeof v is 'function' then code += "var #{k} = #{v};"

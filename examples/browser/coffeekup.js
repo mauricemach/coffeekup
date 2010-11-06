@@ -10,7 +10,7 @@
   }
   coffeekup.version = '0.1.7';
   skeleton = function(ck_options) {
-    var ck_buffer, ck_doctypes, ck_esc, ck_indent, ck_render_attrs, ck_repeat, ck_self_closing, ck_tabs, coffeescript, comment, doctype, h, tag, text;
+    var ck_buffer, ck_doctypes, ck_esc, ck_indent, ck_render_attrs, ck_repeat, ck_self_closing, ck_tabs, ck_tag, coffeescript, comment, doctype, h, tag, text;
     ck_options = (typeof ck_options !== "undefined" && ck_options !== null) ? ck_options : {};
     ck_options.context = (typeof ck_options.context !== "undefined" && ck_options.context !== null) ? ck_options.context : {};
     ck_options.locals = (typeof ck_options.locals !== "undefined" && ck_options.locals !== null) ? ck_options.locals : {};
@@ -72,7 +72,13 @@
         return text('\n');
       }
     };
-    tag = function(name, opts) {
+    tag = function() {
+      var name;
+      name = arguments[0];
+      delete arguments[0];
+      return ck_tag(name, arguments);
+    };
+    ck_tag = function(name, opts) {
       var _i, _len, _ref, o, result;
       ck_indent();
       text("<" + (name));
@@ -153,10 +159,11 @@
       }
     }
     code = skeleton.replace(', text;', ", text, " + (tags_here.join(',')) + ";");
+    code += 'var arrayCreator = Array;';
     _ref = tags_here;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       t = _ref[_i];
-      code += ("" + (t) + " = function(){return tag('" + (t) + "', arguments)};");
+      code += ("" + (t) + " = function(){return ck_tag('" + (t) + "', arguments)};");
     }
     _ref = options.locals;
     for (k in _ref) {

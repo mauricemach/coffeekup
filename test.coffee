@@ -11,6 +11,18 @@ exports.run = ->
     '<?xml version="1.0" encoding="utf-8" ?>' is render ->
       doctype 'xml'
 
+  test 'Custom tag', ->
+    '<custom></custom>' is render ->
+      tag 'custom'
+
+  test 'Custom tag with attributes', ->
+    '<custom foo="bar" ping="pong"></custom>' is render ->
+      tag 'custom', foo: 'bar', ping: 'pong'
+
+  test 'Custom tag with attributes and inner content', ->
+    '<custom foo="bar" ping="pong">zag</custom>' is render ->
+      tag 'custom', foo: 'bar', ping: 'pong', -> 'zag'
+
   test 'Self-closing tags', ->
     '<br />' is render(-> br()) and
     '<img src="icon.png" alt="Icon" />' is render -> img src: 'icon.png', alt: 'Icon'
@@ -61,7 +73,7 @@ exports.run = ->
     textbox = (attrs) ->
       attrs.name = attrs.id
       attrs.type = 'text'
-      tag 'input', [attrs]
+      tag 'input', attrs
 
     '<input id="foo" name="foo" type="text" />' is render (-> textbox id: 'foo'), locals: {textbox: textbox}
 
