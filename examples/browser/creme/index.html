@@ -13,9 +13,9 @@
     <script type="text/coffeescript">
       stooges = ['moe', 'larry', 'curly']
       
-      $(document).ready ->
+      $().ready ->
         stringy = """
-          h2 'Crème (string)'
+          h2 'Template as string'
 
           ul ->
             for guy in @stooges
@@ -23,19 +23,18 @@
         """
 
         codey = ->
-          h2 'Crème (code)'
+          h2 'Template as a function'
 
           ul ->
             for guy in @stooges
               li guy
 
         $('body').append CoffeeKup.render(stringy, context: {stooges: stooges})
-
         $('body').append CoffeeKup.render(codey, context: {stooges: stooges})
     </script>
   </head>
   <body>
-    <h1>Client-side CoffeeKup (Crème)</h1>
-    <p>Delicious syntax directly on the client-side, but lots of fat from including the CoffeeScript compiler.</p>
+    <h1>Client-side CoffeeKup (crème)</h1>
+    <p>Doing everything on the client. Lots of flexibility but a fatty download.</p>
   </body>
 </html>

@@ -13,4 +13,6 @@ app.get '/inline', (req, res) ->
   res.send require('coffeekup').render ->
     h1 'This is an inline template.'
 
-app.listen 8000
+app.listen 3000
+
+puts "Listening on 3000..."

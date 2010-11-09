@@ -1,16 +1,8 @@
-(function() {
-  var cache, coffee, coffeekup, skeleton, support, tags;
-  var __hasProp = Object.prototype.hasOwnProperty;
-  if (typeof window !== "undefined" && window !== null) {
-    coffeekup = (window.CoffeeKup = {});
-    coffee = (typeof CoffeeScript !== "undefined" && CoffeeScript !== null) ? CoffeeScript : null;
-  } else {
-    coffeekup = exports;
-    coffee = require('coffee-script');
-  }
-  coffeekup.version = '0.1.7';
-  skeleton = function(ck_options) {
-    var ck_buffer, ck_doctypes, ck_esc, ck_indent, ck_render_attrs, ck_repeat, ck_self_closing, ck_tabs, ck_tag, coffeescript, comment, doctype, h, tag, text;
+function template(ck_options) {
+var __slice = Array.prototype.slice;
+var __hasProp = Object.prototype.hasOwnProperty;
+var __bind = function(func, context) {return function(){ return func.apply(context, arguments); };};
+    var ck_buffer, ck_doctypes, ck_esc, ck_indent, ck_render_attrs, ck_repeat, ck_self_closing, ck_tabs, ck_tag, coffeescript, comment, doctype, h, tag, text, a,i,li,p,s,th,u,ul;
     ck_options = (typeof ck_options !== "undefined" && ck_options !== null) ? ck_options : {};
     ck_options.context = (typeof ck_options.context !== "undefined" && ck_options.context !== null) ? ck_options.context : {};
     ck_options.locals = (typeof ck_options.locals !== "undefined" && ck_options.locals !== null) ? ck_options.locals : {};
@@ -132,87 +124,13 @@
     coffeescript = function(code) {
       return script(";(" + (code) + ")();");
     };
-    return null;
-  };
-  support = 'var __slice = Array.prototype.slice;\nvar __hasProp = Object.prototype.hasOwnProperty;\nvar __bind = function(func, context) {return function(){ return func.apply(context, arguments); };};';
-  skeleton = String(skeleton).replace('function (ck_options) {', '').replace(/return null;\s*\}$/, '');
-  skeleton = support + skeleton;
-  tags = 'a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont|bdo|big|blockquote|body|br|button|canvas|caption|center|cite|code|col|colgroup|command|datalist|dd|del|details|dfn|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr|html|i|iframe|img|input|ins|keygen|kbd|label|legend|li|link|map|mark|menu|meta|meter|nav|noframes|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|tt|u|ul|video|xmp'.split('|');
-  coffeekup.compile = function(template, options) {
-    var _i, _len, _ref, code, k, t, tags_here, v;
-    options = (typeof options !== "undefined" && options !== null) ? options : {};
-    options.locals = (typeof options.locals !== "undefined" && options.locals !== null) ? options.locals : {};
-    if (typeof template === 'function') {
-      template = String(template);
-    } else if (typeof template === 'string' && (typeof coffee !== "undefined" && coffee !== null)) {
-      template = coffee.compile(template, {
-        'noWrap': 'noWrap'
-      });
-      template = ("function(){" + (template) + "}");
-    }
-    tags_here = [];
-    _ref = tags;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      t = _ref[_i];
-      if (template.indexOf(t) > -1) {
-        tags_here.push(t);
-      }
-    }
-    code = skeleton.replace(', text;', ", text, " + (tags_here.join(',')) + ";");
-    code += 'var arrayCreator = Array;';
-    _ref = tags_here;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      t = _ref[_i];
-      code += ("" + (t) + " = function(){return ck_tag('" + (t) + "', arguments)};");
-    }
-    _ref = options.locals;
-    for (k in _ref) {
-      if (!__hasProp.call(_ref, k)) continue;
-      v = _ref[k];
-      if (typeof v === 'function') {
-        code += ("var " + (k) + " = " + (v) + ";");
-      } else {
-        code += ("var " + (k) + " = " + (JSON.stringify(v)) + ";");
-      }
-    }
-    if (options.dynamic_locals) {
-      code += 'with(ck_options.locals){';
-    }
-    code += ("(" + (template) + ").call(ck_options.context);");
-    if (options.dynamic_locals) {
-      code += '}';
-    }
-    code += "return ck_buffer.join('');";
-    return new Function('ck_options', code);
-  };
-  cache = {};
-  coffeekup.render = function(template, options) {
-    var _ref, tpl;
-    options = (typeof options !== "undefined" && options !== null) ? options : {};
-    options.context = (typeof options.context !== "undefined" && options.context !== null) ? options.context : {};
-    options.locals = (typeof options.locals !== "undefined" && options.locals !== null) ? options.locals : {};
-    options.cache = (typeof options.cache !== "undefined" && options.cache !== null) ? options.cache : true;
-    if (typeof (_ref = options.locals.body) !== "undefined" && _ref !== null) {
-      options.context.body = options.locals.body;
-      delete options.locals.body;
-    }
-    if (options.cache && (typeof (_ref = cache[template]) !== "undefined" && _ref !== null)) {
-      tpl = cache[template];
-    } else if (options.cache) {
-      tpl = (cache[template] = coffeekup.compile(template, options));
-    } else {
-      tpl = coffeekup.compile(template, options);
-    }
-    return tpl(options);
-  };
-  if (!(typeof window !== "undefined" && window !== null)) {
-    coffeekup.adapters = {
-      simple: function(template, data) {
-        return coffeekup.render(template, {
-          context: data
-        });
-      }
-    };
-    coffeekup.adapters.meryl = coffeekup.adapters.simple;
+    var arrayCreator = Array;a = function(){return ck_tag('a', arguments)};i = function(){return ck_tag('i', arguments)};li = function(){return ck_tag('li', arguments)};p = function(){return ck_tag('p', arguments)};s = function(){return ck_tag('s', arguments)};th = function(){return ck_tag('th', arguments)};u = function(){return ck_tag('u', arguments)};ul = function(){return ck_tag('ul', arguments)};(function(){ul(function() {
+  var _i, _len, _ref, _result, guy;
+  _result = []; _ref = this.stooges;
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    guy = _ref[_i];
+    _result.push(li(guy));
   }
-}).call(this);
+  return _result;
+});}).call(ck_options.context);return ck_buffer.join('');
+}

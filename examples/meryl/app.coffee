@@ -9,3 +9,5 @@ meryl.run
   templateDir: 'templates'
   templateExt: '.coffee'
   templateFunc: coffeekup.adapters.meryl
+
+puts 'Listening on 3000...'
