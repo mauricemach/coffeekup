@@ -58,6 +58,10 @@ In celebration of [whyday](http://whyday.org/), here's a revisiting of Markaby's
 
 * HTML 5 ready! Boring legacy doctypes and elements also available.
 
+* Optional HTML auto-escaping (or you can use the `h` helper).
+
+* Optional output formatting with indentation.
+
 * It's just coffeescript! Syntax checking, highlighting and other goodies are [already available](http://jashkenas.github.com/coffee-script/#resources).
 
 ## Installing
@@ -155,7 +159,7 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
 
 **v0.2.0** (2010-11-09):
 
-  - Huge performance gains, now one of the fastest. See `cake benchmark`.
+  - Huge performance gains, now among the fastest. See `cake benchmark`.
   - Compile templates into standalone functions with `coffeekup.compile`.
   - Option `format` to add line breaks and indentation to output.
   - Escape HTML automatically with the `autoescape` option, or manually with the `h` local.
