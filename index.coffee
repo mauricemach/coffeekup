@@ -64,7 +64,7 @@ template = ->
     $('#format').bind 'click', -> compile()
 
     init = ->
-      if bespin?
+      if bespin?.useBespin?
         clearInterval id
         $('#context').attr 'value', "{title: 'Foo', path: '/zig', user: {}, max: 12}"
         $('#locals').attr 'value', '{shoutify: function(s){return s.toUpperCase() + \'!\';}}'

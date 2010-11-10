@@ -27,7 +27,8 @@
       return compile();
     });
     init = function() {
-      if (typeof bespin !== "undefined" && bespin !== null) {
+      var _ref;
+      if (typeof (_ref = (typeof bespin === "undefined" || bespin === null) ? undefined : bespin.useBespin) !== "undefined" && _ref !== null) {
         clearInterval(id);
         $('#context').attr('value', "{title: 'Foo', path: '/zig', user: {}, max: 12}");
         $('#locals').attr('value', '{shoutify: function(s){return s.toUpperCase() + \'!\';}}');
