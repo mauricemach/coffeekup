@@ -8,7 +8,7 @@
     coffeekup = exports;
     coffee = require('coffee-script');
   }
-  coffeekup.version = '0.1.7';
+  coffeekup.version = '0.2.0';
   skeleton = function(ck_options) {
     var ck_buffer, ck_doctypes, ck_esc, ck_indent, ck_render_attrs, ck_repeat, ck_self_closing, ck_tabs, ck_tag, coffeescript, comment, doctype, h, tag, text;
     ck_options = (typeof ck_options !== "undefined" && ck_options !== null) ? ck_options : {};
