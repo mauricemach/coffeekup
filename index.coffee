@@ -11,6 +11,10 @@ template = ->
       script src: 'coffeekup.js'
       script @js
       style @css
+      script "var _gaq=[['_setAccount','UA-4475762-17'],['_trackPageview']];(function(d,t){
+        var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.async=1;g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)
+        })(document,'script')</script>"
     body ->
       div id: 'container', ->
         h1 id: 'logo', ->
