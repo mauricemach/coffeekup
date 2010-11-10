@@ -38,6 +38,8 @@ In celebration of [whyday](http://whyday.org/), here's a revisiting of Markaby's
         footer ->
           p 'Bye!'
 
+Live demo at [coffeekup.org](http://coffeekup.org).
+
 ## _Why?
 
 * Your rendering logic in a hell of a clean, expressive and flexible language.
