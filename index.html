@@ -2,8 +2,8 @@
   var editor, out;
   editor = null;
   out = null;
-  return $(document).ready(function() {
-    var compile, id, init;
+  return (window.onBespinLoad = function() {
+    var compile;
     compile = function() {
       var opts;
       try {
@@ -26,39 +26,32 @@
     $('#format').bind('click', function() {
       return compile();
     });
-    init = function() {
-      var _ref;
-      if (typeof (_ref = (typeof bespin === "undefined" || bespin === null) ? undefined : bespin.useBespin) !== "undefined" && _ref !== null) {
-        clearInterval(id);
-        $('#context').attr('value', "{title: 'Foo', path: '/zig', user: {}, max: 12}");
-        $('#locals').attr('value', '{shoutify: function(s){return s.toUpperCase() + \'!\';}}');
-        bespin.useBespin('out', {
-          stealFocus: true,
-          syntax: 'html',
-          settings: {
-            tabstop: 2
-          }
-        }).then(function(env) {
-          return (out = env.editor);
-        });
-        return bespin.useBespin('in', {
-          stealFocus: true,
-          syntax: 'coffee',
-          settings: {
-            tabstop: 2,
-            fontface: 'Monaco, DejaVu Sans Mono, monospace'
-          },
-          fontsize: '8px'
-        }).then(function(env) {
-          editor = env.editor;
-          editor.textChanged.add(function(old_range, new_range, new_text) {
-            return compile();
-          });
-          return compile();
-        });
+    $('#context').attr('value', "{title: 'Foo', path: '/zig', user: {}, max: 12}");
+    $('#locals').attr('value', '{shoutify: function(s){return s.toUpperCase() + \'!\';}}');
+    bespin.useBespin('out', {
+      stealFocus: true,
+      syntax: 'html',
+      settings: {
+        tabstop: 2
       }
-    };
-    return (id = setInterval(init, 50));
+    }).then(function(env) {
+      return (out = env.editor);
+    });
+    return bespin.useBespin('in', {
+      stealFocus: true,
+      syntax: 'coffee',
+      settings: {
+        tabstop: 2,
+        fontface: 'Monaco, DejaVu Sans Mono, monospace'
+      },
+      fontsize: '8px'
+    }).then(function(env) {
+      editor = env.editor;
+      editor.textChanged.add(function(old_range, new_range, new_text) {
+        return compile();
+      });
+      return compile();
+    });
   });
 }).call(this);</script><style>html, body {margin: 0; padding: 0}
 body {

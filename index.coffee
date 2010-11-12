@@ -48,7 +48,7 @@ template = ->
   editor = null
   out = null
 
-  $(document).ready ->
+  window.onBespinLoad = ->
     compile = ->
       try
         opts = format: $('#format').is(':checked'), autoescape: yes
@@ -63,19 +63,14 @@ template = ->
     $('#context, #locals').bind 'keyup', -> compile()
     $('#format').bind 'click', -> compile()
 
-    init = ->
-      if bespin?.useBespin?
-        clearInterval id
-        $('#context').attr 'value', "{title: 'Foo', path: '/zig', user: {}, max: 12}"
-        $('#locals').attr 'value', '{shoutify: function(s){return s.toUpperCase() + \'!\';}}'
-        bespin.useBespin('out', stealFocus: yes, syntax: 'html', settings: {tabstop: 2}).then (env) ->
-          out = env.editor
-        bespin.useBespin('in', stealFocus: yes, syntax: 'coffee', settings: {tabstop: 2, fontface: 'Monaco, DejaVu Sans Mono, monospace'}, fontsize: '8px').then (env) ->
-          editor = env.editor
-          editor.textChanged.add (old_range, new_range, new_text) -> compile()
-          compile()
-
-    id = setInterval init, 50
+    $('#context').attr 'value', "{title: 'Foo', path: '/zig', user: {}, max: 12}"
+    $('#locals').attr 'value', '{shoutify: function(s){return s.toUpperCase() + \'!\';}}'
+    bespin.useBespin('out', stealFocus: yes, syntax: 'html', settings: {tabstop: 2}).then (env) ->
+      out = env.editor
+    bespin.useBespin('in', stealFocus: yes, syntax: 'coffee', settings: {tabstop: 2, fontface: 'Monaco, DejaVu Sans Mono, monospace'}, fontsize: '8px').then (env) ->
+      editor = env.editor
+      editor.textChanged.add (old_range, new_range, new_text) -> compile()
+      compile()
 
 @js = "(#{@js}).call(this);"
 
