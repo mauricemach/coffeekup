@@ -3,7 +3,7 @@ template = ->
   html ->
     head ->
       meta charset: 'utf-8'
-      title 'Coffeekup'
+      title 'CoffeeKup'
       link id: 'bespin_base', href: 'bespin'
       script src: 'zepto.min.js'
       script src: 'bespin/BespinEmbedded.js'
@@ -23,7 +23,7 @@ template = ->
           span class: 'wing', -> 'ↄ' # ƿↄ
           span class: 'delim', -> h('/>')
         h2 id: 'desc', ->
-          text 'Coffeekup is <strong>markup</strong> as <strong>CoffeeScript</strong>. '
+          text 'CoffeeKup is <strong>markup</strong> as <strong>CoffeeScript</strong>. '
           a id: 'info', href: 'http://github.com/mauricemach/coffeekup', -> 'More Info'
 
         p id: 'errors'
