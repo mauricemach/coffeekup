@@ -101,7 +101,15 @@ skeleton = (ck_options) ->
 support = '''
   var __slice = Array.prototype.slice;
   var __hasProp = Object.prototype.hasOwnProperty;
-  var __bind = function(func, context) {return function(){ return func.apply(context, arguments); };};
+  var __indexOf = Array.prototype.indexOf || function(item) {
+    for (var i = 0, l = this.length; i < l; i++) {if (this[i] === item) return i;}; return -1;};
+  var __bind = function(fn, me){return function(){return fn.apply(me, arguments);};};
+  var __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype; child.prototype = new ctor;
+    child.__super__ = parent.prototype; return child;
+  };
 '''
 
 skeleton = String(skeleton).replace(/function\s*\(ck_options\)\s*\{/, '').replace /return null;\s*\}$/, ''
@@ -115,7 +123,7 @@ coffeekup.compile = (template, options) ->
   
   if typeof template is 'function' then template = String(template)
   else if typeof template is 'string' and coffee?
-    template = coffee.compile template, {'noWrap'}
+    template = coffee.compile template, {'bare'}
     template = "function(){#{template}}"
   
   tags_here = []

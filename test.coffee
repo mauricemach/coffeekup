@@ -99,6 +99,8 @@ exports.run = ->
 
   puts "\nTests: #{tests.length} | Passed: #{passed.length} | Failed: #{failed.length} | Errors: #{errors.length}"
 
+puts = console.log
+print = require('sys').print
 ck = require 'coffeekup'
 render = ck.render
 
@@ -116,4 +118,4 @@ test = (name, code) ->
       puts "[Failed]"
   catch ex
     errors.push name
-    puts "[Error] (#{ex.message})"
+    puts "[Error] \"#{ex.message}\""
