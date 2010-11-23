@@ -5,7 +5,7 @@ else
   coffeekup = exports
   coffee = require 'coffee-script'
 
-coffeekup.version = '0.2.0'
+coffeekup.version = '0.2.1'
 
 skeleton = (ck_options) ->
   ck_options ?= {}
