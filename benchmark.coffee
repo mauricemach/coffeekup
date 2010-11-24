@@ -3,6 +3,7 @@ jade = require 'jade'
 ejs = require 'ejs'
 eco = require 'eco'
 haml = require 'haml'
+puts = console.log
 
 data = 
   title: 'test'
