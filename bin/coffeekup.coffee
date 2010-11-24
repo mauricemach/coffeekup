@@ -3,6 +3,7 @@
 coffeekup = require 'coffeekup'
 fs = require 'fs'
 path = require 'path'
+puts = console.log
 OptionParser = require('coffee-script/optparse').OptionParser
 
 render = (input_path) ->
