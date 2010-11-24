@@ -123,7 +123,7 @@ coffeekup.compile = (template, options) ->
   
   if typeof template is 'function' then template = String(template)
   else if typeof template is 'string' and coffee?
-    template = coffee.compile template, {'bare'}
+    template = coffee.compile template, bare: yes
     template = "function(){#{template}}"
   
   tags_here = []
@@ -131,8 +131,7 @@ coffeekup.compile = (template, options) ->
     if template.indexOf(t) > -1
       tags_here.push t
 
-  code = skeleton.replace ', text;', ", text, #{tags_here.join ','};"
-  code += 'var arrayCreator = Array;'
+  code = skeleton + "var #{tags_here.join ','};"
   for t in tags_here
     code += "#{t} = function(){return ck_tag('#{t}', arguments)};"
   
