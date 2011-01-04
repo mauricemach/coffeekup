@@ -159,6 +159,10 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
 
 ## Change Log:
 
+**v0.2.2** (2011-01-05):
+
+  - Updated to CoffeeScript 1.0.0 and node 0.2.6/0.3.3.
+
 **v0.2.1** (2010-11-09):
 
   - Updated to CoffeeScript 0.9.5 and node 0.2.5/0.3.1.
@@ -175,4 +179,4 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
 
 ## Compatibility
 
-Latest version tested with node 0.2.5/0.3.1 and CoffeeScript 0.9.5.
+Latest version tested with node 0.2.6/0.3.3 and CoffeeScript 1.0.0.
