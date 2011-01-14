@@ -44,7 +44,7 @@ skeleton = (ck_options) ->
   ck_indent = -> text ck_repeat('  ', ck_tabs) if ck_options.format
 
   h = (txt) ->
-    String(txt).replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    String(txt).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
     
   doctype = (type) ->
     type ?= 5
