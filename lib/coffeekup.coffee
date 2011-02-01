@@ -58,6 +58,13 @@ skeleton = (ck_options) ->
   comment = (cmt) ->
     text "<!--#{cmt}-->"
     text '\n' if ck_options.format
+
+  stylus = (s) ->
+    result = '<style>'
+    ck_options.stylus.render s, {filename: 'coffeekup stylus tag', compress: true}, (err, css) ->
+      if err then throw err
+      result += css
+    result += '</style>'
   
   tag = -> name = arguments[0]; delete arguments[0]; ck_tag(name, arguments)
 
@@ -157,6 +164,7 @@ coffeekup.render = (template, options) ->
   options.context ?= {}
   options.locals ?= {}
   options.cache ?= on
+  options.stylus = require 'stylus'
 
   # Shim for express.
   if options.locals.body?
