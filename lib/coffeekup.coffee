@@ -64,7 +64,7 @@ skeleton = (ck_options) ->
     ck_options.stylus.render s, {filename: 'coffeekup stylus tag', compress: true}, (err, css) ->
       if err then throw err
       result += css
-    result += '</style>'
+    text result += '</style>'
   
   tag = -> name = arguments[0]; delete arguments[0]; ck_tag(name, arguments)
 
