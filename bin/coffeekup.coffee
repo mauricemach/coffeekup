@@ -34,17 +34,17 @@ write = (input_path, html, output_directory) ->
 
 usage = '''
   Usage:
-    coffeekup [OPTIONS] path/to/template.coffee
+    coffeekup [options] path/to/template.coffee
 '''
 
 switches = [
-  ['-w', '--watch', 'Keeps watching the file and recompiling it when it changes']
-  ['-o', '--output [DIR]', 'Specifies a directory to compile into.']
-  ['-p', '--print', 'Prints the compiled html to stdout']
-  ['-f', '--format', 'Applies line breaks to html output']
-  ['-u', '--utils', 'Adds helper locals (currently only "render")']
-  ['-h', '--help', 'Prints this help message']
-  ['-v', '--version', 'Shows CoffeeKup version']
+  ['-w', '--watch', 'watch templates for changes, and recompile']
+  ['-o', '--output [dir]', 'set the directory for compiled html']
+  ['-p', '--print', 'print the compiled html to stdout']
+  ['-f', '--format', 'apply line breaks and indentation to html output']
+  ['-u', '--utils', 'add helper locals (currently only "render")']
+  ['-v', '--version', 'display CoffeeKup version']
+  ['-h', '--help', 'display this help message']
 ]
 
 parser = new OptionParser switches, usage
