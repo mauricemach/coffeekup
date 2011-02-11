@@ -7,8 +7,7 @@ else
 
 coffeekup.version = '0.2.2'
 
-skeleton = (ck_options) ->
-  ck_options ?= {}
+skeleton = (ck_options = {}) ->
   ck_options.context ?= {}
   ck_options.locals ?= {}
   ck_options.format ?= off
@@ -32,7 +31,7 @@ skeleton = (ck_options) ->
     'basic': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">'
     'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
 
-  ck_self_closing = ['area', 'base', 'basefont', 'br', 'hr', 'img', 'input', 'link', 'meta']
+  ck_self_closing = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link', 'meta', 'param']
 
   ck_esc = (txt) ->
     if ck_options.autoescape then h(txt) else String(txt)
@@ -46,8 +45,7 @@ skeleton = (ck_options) ->
   h = (txt) ->
     String(txt).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
     
-  doctype = (type) ->
-    type ?= 5
+  doctype = (type = 5) ->
     text ck_doctypes[type]
     text '\n' if ck_options.format
     
@@ -121,8 +119,7 @@ skeleton = support + skeleton
 
 tags = 'a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont|bdo|big|blockquote|body|br|button|canvas|caption|center|cite|code|col|colgroup|command|datalist|dd|del|details|dfn|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr|html|i|iframe|img|input|ins|keygen|kbd|label|legend|li|link|map|mark|menu|meta|meter|nav|noframes|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|tt|u|ul|video|xmp'.split '|'
 
-coffeekup.compile = (template, options) ->
-  options ?= {}
+coffeekup.compile = (template, options = {}) ->
   options.locals ?= {}
   
   if typeof template is 'function' then template = String(template)
@@ -152,8 +149,7 @@ coffeekup.compile = (template, options) ->
 
 cache = {}
 
-coffeekup.render = (template, options) ->
-  options ?= {}
+coffeekup.render = (template, options = {}) ->
   options.context ?= {}
   options.locals ?= {}
   options.cache ?= on
