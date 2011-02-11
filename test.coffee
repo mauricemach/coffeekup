@@ -88,11 +88,11 @@ exports.run = ->
       comment 'Comment'
 
   test 'Escaping', ->
-    "<h1>&lt;script&gt;alert('&quot;pwned&quot; by c&amp;a &copy;')&lt;/script&gt;</h1>" is render ->
+    "<h1>&lt;script&gt;alert('&quot;pwned&quot; by c&amp;a &amp;copy;')&lt;/script&gt;</h1>" is render ->
       h1 h("<script>alert('\"pwned\" by c&a &copy;')</script>")
 
   test 'Autoescaping', ->
-    "<h1>&lt;script&gt;alert('&quot;pwned&quot; by c&amp;a &copy;')&lt;/script&gt;</h1>" is render(
+    "<h1>&lt;script&gt;alert('&quot;pwned&quot; by c&amp;a &amp;copy;')&lt;/script&gt;</h1>" is render(
       -> h1 "<script>alert('\"pwned\" by c&a &copy;')</script>"
       autoescape: yes
     )
