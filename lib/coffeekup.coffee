@@ -121,6 +121,16 @@ tags = 'a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont|b
 
 coffeekup.compile = (template, options = {}) ->
   options.locals ?= {}
+
+  # Shim for express.
+  if options.locals.body?
+    options.context.body = options.locals.body
+    delete options.locals.body
+
+  if options.body?
+    options.context.body = options.body
+    delete options.body
+
   
   if typeof template is 'function' then template = String(template)
   else if typeof template is 'string' and coffee?
@@ -148,16 +158,11 @@ coffeekup.compile = (template, options = {}) ->
   new Function('ck_options', code)
 
 cache = {}
-
 coffeekup.render = (template, options = {}) ->
   options.context ?= {}
   options.locals ?= {}
   options.cache ?= on
 
-  # Shim for express.
-  if options.locals.body?
-    options.context.body = options.locals.body
-    delete options.locals.body
 
   if options.cache and cache[template]? then tpl = cache[template]
   else if options.cache then tpl = cache[template] = coffeekup.compile(template, options)
