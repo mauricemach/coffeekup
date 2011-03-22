@@ -4,7 +4,7 @@ coffeekup = require 'coffeekup'
 fs = require 'fs'
 path = require 'path'
 puts = console.log
-OptionParser = require('coffee-script/optparse').OptionParser
+OptionParser = require('optparse').OptionParser
 
 # On coffee-script@0.9.6, argv looks like [filename],
 # On coffee-script@1.0.0, argv looks like ["node", "path/to/coffee", filename]
@@ -12,6 +12,7 @@ if process.argv[0] is 'node' and process.argv.length >= 2
   argv = process.argv[2..]
 else
   argv = process.argv[0..]
+
 
 render = (input_path, output_directory) ->
   fs.readFile input_path, (err, contents) ->
@@ -47,24 +48,44 @@ switches = [
   ['-h', '--help', 'display this help message']
 ]
 
-parser = new OptionParser switches, usage
-options = parser.parse argv
-args = options.arguments
-delete options.arguments
 
-puts parser.help() if options.help or argv.length is 0
-puts coffeekup.version if options.version
+args = []
+options = {}
+print_summary = false
+print_version = false
+parser = new OptionParser switches, usage
+
+parser.on "help", (value) ->
+	print_summary = true
+
+parser.on "version", (value) ->
+	print_version = true
+
+parser.on "*", (opt, value) ->
+	options[opt] = value
+
+parser.on 0, (opt) ->
+	args.push (opt)
+
+parser.parse argv
+
 if options.utils
   options.locals ?= {}
   options.locals.render = (file) ->
     contents = fs.readFileSync file
     coffeekup.render String(contents), options
 
-if args.length > 0
-  file = args[0]
+if print_summary
+	puts parser.toString()
+else if print_version
+	puts coffeekup.version
+else if args.length > 0
+	file = args[0]
 
-  if options.watch
-    fs.watchFile file, {persistent: true, interval: 500}, (curr, prev) ->
-      return if curr.size is prev.size and curr.mtime.getTime() is prev.mtime.getTime()
-      render file, options.output
-  else render file, options.output
+	if options.watch
+	  fs.watchFile file, {persistent: true, interval: 500}, (curr, prev) ->
+	    return if curr.size is prev.size and curr.mtime.getTime() is prev.mtime.getTime()
+	    render file, options.output
+	else render file, options.output
+else
+	puts parser.toString()
