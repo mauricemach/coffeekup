@@ -4,7 +4,7 @@ coffeekup = require 'coffeekup'
 fs = require 'fs'
 path = require 'path'
 puts = console.log
-OptionParser = require('coffee-script/optparse').OptionParser
+{OptionParser} = require 'coffee-script/lib/optparse'
 
 # On coffee-script@0.9.6, argv looks like [filename],
 # On coffee-script@1.0.0, argv looks like ["node", "path/to/coffee", filename]
