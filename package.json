@@ -13,5 +13,6 @@
   "bin": {"coffeekup": "./bin/coffeekup.coffee"},
   "main": "./lib/index.js",
   "directories": {"lib": "./lib"},
+  "main": "./lib/index",
   "engines": {"node": ">= 0.2.6"}
 }
