@@ -1,6 +1,6 @@
 #!/usr/bin/env coffee
 
-coffeekup = require 'coffeekup'
+coffeekup = require '../lib/coffeekup'
 fs = require 'fs'
 path = require 'path'
 puts = console.log
