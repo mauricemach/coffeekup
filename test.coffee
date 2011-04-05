@@ -45,7 +45,7 @@ exports.run = ->
 
   test 'CoffeeScript', ->
     """
-      <script>;(function () {
+      <script type="text/javascript">;(function () {
                 return $(document).ready(function() {
                   return alert('hi!');
                 });
@@ -53,6 +53,10 @@ exports.run = ->
       coffeescript ->
         $(document).ready ->
           alert 'hi!'
+
+  test 'CoffeeScript src-attr', ->
+    """<script src="script.coffee" type="text/coffeescript"></script>""" is render ->
+      coffeescript src: 'script.coffee'
 
   test 'Context vars', ->
     '<h1>bar</h1>' is render (-> h1 @foo), context: {foo: 'bar'}
