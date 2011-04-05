@@ -91,8 +91,13 @@ skeleton = (ck_options = {}) ->
   
     null
   
-  coffeescript = (code) ->
-    script ";(#{code})();"
+  coffeescript = ->
+    switch typeof arguments[0]
+      when 'object'
+        arguments[0].type = "text/coffeescript"
+        script arguments[0]
+      when 'function'
+        script type: "text/javascript", ";(#{arguments[0]})();"
 
   null
 
