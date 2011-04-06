@@ -1,3 +1,4 @@
 .DS_Store
 material/
 lib/coffeekup.js
+node_modules
