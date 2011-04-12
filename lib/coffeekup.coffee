@@ -119,8 +119,20 @@ skeleton = support + skeleton
 
 tags = 'a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont|bdo|big|blockquote|body|br|button|canvas|caption|center|cite|code|col|colgroup|command|datalist|dd|del|details|dfn|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr|html|i|iframe|img|input|ins|keygen|kbd|label|legend|li|link|map|mark|menu|meta|meter|nav|noframes|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|tt|u|ul|video|xmp'.split '|'
 
-coffeekup.compile = (template, options = {}) ->
+process_options = (options) ->
+  options.context ?= {}
   options.locals ?= {}
+  options.cache ?= on
+  # Shim for express.
+  if options.locals.body?
+    options.context.body = options.locals.body
+    delete options.locals.body
+  if options.body?
+    options.context.body = options.body
+    delete options.body
+
+coffeekup.compile = (template, options = {}) ->
+  process_options options
   
   if typeof template is 'function' then template = String(template)
   else if typeof template is 'string' and coffee?
@@ -150,14 +162,7 @@ coffeekup.compile = (template, options = {}) ->
 cache = {}
 
 coffeekup.render = (template, options = {}) ->
-  options.context ?= {}
-  options.locals ?= {}
-  options.cache ?= on
-
-  # Shim for express.
-  if options.locals.body?
-    options.context.body = options.locals.body
-    delete options.locals.body
+  process_options options
 
   if options.cache and cache[template]? then tpl = cache[template]
   else if options.cache then tpl = cache[template] = coffeekup.compile(template, options)
