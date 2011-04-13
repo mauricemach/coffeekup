@@ -11,8 +11,7 @@
   "dependencies": {"coffee-script": ">= 1.0.0"},
   "keywords": ["template", "view", "coffeescript"],
   "bin": {"coffeekup": "./bin/coffeekup.coffee"},
-  "main": "./index",
   "directories": {"lib": "./lib"},
-  "main": "./lib/index",
+  "main": "./lib/coffeekup",
   "engines": {"node": ">= 0.2.6"}
 }
