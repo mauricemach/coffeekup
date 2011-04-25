@@ -1,1 +1,1 @@
-module.exports = require('./coffeekup')
+module.exports = require('./lib/coffeekup')
