@@ -112,6 +112,11 @@ support = '''
     }
     return -1;
   };
+  /* This is needed for ExpressJS.
+   *
+   * It passes an extra argument (the body) for its layout mechanism.
+   */
+  if (ck_options.body != null) { ck_options.context.body = ck_options.body; }
 '''
 
 skeleton = String(skeleton).replace(/function\s*\(ck_options\)\s*\{/, '').replace /return null;\s*\}$/, ''
@@ -122,16 +127,6 @@ tags = 'a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont|b
 coffeekup.compile = (template, options = {}) ->
   options.locals ?= {}
 
-  # Shim for express.
-  if options.locals.body?
-    options.context.body = options.locals.body
-    delete options.locals.body
-
-  if options.body?
-    options.context.body = options.body
-    delete options.body
-
-  
   if typeof template is 'function' then template = String(template)
   else if typeof template is 'string' and coffee?
     template = coffee.compile template, bare: yes
