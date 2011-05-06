@@ -145,15 +145,15 @@ Command-line:
     $ coffeekup -h
 
     Usage:
-      coffeekup [OPTIONS] path/to/template.coffee
+      coffeekup [options] path/to/template.coffee
 
-    Available options:
-      -w, --watch        Keeps watching the file and recompiling it when it changes
-      -p, --print        Prints the compiled html to stdout
-      -f, --format       Applies line breaks to html output
-      -u, --utils        Adds helper locals (currently only "render")
-      -h, --help         Prints this help message
-      -v, --version      Shows CoffeeKup version
+      -w, --watch        watch templates for changes, and recompile
+      -o, --output       set the directory for compiled html
+      -p, --print        print the compiled html to stdout
+      -f, --format       apply line breaks and indentation to html output
+      -u, --utils        add helper locals (currently only "render")
+      -v, --version      display CoffeeKup version
+      -h, --help         display this help message
 
 See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions. Please note that even though all examples are given in coffeescript, you can also use their plain javascript counterparts just fine.
 
@@ -161,7 +161,10 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
 
 **v0.2.3** (2011-05-06):
 
-  - Packaging reworked for npm 1.x.
+  - Compatible with npm 1.x.
+  - Converting any ampersands (instead of /&(?!\w+;/) to &amp; when escaping html.
+  - New CLI option -o / --output [DIR] (specifies a directory to compile into).
+  - Self-closing tags are now: 'area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link', 'meta' and 'param'.
 
 **v0.2.2** (2011-01-05):
 
