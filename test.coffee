@@ -1,4 +1,4 @@
-exports.run = ->
+@run = ->
   test 'Literal text', ->
     'Just text' is render ->
       text 'Just text'
@@ -101,7 +101,7 @@ exports.run = ->
 
 puts = console.log
 print = require('sys').print
-ck = require 'coffeekup'
+ck = require './lib/coffeekup'
 render = ck.render
 
 [tests, passed, failed, errors] = [[], [], [], []]

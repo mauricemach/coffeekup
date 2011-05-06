@@ -10,4 +10,4 @@ meryl.run
   templateExt: '.coffee'
   templateFunc: coffeekup.adapters.meryl
 
-puts 'Listening on 3000...'
+console.log 'Listening on 3000...'

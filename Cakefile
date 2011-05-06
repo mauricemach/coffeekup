@@ -1,8 +1,8 @@
 exec = require('child_process').exec
 
 task 'build', ->
-  exec 'coffee -c lib/coffeekup.coffee', (err) ->
-    puts err if err
+  exec 'coffee -o lib -c src/*.coffee', (err) ->
+    console.log err if err
 
 task 'test', -> require('./test').run()
 

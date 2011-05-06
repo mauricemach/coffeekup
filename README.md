@@ -76,8 +76,8 @@ Just grab [node.js](http://nodejs.org/#download) and [npm](http://github.com/isa
 
     coffeekup = require 'coffeekup'
 
-    puts coffeekup.render -> h1 "You can feed me templates as functions."
-    puts coffeekup.render "h1 'Or strings. I am not too picky.'"
+    console.log coffeekup.render -> h1 "You can feed me templates as functions."
+    console.log coffeekup.render "h1 'Or strings. I am not too picky.'"
 
 Defining locals and context variables:
 
@@ -94,12 +94,12 @@ Defining locals and context variables:
         attrs.name = attrs.id
         @input attrs
 
-    puts coffeekup.render template, context: {title: 'Log In'}, locals: helpers
+    console.log coffeekup.render template, context: {title: 'Log In'}, locals: helpers
 
 Precompiling to functions:
 
     standalone_template = coffeekup.compile template
-    puts standalone_template(context: {foo: 'bar'}, locals: {ping: 'pong'})
+    console.log standalone_template(context: {foo: 'bar'}, locals: {ping: 'pong'})
 
 With [zappa](http://github.com/mauricemach/zappa):
 
@@ -159,6 +159,10 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
 
 ## Change Log:
 
+**v0.2.3** (2011-05-06):
+
+  - Packaging reworked for npm 1.x.
+
 **v0.2.2** (2011-01-05):
 
   - Updated to CoffeeScript 1.0.0 and node 0.2.6/0.3.3.
@@ -179,4 +183,4 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
 
 ## Compatibility
 
-Latest version tested with node 0.2.6/0.3.3 and CoffeeScript 1.0.0.
+Latest version tested with node 0.4.7 and CoffeeScript 1.1.0.

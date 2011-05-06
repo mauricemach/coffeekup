@@ -1,5 +1,4 @@
 app = require('express').createServer()
-sys = require('sys')
 
 app.register '.coffee', require('coffeekup')
 app.set 'view engine', 'coffee'
@@ -16,4 +15,4 @@ app.get '/inline', (req, res) ->
 
 app.listen 3000
 
-sys.puts "Listening on 3000..."
+console.log "Listening on 3000..."

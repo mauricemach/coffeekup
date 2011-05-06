@@ -1,18 +1,16 @@
 {
   "name": "coffeekup",
   "description": "Markup as CoffeeScript.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": "Maurice Machado <maurice@bitbending.com>",
   "contributors": [ 
     {"name": "Maurice Machado", "email": "maurice@bitbending.com"},
     {"name": "Vladimir Dronnikov", "email": "dronnikov@gmail.com"}
   ],
   "repository": {"type": "git", "url": "http://github.com/mauricemach/coffeekup.git"},
-  "dependencies": {"coffee-script": ">= 1.0.0"},
+  "dependencies": {"coffee-script": ">= 1.0.1"},
   "keywords": ["template", "view", "coffeescript"],
-  "bin": {"coffeekup": "./bin/coffeekup.coffee"},
-  "main": "./index",
-  "directories": {"lib": "./lib"},
-  "main": "./lib/index",
-  "engines": {"node": ">= 0.2.6"}
+  "bin": "./bin/coffeekup",
+  "main": "./lib/coffeekup",
+  "engines": {"node": ">= 0.4.1"}
 }

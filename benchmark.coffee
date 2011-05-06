@@ -1,4 +1,4 @@
-coffeekup = require 'coffeekup'
+coffeekup = require './lib/coffeekup'
 jade = require 'jade'
 ejs = require 'ejs'
 eco = require 'eco'
@@ -183,7 +183,7 @@ benchmark = (title, code) ->
     code()
   puts "#{title}: #{new Date - start} ms"
 
-exports.run = ->
+@run = ->
   benchmark 'CoffeeKup (precompiled)', -> coffeekup_compiled_template context: data
   benchmark 'CoffeeKup (code)', -> coffeekup.render coffeekup_template, context: data
   benchmark 'CoffeeKup (code, cache off)', -> coffeekup.render coffeekup_template, context: data, cache: off
