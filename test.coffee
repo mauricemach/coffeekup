@@ -96,6 +96,12 @@
       -> h1 "<script>alert('\"pwned\" by c&a &copy;')</script>"
       autoescape: yes
     )
+    
+  test 'Expanding Attrs', ->
+    'aaa' is render ->
+      div -> x:"in=exp-test c=expand-test w:100 h:200 fs:12 bc:white opacity:30%"
+  , expand: yes
+
 
   puts "\nTests: #{tests.length} | Passed: #{passed.length} | Failed: #{failed.length} | Errors: #{errors.length}"
 
