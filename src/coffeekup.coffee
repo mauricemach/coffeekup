@@ -97,9 +97,16 @@ skeleton = (ck_options = {}) ->
             else value = value.replace /\+/g, ' '
           styles[name] = value
       style = ("#{k}:#{v}" for k, v of styles).join '; '
-      if styleOnly then return style: style
+      if styleOnly then return style
       if style then attrs['style'] = style
       attrs
+      
+    expandStyle = (v) ->
+      s = ''
+      while parts = v.match ///^ ([^{]*) \{ ([^}]*) \} ([\s\S]*) $///
+        [x, pfx, style, v] = parts
+        s += pfx + '{' + expandAttrs(style, true) + '}'
+      s + v
 	
   ck_esc = (txt) ->
     if ck_options.autoescape then h(txt) else String(txt)
@@ -143,6 +150,7 @@ skeleton = (ck_options = {}) ->
       for o in opts
         switch typeof o
           when 'string', 'number'
+            if name == 'style' then o = expandStyle o
             text ck_esc(o)
           when 'function'
             text '\n' if ck_options.format

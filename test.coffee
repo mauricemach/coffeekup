@@ -96,13 +96,19 @@
       -> h1 "<script>alert('\"pwned\" by c&a &copy;')</script>"
       autoescape: yes
     )
-    
+
   test 'Expanding Attrs', ->
-    'aaa' is render ->
-      div -> x:"in=exp-test c=expand-test w:100 h:200 fs:12 bc:white opacity:30%"
-  , expand: yes
+    '<div id="exp-test" name="exp-test" width="50" ' +
+    	'style="width:100px; height:200px; background-color:white; opacity:30%"></div>' is render ->
+      div x:"in=exp-test w:100 h:200 bc:white opacity:30% w=50"
+    , expand: yes
 
-
+  test 'Expanding Style', ->
+    '<style>body {width:100px; height:200px; background-color:white; opacity:30%} ' +
+        'div.cls {font-size:12px; font-style:italic}</style>' is render ->
+      style "body {a=b w:100 h:200 bc:white opacity:30%} div.cls {fs:12 fs:i}"
+    , expand: yes
+# 
   puts "\nTests: #{tests.length} | Passed: #{passed.length} | Failed: #{failed.length} | Errors: #{errors.length}"
 
 puts = console.log
