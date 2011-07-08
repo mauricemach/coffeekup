@@ -147,6 +147,7 @@ Command-line:
     Usage:
       coffeekup [options] path/to/template.coffee
 
+      -x, --expand       expand attribute abbreviations
       -w, --watch        watch templates for changes, and recompile
       -o, --output       set the directory for compiled html
       -p, --print        print the compiled html to stdout

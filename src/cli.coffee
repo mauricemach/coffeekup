@@ -32,6 +32,7 @@ usage = '''
 '''
 
 switches = [
+  ['-x', '--expand', 'expand attribute abbreviations']
   ['-w', '--watch', 'watch templates for changes, and recompile']
   ['-o', '--output [dir]', 'set the directory for compiled html']
   ['-p', '--print', 'print the compiled html to stdout']

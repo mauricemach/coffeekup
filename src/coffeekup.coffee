@@ -12,12 +12,16 @@ skeleton = (ck_options = {}) ->
   ck_options.locals ?= {}
   ck_options.format ?= off
   ck_options.autoescape ?= off
+  ck_options.expand ?= off
   ck_buffer = []
 
   ck_render_attrs = (obj) ->
     str = ''
     for k, v of obj
-      str += " #{k}=\"#{ck_esc(v)}\""
+      if ck_options.expand and k == 'x'
+        str += ck_render_attrs expandAttrs v
+      else
+        str += " #{k}=\"#{ck_esc(v)}\""
     str
 
   ck_doctypes =
@@ -34,6 +38,77 @@ skeleton = (ck_options = {}) ->
 
   ck_self_closing = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link', 'meta', 'param']
 
+  if ck_options.expand
+    attrAliases  = 
+      w:'width', h:'height', s:'src', src:'src', hr:'href', href:'href', c:'class', db:'data-bind'
+      i:'id', n:'name', v:'value', m:'method'
+      cp:'cellpadding', b:'border', cs:'colspan', rs:'rowspan', chk:'checked', sel:'selected'
+	
+    styleValueAliases =
+      'm:a':'margin:auto', 'ml:a':'margin-left:auto',  'mt:a':'margin-top:auto'
+      'mr:a':'margin-right:auto',  'mb:a':'margin-bottom:auto' 
+      'c:b':'clear:both', 'f:l':'float:left', 'f:r':'float:right', 'f:n':'float:none'
+      'fw:b':'font-weight:bold', 'fw:n':'font-weight:normal', 
+      'fs:i':'font-style:italic', 'fs:n':'font-style:normal'
+      'p:a':'position:absolute', 'p:r':'position:relative', 'p:f':'position:fixed'
+      'd:n':'display:none', 'd:b':'display:block', 'd:f':'display:fixed'
+      'ta:l':'text-align:left', 'ta:c':'text-align:center', 'ta:r':'text-align:right'
+      'o:h':'overflow:hidden', 'o:a':'overflow:auto', 'c:p':'cursor:pointer'
+      'tt:u':'text-transform:uppercase', 'tt:c':'text-transform:capitalize' 
+      'tt:l':'text-transform:lowercase'
+      'td:n':'text-decoration:none', 'td:u':'text-decoration:underline' 
+      'td:lt':'text-decoration: line-through', 'lh:n':'line-height:normal'
+      'b:n': 'border:none'
+      'b:1pxsb' :'border:1px solid black'
+      'bl:1pxsb':'border-left:1px solid black',  'bt:1pxsb':'border-top:1px solid black'
+      'br:1pxsb':'border-right:1px solid black', 'bb:1pxsb':'border-bottom:1px solid black'
+      'b:1pxsg' :'border:1px solid gray'    
+      'bl:1pxsg':'border-left:1px solid gray',  'bt:1pxsg':'border-top:1px solid gray'
+      'br:1pxsg':'border-right:1px solid gray', 'bb:1pxsg':'border-bottom:1px solid gray'
+      'zi:a':'z-index:auto', 'zi:i':'z-index:inherit'
+      'v:v':'visibility:visible', 'v:h':'visibility:hidden'
+    
+    styleAliases = 
+      l:'left', t:'top', r:'right', w:'width', h:'height', c:'color', bc:'background-color', 
+      fs:'font-size', lh:'line-height', zi:'z-index',
+      b:'border', bl:'border-left', bt:'border-top', br:'border-right', bb:'border-bottom'
+      m:'margin', ml:'margin-left', mt:'margin-top', mr:'margin-right', mb:'margin-bottom'
+      p:'padding', pl:'padding-left', pt:'padding-top', pr:'padding-right', pb:'padding-bottom'
+      v:'visibility'
+  
+  	expandAttrs = (v = '', styleOnly = false) -> 
+      attrs = {}; styles = {}
+      v = v.replace /\s+/g, '~`~'
+      parts = v.split '~`~'
+      for part in parts
+        if not (thirds = ///^ ([^=:]*) (=|:) (.*) $///.exec part) then continue
+        [d, name, sep, value] = thirds
+        if not styleOnly and sep == '=' 
+          if name == 'in'
+            attrs.id = value
+            attrs.name = value
+          else
+            if (aa = attrAliases[name]) then name = aa
+            attrs[name] = value.replace /\+/g, ' '
+        if sep == ':' 
+          if (sva = styleValueAliases[part]) then [name, value] = sva.split ':'
+          else 
+            if (sa = styleAliases[name]) then name = sa
+            if name != 'z-index' and /^-?\d+$/.test value then value = value + 'px'
+            else value = value.replace /\+/g, ' '
+          styles[name] = value
+      style = ("#{k}:#{v}" for k, v of styles).join '; '
+      if styleOnly then return style
+      if style then attrs['style'] = style
+      attrs
+      
+    expandStyle = (v) ->
+      s = ''
+      while parts = v.match ///^ ([^{]*) \{ ([^}]*) \} ([\s\S]*) $///
+        [x, pfx, style, v] = parts
+        s += pfx + '{' + expandAttrs(style, true) + '}'
+      s + v
+	
   ck_esc = (txt) ->
     if ck_options.autoescape then h(txt) else String(txt)
 
@@ -76,6 +151,7 @@ skeleton = (ck_options = {}) ->
       for o in opts
         switch typeof o
           when 'string', 'number'
+            if name == 'style' then o = expandStyle o
             text ck_esc(o)
           when 'function'
             text '\n' if ck_options.format
@@ -131,7 +207,6 @@ coffeekup.compile = (template, options = {}) ->
   if options.body?
     options.context.body = options.body
     delete options.body
-
   
   if typeof template is 'function' then template = String(template)
   else if typeof template is 'string' and coffee?
@@ -163,7 +238,6 @@ coffeekup.render = (template, options = {}) ->
   options.context ?= {}
   options.locals ?= {}
   options.cache ?= on
-
 
   if options.cache and cache[template]? then tpl = cache[template]
   else if options.cache then tpl = cache[template] = coffeekup.compile(template, options)
