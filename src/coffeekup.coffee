@@ -154,15 +154,25 @@ skeleton = (data) ->
   
   tag = ->
     name = arguments[0] 
-    delete arguments[0] 
+    delete arguments[0]
     __ck.tag(name, arguments)
 
   # TODO: The CoffeeScript helpers are needed here.
-  coffeescript = (code) ->
-    if typeof code is 'string'
-      script type: 'text/coffeescript', -> code
-    else
-      script ";(#{code})();"
+  coffeescript = (input) ->
+    switch typeof input
+      # `coffeescript -> alert 'hi'` becomes:
+      # `<script>;(function () {return alert('hi');})();</script>`
+      when 'function'
+        script ";(#{input})();"
+      # `coffeescript "alert 'hi'"` becomes:
+      # `<script type="text/coffeescript">alert 'hi'</script>`
+      when 'string'
+        script type: 'text/coffeescript', -> input
+      # `coffeescript src: 'script.coffee'` becomes:
+      # `<script type="text/coffeescript" src="script.coffee"></script>`
+      when 'object'
+        input.type = 'text/coffeescript'
+        script input
 
   null
 

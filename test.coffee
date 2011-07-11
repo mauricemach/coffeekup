@@ -43,16 +43,17 @@
         });
       """
 
-  test 'CoffeeScript', ->
-    """
-      <script>;(function () {
-                return $(document).ready(function() {
-                  return alert('hi!');
-                });
-              })();</script>""" is render ->
-      coffeescript ->
-        $(document).ready ->
-          alert 'hi!'
+  test 'CoffeeScript helper (function)', ->
+    "<script>;(function () {\n          return alert('hi');\n        })();</script>" is render ->
+      coffeescript -> alert 'hi'
+
+  test 'CoffeeScript helper (string)', ->
+    "<script type=\"text/coffeescript\">alert 'hi'</script>" is render ->
+      coffeescript "alert 'hi'"
+
+  test 'CoffeeScript helper (object)', ->
+    "<script src=\"script.coffee\" type=\"text/coffeescript\"></script>" is render ->
+      coffeescript src: 'script.coffee'
 
   test 'Context vars', ->
     '<h1>bar</h1>' is render (-> h1 @foo), {foo: 'bar'}
