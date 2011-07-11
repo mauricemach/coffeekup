@@ -55,18 +55,18 @@
           alert 'hi!'
 
   test 'Context vars', ->
-    '<h1>bar</h1>' is render (-> h1 @foo), context: {foo: 'bar'}
+    '<h1>bar</h1>' is render (-> h1 @foo), {foo: 'bar'}
 
   test 'Local vars, hard-coded', ->
     obj = foo: 'bar'
-    render (-> h1 obj.foo), locals: {obj: obj}
+    render (-> h1 obj.foo), hardcoded: {obj: obj}
     obj.foo = 'baz'
-    '<h1>bar</h1>' is render (-> h1 obj.foo), locals: {obj: obj}
+    '<h1>bar</h1>' is render (-> h1 obj.foo), hardcoded: {obj: obj}
 
   test 'Local vars, hard-coded (functions)', ->
     '<h1>The sum is: 3</h1>' is render(
       -> h1 "The sum is: #{sum 1, 2}"
-      locals: {sum: (a, b) -> a + b}
+      hardcoded: {sum: (a, b) -> a + b}
     )
 
   test 'Local vars, hard-coded ("helpers")', ->
@@ -75,13 +75,14 @@
       attrs.type = 'text'
       tag 'input', attrs
 
-    '<input id="foo" name="foo" type="text" />' is render (-> textbox id: 'foo'), locals: {textbox: textbox}
+    '<input id="foo" name="foo" type="text" />' is render (-> textbox id: 'foo'),
+    hardcoded: {textbox: textbox}
 
-  test 'Local vars, dynamic', ->
+  test 'Local vars', ->
     obj = ping: 'pong'
-    render (-> h1 obj.ping), locals: {obj: obj}, dynamic_locals: yes
+    render (-> h1 obj.ping), locals: {obj: obj}
     obj.ping = 'pang'
-    '<h1>pang</h1>' is render (-> h1 obj.ping), locals: {obj: obj}, dynamic_locals: yes
+    '<h1>pang</h1>' is render (-> h1 obj.ping), locals: {obj: obj}
 
   test 'Comments', ->
     '<!--Comment-->' is render ->
@@ -94,12 +95,12 @@
   test 'Autoescaping', ->
     "<h1>&lt;script&gt;alert('&quot;pwned&quot; by c&amp;a &amp;copy;')&lt;/script&gt;</h1>" is render(
       -> h1 "<script>alert('\"pwned\" by c&a &copy;')</script>"
-      autoescape: yes
+      options: {autoescape: yes}
     )
 
-  puts "\nTests: #{tests.length} | Passed: #{passed.length} | Failed: #{failed.length} | Errors: #{errors.length}"
+  log "\nTests: #{tests.length} | Passed: #{passed.length} | Failed: #{failed.length} | Errors: #{errors.length}"
 
-puts = console.log
+log = console.log
 print = require('sys').print
 ck = require './lib/coffeekup'
 render = ck.render
@@ -112,10 +113,10 @@ test = (name, code) ->
   try
     if code()
       passed.push name
-      puts "[OK]"
+      log "[OK]"
     else
       failed.push name
-      puts "[Failed]"
+      log "[Failed]"
   catch ex
     errors.push name
-    puts "[Error] \"#{ex.message}\""
+    log "[Error] \"#{ex.message}\""
