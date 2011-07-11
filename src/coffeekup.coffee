@@ -157,6 +157,7 @@ skeleton = (data) ->
     delete arguments[0] 
     __ck.tag(name, arguments)
 
+  # TODO: The CoffeeScript helpers are needed here.
   coffeescript = (code) ->
     script ";(#{code})();"
 
