@@ -72,6 +72,10 @@ Just grab [node.js](http://nodejs.org/#download) and [npm](http://github.com/isa
 
     npm install coffeekup
 
+To get the `coffeekup` command, install it globally:
+
+    npm install coffeekup -g
+
 ## Using
 
     coffeekup = require 'coffeekup'
@@ -92,9 +96,9 @@ Defining locals and context variables:
       textbox: (attrs) ->
         attrs.type = 'text'
         attrs.name = attrs.id
-        @input attrs
+        input attrs
 
-    console.log coffeekup.render template, context: {title: 'Log In'}, locals: helpers
+    console.log coffeekup.render template, title: 'Log In', hardcode: helpers
 
 Precompiling to functions:
 
@@ -118,7 +122,7 @@ With [express](http://expressjs.com):
 
     app.get '/', (req, res) ->
       # Will render views/index.coffee:
-      res.render 'index', context: {foo: 'bar'}
+      res.render 'index', foo: 'bar'
 
 With [meryl](http://github.com/coffeemate/meryl/blob/master/examples/jade-template/app.js) (see also [their own take](http://github.com/coffeemate/meryl/blob/master/examples/coffeekup-template)):
 
@@ -135,7 +139,7 @@ On the browser:
 
     <script src="template.js"></script>
     <script>
-      $('body').append(template(context: {foo: 'bar'}));
+      $('body').append(template({foo: 'bar'}));
     </script>
 
 This is one of many browser deployment possibilities, pre-compiling your template on the server to a standalone function. To see all serving suggestions, check out [regular](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/regular/index.html), [decaf](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/decaf/index.html) and [crème](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/creme/index.html).
@@ -159,6 +163,16 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
 
 ## Change Log:
 
+**v0.2.4** (2011-07-xx):
+
+  - Solves express integration issues and eliminates the need for a meryl adapter.
+  - `ck.render tpl, foo: 'bar'` now accessible as `h1 @foo`.
+  - `ck.render tpl, locals: {foo: 'bar'}` now implemented by default through
+  the `with` keyword (past behavior with `dynamic_locals: true`).
+  - `ck.render tpl, hardcode: {foo: 'bar'}` will hardcode these locals.
+  - Optional third param to `ck.render`.
+  - Gone with ck_* locals, now all implementation inside `__ck`.
+
 **v0.2.3** (2011-05-06):
 
   - Compatible with npm 1.x.
@@ -170,7 +184,7 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
 
   - Updated to CoffeeScript 1.0.0 and node 0.2.6/0.3.3.
 
-**v0.2.1** (2010-11-09):
+**v0.2.1** (2010-11-23):
 
   - Updated to CoffeeScript 0.9.5 and node 0.2.5/0.3.1.
   - Fixed string templates compilation in opera.
@@ -186,4 +200,4 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
 
 ## Compatibility
 
-Latest version tested with node 0.4.7 and CoffeeScript 1.1.0.
+Latest version tested with node 0.4.9 and CoffeeScript 1.1.1.
