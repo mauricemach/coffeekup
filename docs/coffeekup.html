@@ -14,7 +14,7 @@ stiff.</p>             </td>             <td class="code">               <div cl
   <span class="nv">coffeekup = </span><span class="nx">exports</span>
   <span class="nv">coffee = </span><span class="nx">require</span> <span class="s1">&#39;coffee-script&#39;</span>
 
-<span class="nv">coffeekup.version = </span><span class="s1">&#39;0.2.4&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>CoffeeScript-generated JavaScript may contain anyone of these; but when we
+<span class="nv">coffeekup.version = </span><span class="s1">&#39;0.2.4beta&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>CoffeeScript-generated JavaScript may contain anyone of these; but when we
 take a function to string form to manipulate it, and then recreate it through
 the <code>Function()</code> constructor, it loses access to its parent scope and
 consequently to any helpers it might need. So we need to reintroduce these
@@ -146,8 +146,8 @@ add the CoffeeScript helpers.</p>             </td>             <td class="code"
 (in the latter case, the CoffeeScript compiler must be available).</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">if</span> <span class="k">typeof</span> <span class="nx">template</span> <span class="o">is</span> <span class="s1">&#39;function&#39;</span> <span class="k">then</span> <span class="nv">template = </span><span class="nb">String</span><span class="p">(</span><span class="nx">template</span><span class="p">)</span>
   <span class="k">else</span> <span class="k">if</span> <span class="k">typeof</span> <span class="nx">template</span> <span class="o">is</span> <span class="s1">&#39;string&#39;</span> <span class="o">and</span> <span class="nx">coffee</span><span class="o">?</span>
     <span class="nv">template = </span><span class="nx">coffee</span><span class="p">.</span><span class="nx">compile</span> <span class="nx">template</span><span class="p">,</span> <span class="nv">bare: </span><span class="kc">yes</span>
-    <span class="nv">template = </span><span class="s2">&quot;function(){#{template}}&quot;</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>If an object <code>hardcode</code> (object) is provided, insert the stringified value
-of each variable directly on the function body. This is a less flexible but
+    <span class="nv">template = </span><span class="s2">&quot;function(){#{template}}&quot;</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>If an object <code>hardcode</code> is provided, insert the stringified value
+of each variable directly in the function body. This is a less flexible but
 faster alternative to the standard method of using <code>with</code> (see below). </p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">hardcoded_locals = </span><span class="s1">&#39;&#39;</span>
   
   <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">hardcode</span>

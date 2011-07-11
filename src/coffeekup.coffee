@@ -179,7 +179,7 @@ coffeekup.compile = (template, options = {}) ->
     template = coffee.compile template, bare: yes
     template = "function(){#{template}}"
 
-  # If an object `hardcode` (object) is provided, insert the stringified value
+  # If an object `hardcode` is provided, insert the stringified value
   # of each variable directly in the function body. This is a less flexible but
   # faster alternative to the standard method of using `with` (see below). 
   hardcoded_locals = ''
