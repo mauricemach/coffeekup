@@ -172,6 +172,7 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
   - `ck.render tpl, hardcode: {foo: 'bar'}` will hardcode these locals.
   - Optional third param to `ck.render`.
   - Gone with ck_* locals, now all implementation inside `__ck`.
+  - `coffeescript src: 'file.coffee'` and `coffeescript 'string'`.
 
 **v0.2.3** (2011-05-06):
 
