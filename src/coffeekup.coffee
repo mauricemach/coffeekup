@@ -159,7 +159,10 @@ skeleton = (data) ->
 
   # TODO: The CoffeeScript helpers are needed here.
   coffeescript = (code) ->
-    script ";(#{code})();"
+    if typeof code is 'string'
+      script type: 'text/coffeescript', -> code
+    else
+      script ";(#{code})();"
 
   null
 
