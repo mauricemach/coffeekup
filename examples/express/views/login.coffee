@@ -2,8 +2,8 @@
 
 h1 @title
 
-p "A local var: #{a_local_var}"
-p "A context var: #{@a_context_var}"
+p "A local var: #{ping}"
+p "A context var: #{@foo}"
 
 form action: '/', method: 'post', ->
   div class: 'field', ->
