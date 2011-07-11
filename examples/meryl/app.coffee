@@ -1,5 +1,5 @@
 meryl = require 'meryl'
-coffeekup = require 'coffeekup'
+coffeekup = require '../../src/coffeekup'
 
 meryl.h 'GET /', (req, resp) ->
   people = ['bob', 'alice', 'meryl']
