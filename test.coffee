@@ -59,14 +59,14 @@
 
   test 'Local vars, hard-coded', ->
     obj = foo: 'bar'
-    render (-> h1 obj.foo), hardcoded: {obj: obj}
+    render (-> h1 obj.foo), hardcode: {obj: obj}
     obj.foo = 'baz'
-    '<h1>bar</h1>' is render (-> h1 obj.foo), hardcoded: {obj: obj}
+    '<h1>bar</h1>' is render (-> h1 obj.foo), hardcode: {obj: obj}
 
   test 'Local vars, hard-coded (functions)', ->
     '<h1>The sum is: 3</h1>' is render(
       -> h1 "The sum is: #{sum 1, 2}"
-      hardcoded: {sum: (a, b) -> a + b}
+      hardcode: {sum: (a, b) -> a + b}
     )
 
   test 'Local vars, hard-coded ("helpers")', ->
@@ -76,7 +76,7 @@
       tag 'input', attrs
 
     '<input id="foo" name="foo" type="text" />' is render (-> textbox id: 'foo'),
-    hardcoded: {textbox: textbox}
+    hardcode: {textbox: textbox}
 
   test 'Local vars', ->
     obj = ping: 'pong'
