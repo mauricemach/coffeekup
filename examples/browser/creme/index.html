@@ -29,8 +29,8 @@
             for guy in @stooges
               li guy
 
-        $('body').append CoffeeKup.render(stringy, context: {stooges: stooges})
-        $('body').append CoffeeKup.render(codey, context: {stooges: stooges})
+        $('body').append CoffeeKup.render(stringy, stooges: stooges)
+        $('body').append CoffeeKup.render(codey, stooges: stooges)
     </script>
   </head>
   <body>
