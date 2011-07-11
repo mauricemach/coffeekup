@@ -157,13 +157,12 @@ skeleton = (data) ->
     delete arguments[0]
     __ck.tag(name, arguments)
 
-  # TODO: The CoffeeScript helpers are needed here.
   coffeescript = (input) ->
     switch typeof input
       # `coffeescript -> alert 'hi'` becomes:
       # `<script>;(function () {return alert('hi');})();</script>`
       when 'function'
-        script ";(#{input})();"
+        script "#{__ck.coffeescript_helpers}(#{input})();"
       # `coffeescript "alert 'hi'"` becomes:
       # `<script type="text/coffeescript">alert 'hi'</script>`
       when 'string'
@@ -220,6 +219,7 @@ coffeekup.compile = (template, options = {}) ->
   code = tag_functions + hardcoded_locals + skeleton
 
   code += "__ck.doctypes = #{JSON.stringify coffeekup.doctypes};"
+  code += "__ck.coffeescript_helpers = #{JSON.stringify coffeescript_helpers};"
 
   # If `locals` is set, wrap the template inside a `with` block. This is the
   # most flexible but slower approach to specifying local variables.
