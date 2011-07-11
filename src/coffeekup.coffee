@@ -18,6 +18,20 @@ else
 
 coffeekup.version = '0.2.4beta'
 
+# Values available to the `doctype` function inside a template.
+# Ex.: `doctype 'strict'`
+coffeekup.doctypes =
+  'default': '<!DOCTYPE html>'
+  '5': '<!DOCTYPE html>'
+  'xml': '<?xml version="1.0" encoding="utf-8" ?>'
+  'transitional': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+  'strict': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
+  'frameset': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">'
+  '1.1': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
+  'basic': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">'
+  'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
+  'ce': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "ce-html-1.0-transitional.dtd">'
+
 # CoffeeScript-generated JavaScript may contain anyone of these; but when we
 # take a function to string form to manipulate it, and then recreate it through
 # the `Function()` constructor, it loses access to its parent scope and
@@ -69,20 +83,6 @@ skeleton = (data) ->
     options: data.options
   
     buffer: []
-
-    # Values available to the `doctype` function inside a template.
-    # Ex.: `doctype 'strict'`
-    doctypes:
-      '5': '<!DOCTYPE html>'
-      'xml': '<?xml version="1.0" encoding="utf-8" ?>'
-      'default': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
-      'transitional': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
-      'strict': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
-      'frameset': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">'
-      '1.1': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
-      'basic': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">'
-      'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
-      'ce': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "ce-html-1.0-transitional.dtd">'
 
     self_closing: ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr',
       'img', 'input', 'link', 'meta', 'param']
@@ -140,7 +140,7 @@ skeleton = (data) ->
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
     
-  doctype = (type = 5) ->
+  doctype = (type = 'default') ->
     text __ck.doctypes[type]
     text '\n' if data.options.format
     
@@ -218,6 +218,8 @@ coffeekup.compile = (template, options = {}) ->
 
   # Main function assembly.
   code = tag_functions + hardcoded_locals + skeleton
+
+  code += "__ck.doctypes = #{JSON.stringify coffeekup.doctypes};"
 
   # If `locals` is set, wrap the template inside a `with` block. This is the
   # most flexible but slower approach to specifying local variables.

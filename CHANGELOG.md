@@ -8,6 +8,8 @@
   - Optional third param to `ck.render`.
   - Gone with ck_* locals, now all implementation inside `__ck`.
   - `coffeescript src: 'file.coffee'` and `coffeescript 'string'`.
+  - Doctypes now editable at `coffeekup.doctypes`. Using `doctypes['default']`
+  instead of `doctypes['5']` by default.
 
 **v0.2.3** (2011-05-06):
 
