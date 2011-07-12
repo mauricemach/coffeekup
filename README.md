@@ -167,6 +167,8 @@ Latest version tested with node 0.4.9 and CoffeeScript 1.1.1.
 
 ## Related projects
 
+[ice](https://github.com/ludicast/ice) - "Javascript templates for ruby apps": CoffeeKup and Eco in Rails.
+
 [ck](https://github.com/aeosynth/ck) - "a smaller, faster coffeekup": Alternative, barebones implementation.
 
 [ckup](https://github.com/satyr/ckup) - "Markup as Coco": Similar engine but for [Coco](https://github.com/satyr/coco) ("Unfancy CoffeeScript").
