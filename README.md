@@ -161,6 +161,10 @@ Command-line:
 
 See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions. Please note that even though all examples are given in coffeescript, you can also use their plain javascript counterparts just fine.
 
+## To Know more
+
+Check out Mark Hahn's excellent [A Beginners's Introduction to CoffeeKup](https://github.com/mark-hahn/coffeekup-intro). It's a work in progress, but already a great introduction on how CoffeeKup operates.
+
 ## Compatibility
 
 Latest version tested with node 0.4.9 and CoffeeScript 1.1.1.
