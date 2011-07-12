@@ -167,7 +167,7 @@ Latest version tested with node 0.4.9 and CoffeeScript 1.1.1.
 
 ## Related projects
 
-[ice](https://github.com/ludicast/ice) - "Javascript templates for ruby apps": CoffeeKup and Eco in Rails.
+[ice](https://github.com/ludicast/ice) - "Javascript templates for ruby apps": CoffeeKup and Eco in Rails ([screencast](http://vimeo.com/25907220)).
 
 [ck](https://github.com/aeosynth/ck) - "a smaller, faster coffeekup": Alternative, barebones implementation.
 
