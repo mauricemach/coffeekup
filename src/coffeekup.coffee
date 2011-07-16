@@ -162,7 +162,7 @@ skeleton = (data) ->
       # `coffeescript -> alert 'hi'` becomes:
       # `<script>;(function () {return alert('hi');})();</script>`
       when 'function'
-        script "#{__ck.coffeescript_helpers}(#{input})();"
+        script "#{__ck.coffeescript_helpers}(#{input}).call(this);"
       # `coffeescript "alert 'hi'"` becomes:
       # `<script type="text/coffeescript">alert 'hi'</script>`
       when 'string'
