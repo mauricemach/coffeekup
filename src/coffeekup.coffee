@@ -201,7 +201,7 @@ coffeekup.compile = (template, options = {}) ->
     for k, v of options.hardcode
       if typeof v is 'function'
         # Make sure these functions have access to `data` as `@/this`.
-        hardcoded_locals += "var #{k} = function(){(#{v}).apply(data, arguments);};"
+        hardcoded_locals += "var #{k} = function(){return (#{v}).apply(data, arguments);};"
       else hardcoded_locals += "var #{k} = #{JSON.stringify v};"
 
   # Add a function for each tag this template references. We don't want to have
