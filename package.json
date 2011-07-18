@@ -8,9 +8,9 @@
     {"name": "Vladimir Dronnikov", "email": "dronnikov@gmail.com"}
   ],
   "repository": {"type": "git", "url": "http://github.com/mauricemach/coffeekup.git"},
-  "dependencies": {"coffee-script": ">= 1.0.1"},
+  "dependencies": {"coffee-script": ">= 1.1.1"},
   "keywords": ["template", "view", "coffeescript"],
   "bin": "./bin/coffeekup",
   "main": "./lib/coffeekup",
-  "engines": {"node": ">= 0.4.1"}
+  "engines": {"node": ">= 0.4.9"}
 }
