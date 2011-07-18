@@ -1,7 +1,7 @@
 {
   "name": "coffeekup",
   "description": "Markup as CoffeeScript.",
-  "version": "0.2.4beta",
+  "version": "0.3.0beta",
   "author": "Maurice Machado <maurice@bitbending.com>",
   "contributors": [ 
     {"name": "Maurice Machado", "email": "maurice@bitbending.com"},

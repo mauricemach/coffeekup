@@ -1,4 +1,4 @@
-**v0.2.4** (2011-07-xx):
+**v0.3.0beta** (2011-07-xx):
 
   - Solves express integration issues and eliminates the need for a meryl adapter.
   - `ck.render tpl, foo: 'bar'` now accessible as `h1 @foo`.
