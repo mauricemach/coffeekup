@@ -117,8 +117,8 @@ With [zappa](http://github.com/mauricemach/zappa):
 
 With [express](http://expressjs.com):
 
-    app.register '.coffee', require('coffeekup')
     app.set 'view engine', 'coffee'
+    app.register '.coffee', require('coffeekup').adapters.express
 
     app.get '/', (req, res) ->
       # Will render views/index.coffee:
