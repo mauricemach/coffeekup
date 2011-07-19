@@ -138,7 +138,7 @@ skeleton = (data) ->
         text '>'
   
         switch typeof contents
-          when 'string', 'number'
+          when 'string', 'number', 'boolean'
             text @esc(contents)
           when 'function'
             text '\n' if @options.format
@@ -163,6 +163,8 @@ skeleton = (data) ->
           contents = a
         when 'object'
           attrs = a
+        when 'number', 'boolean'
+          contents = a
         when 'string'
           if args.length is 1
             contents = a

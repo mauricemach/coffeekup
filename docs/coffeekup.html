@@ -112,7 +112,7 @@ basis with the <code>h</code> function.</p>             </td>             <td cl
         <span class="nx">text</span> <span class="s1">&#39;&gt;&#39;</span>
   
         <span class="k">switch</span> <span class="k">typeof</span> <span class="nx">contents</span>
-          <span class="k">when</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="s1">&#39;number&#39;</span>
+          <span class="k">when</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="s1">&#39;boolean&#39;</span>
             <span class="nx">text</span> <span class="nx">@esc</span><span class="p">(</span><span class="nx">contents</span><span class="p">)</span>
           <span class="k">when</span> <span class="s1">&#39;function&#39;</span>
             <span class="nx">text</span> <span class="s1">&#39;\n&#39;</span> <span class="k">if</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">format</span>
@@ -137,6 +137,8 @@ basis with the <code>h</code> function.</p>             </td>             <td cl
           <span class="nv">contents = </span><span class="nx">a</span>
         <span class="k">when</span> <span class="s1">&#39;object&#39;</span>
           <span class="nv">attrs = </span><span class="nx">a</span>
+        <span class="k">when</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="s1">&#39;boolean&#39;</span>
+          <span class="nv">contents = </span><span class="nx">a</span>
         <span class="k">when</span> <span class="s1">&#39;string&#39;</span>
           <span class="k">if</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">1</span>
             <span class="nv">contents = </span><span class="nx">a</span>
