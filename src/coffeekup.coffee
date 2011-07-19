@@ -86,12 +86,6 @@ skeleton = (data) ->
 
     self_closing: ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr',
       'img', 'input', 'link', 'meta', 'param']
-
-    render_attrs: (obj) ->
-      str = ''
-      for k, v of obj
-        str += " #{k}=\"#{@esc(v)}\""
-      str
       
     esc: (txt) ->
       if @options.autoescape then h(txt) else String(txt)
@@ -102,37 +96,83 @@ skeleton = (data) ->
 
     indent: -> @text @repeat('  ', @tabs) if @options.format
 
-    tag: (name, opts) ->
+    # Adapter to keep the builtin tag functions DRY.
+    tag: (name, args) ->
+      combo = [name]
+      combo.push i for i in args
+      tag.apply data, combo
+
+    render_idclass: (str) ->
+      classes = []
+        
+      for i in str.split '.'
+        if i.indexOf('#') is 0
+          id = i.replace '#', ''
+        else
+          classes.push i unless i is ''
+            
+      text " id=\"#{id}\"" if id
+      
+      if classes.length > 0
+        text " class=\""
+        for c in classes
+          text ' ' unless c is classes[0]
+          text c
+        text '"'
+
+    render_attrs: (obj) ->
+      for k, v of obj
+        text " #{k}=\"#{@esc(v)}\""
+
+    render_tag: (name, idclass, attrs, contents) ->
       @indent()
+    
       text "<#{name}"
-    
-      for o in opts
-        text @render_attrs(o) if typeof o is 'object'
-    
+      @render_idclass(idclass) if idclass
+      @render_attrs(attrs) if attrs
+  
       if name in @self_closing
         text ' />'
         text '\n' if @options.format
       else
         text '>'
-    
-        for o in opts
-          switch typeof o
-            when 'string', 'number'
-              text @esc(o)
-            when 'function'
-              text '\n' if @options.format
-              @tabs++
-              result = o.call data
-              if typeof result is 'string'
-                @indent()
-                text @esc(result)
-                text '\n' if @options.format
-              @tabs--
+  
+        switch typeof contents
+          when 'string', 'number'
+            text @esc(contents)
+          when 'function'
+            text '\n' if @options.format
+            @tabs++
+            result = contents.call data
+            if typeof result is 'string'
               @indent()
+              text @esc(result)
+              text '\n' if @options.format
+            @tabs--
+            @indent()
+
         text "</#{name}>"
-        text '\n' if @options.format
-    
+        text '\n' if __ck.options.format
+  
       null
+
+  tag = (name, args...) ->
+    for a in args
+      switch typeof a
+        when 'function'
+          contents = a
+        when 'object'
+          attrs = a
+        when 'string'
+          if args.length is 1
+            contents = a
+          else
+            if a is args[0]
+              idclass = a
+            else
+              contents = a
+
+    __ck.render_tag(name, idclass, attrs, contents)
 
   h = (txt) ->
     String(txt).replace(/&/g, '&amp;')
@@ -152,11 +192,6 @@ skeleton = (data) ->
     text "<!--#{cmt}-->"
     text '\n' if data.options.format
   
-  tag = ->
-    name = arguments[0] 
-    delete arguments[0]
-    __ck.tag(name, arguments)
-
   coffeescript = (input) ->
     switch typeof input
       # `coffeescript -> alert 'hi'` becomes:

@@ -1,5 +1,6 @@
 **v0.3.0beta** (2011-07-xx):
 
+  - Added id/class shortcuts (`div '#id.class.class2', 'contents'`).
   - Solves express integration issues and eliminates the need for a meryl adapter.
   - `ck.render tpl, foo: 'bar'` now accessible as `h1 @foo`.
   - `ck.render tpl, locals: {foo: 'bar'}` now implemented by default through
