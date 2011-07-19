@@ -288,8 +288,16 @@ coffeekup.render = (template, data = {}, options = {}) ->
   else tpl = coffeekup.compile(template, data)
   tpl(data)
 
-# Legacy adapters for a function signature of yore. **Deprecated**!
 unless window?
   coffeekup.adapters =
-    simple: (template, data) -> coffeekup.render template, data
-  coffeekup.adapters.meryl = coffeekup.adapters.simple
+    # Legacy adapters for when CoffeeKup expected data in the `context` attribute.
+    simple: coffeekup.render
+    meryl: coffeekup.render
+    
+    # Allows `partial 'foo'` instead of `text @partial 'foo'`.
+    express:
+      compile: (template, data) -> 
+        data.hardcode =
+          partial: ->
+            text @partial.apply @, arguments
+        coffeekup.compile(template, data)

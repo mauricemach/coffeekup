@@ -1,5 +1,7 @@
 **v0.3.0beta** (2011-07-xx):
 
+  - Added an express adapter that allows `partial 'foo'` instead of `text @partial 'foo'` (see /examples/express).
+
   - Added id/class shortcuts (`div '#id.class.class2', 'contents'`).
   
   - Solved express integration issues and eliminated the need for a meryl adapter.

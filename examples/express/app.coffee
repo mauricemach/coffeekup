@@ -2,8 +2,8 @@ app = require('express').createServer()
 
 coffeekup = require '../../src/coffeekup'
 
-app.register '.coffee', coffeekup
 app.set 'view engine', 'coffee'
+app.register '.coffee', coffeekup.adapters.express
 
 app.get '/', (req, res) ->
   res.render 'index'
