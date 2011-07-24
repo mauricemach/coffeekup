@@ -32,6 +32,8 @@ In celebration of [whyday](http://whyday.org/), here's a revisiting of Markaby's
                   li -> a href: '/vip', -> 'Exclusive Stuff'
                 else
                   li -> a href: '/commoners', -> 'Just Stuff'
+        div '#myid.myclass.anotherclass', style: 'position: fixed', ->
+          'Divitis kills!'
         section ->
           h2 "Let's count to 10:"
           p i for i in [1..10]
