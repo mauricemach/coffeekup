@@ -21,8 +21,10 @@
   
   - `coffeescript -> code()` now correctly adds coffeescript helpers to the output.
   
+  - Correctly handle numbers and booleans when used as tag contents.
+  
   - Doctypes now editable at `coffeekup.doctypes`. Using `doctypes['default']`
-  instead of `doctypes['5']` by default.
+  instead of `doctypes['5']` by default. Added the `ce` doctype.
   
   - List of tags now editable at `coffeekup.tags`, and self-closing tags at `coffeekup.self_closing`.
   
