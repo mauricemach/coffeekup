@@ -1,9 +1,6 @@
-<!DOCTYPE html><html><head><meta charset="utf-8" /><title>CoffeeKup</title><link id="bespin_base" href="bespin" /><script src="jquery-1.6.2.min.js"></script><script src="bespin/BespinEmbedded.js"></script><script src="coffee-script.js"></script><script src="coffeekup.js"></script><script>(function () {
-  var editor, out;
-  editor = null;
-  out = null;
-  return window.onBespinLoad = function() {
-    var compile;
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>CoffeeKup</title><link id="bespin_base" href="bespin" /><script src="jquery-1.6.2.min.js"></script><script src="ace-0.1.6/src/ace.js"></script><script src="ace-0.1.6/src/mode-coffee.js"></script><script src="ace-0.1.6/src/mode-html.js"></script><script src="ace-0.1.6/src/theme-twilight.js"></script><script src="coffee-script.js"></script><script src="coffeekup.js"></script><script>(function () {
+  return $(document).ready(function() {
+    var CoffeeMode, HtmlMode, compile, editor, out;
     compile = function() {
       var options;
       try {
@@ -14,8 +11,8 @@
           }
         };
         eval('opts = ' + $('#opts').val());
-        out.value = CoffeeKup.render(editor.value, opts, options);
-        out.setLineNumber(1);
+        out.getSession().setValue(CoffeeKup.render(editor.getSession().getValue(), opts, options));
+        out.gotoLine(1);
         return $('#errors').hide();
       } catch (err) {
         return $('#errors').show().html(err.message);
@@ -27,32 +24,21 @@
     $('#format').bind('click', function() {
       return compile();
     });
-    $('#opts').attr('value', "{title: 'Foo', path: '/zig', user: {}, max: 12, locals: {shoutify: function(s){return s.toUpperCase() + \'!\';}}}");
-    bespin.useBespin('out', {
-      stealFocus: true,
-      syntax: 'html',
-      settings: {
-        tabstop: 2
-      }
-    }).then(function(env) {
-      return out = env.editor;
-    });
-    return bespin.useBespin('in', {
-      stealFocus: true,
-      syntax: 'coffee',
-      settings: {
-        tabstop: 2,
-        fontface: 'Monaco, DejaVu Sans Mono, monospace'
-      },
-      fontsize: '8px'
-    }).then(function(env) {
-      editor = env.editor;
-      editor.textChanged.add(function(old_range, new_range, new_text) {
-        return compile();
-      });
+    $('#opts').val("{title: 'Foo', path: '/zig', user: {}, max: 12, locals: {shoutify: function(s){return s.toUpperCase() + \'!\';}}}");
+    editor = ace.edit('in');
+    out = ace.edit('out');
+    CoffeeMode = require("ace/mode/coffee").Mode;
+    editor.getSession().setMode(new CoffeeMode());
+    HtmlMode = require("ace/mode/html").Mode;
+    out.getSession().setMode(new HtmlMode());
+    editor.setTheme("ace/theme/twilight");
+    out.setTheme("ace/theme/twilight");
+    $('.ace_gutter').css('background-color', '#2a211c').css('color', '#555');
+    editor.getSession().on('change', function() {
       return compile();
     });
-  };
+    return compile();
+  });
 }).call(this);</script><style>html, body {margin: 0; padding: 0}
 body {
   background: #473e39;
@@ -78,20 +64,21 @@ a:hover {color: #0cf}
 }
 #info {color: #999; font-size: 20px; margin-left: 10px}
 #info:hover {color: #ccc}
-textarea {
-  width: 545px; height: 700px;
-  background: #2a211c; color: #fff;
+#in, #out {
+  position: absolute;
+  text-align: left;
+  width: 555px; height: 700px;
   margin-bottom: 10px;
-}
-.bespin {
-  border: 2px solid #4c4542;
+  font-size: 12px;
   -webkit-box-shadow: 0px 0px 20px #222;
   -moz-box-shadow: 0px 0px 20px #222;
   box-shadow: 0px 0px 20px #222;
 }
-@-moz-document url-prefix() {.bespin .container {position: relative; top: -15px}}
+#in {top: 200px; left: 0}
+#out {top: 200px; right: 0}
 #errors {
-  position: absolute; right: 8px; top: 132px; z-index: 1;
+  display: none;
+  position: absolute; right: 4px; top: 190px; z-index: 1;
   background: #f00;
   padding: 10px;
   color: #fff;
@@ -99,9 +86,9 @@ textarea {
   -moz-box-shadow: 0px 0px 30px #000000;
   box-shadow: 0px 0px 30px #000000;
 }
-#options {clear: left; margin-bottom: 10px}
+#options {clear: left; margin-bottom: 20px}
 #options section {display: inline; margin-right: 20px}
-#options input[type=text] {font-size: 18px; border: 1px solid #333; width: 840px; padding: 5px; background: #2a211c; color: #ccc;}</style><script>var _gaq=[['_setAccount','UA-4475762-17'],['_trackPageview']];(function(d,t){        var g=d.createElement(t),s=d.getElementsByTagName(t)[0];        g.async=1;g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)        })(document,'script')</script></script></head><body><div id="container"><h1 id="logo"><span class="delim">&lt;</span><span class="u">Ũ</span><span class="wing">ↄ</span><span class="delim">/&gt;</span></h1><h2 id="desc">CoffeeKup is <strong>markup</strong> as <strong>CoffeeScript</strong>. <a id="info" href="http://github.com/mauricemach/coffeekup">More Info</a></h2><section id="options"><section><label for="opts">Params: </label><input id="opts" type="text" /></section><section><input id="format" type="checkbox" checked="true" /><label for="format">Format Output</label></section></section><p id="errors"></p><textarea id="in">doctype 5
+#options input[type=text] {font-size: 14px; border: 1px solid #333; width: 840px; padding: 5px; background: #2a211c; color: #ccc;}</style><script>var _gaq=[['_setAccount','UA-4475762-17'],['_trackPageview']];(function(d,t){        var g=d.createElement(t),s=d.getElementsByTagName(t)[0];        g.async=1;g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)        })(document,'script')</script></script></head><body><div id="container"><h1 id="logo"><span class="delim">&lt;</span><span class="u">Ũ</span><span class="wing">ↄ</span><span class="delim">/&gt;</span></h1><h2 id="desc">CoffeeKup is <strong>markup</strong> as <strong>CoffeeScript</strong>. <a id="info" href="http://github.com/mauricemach/coffeekup">More Info</a></h2><section id="options"><section><label for="opts">Params: </label><input id="opts" type="text" /></section><section><input id="format" type="checkbox" checked="true" /><label for="format">Format Output</label></section></section><p id="errors"></p><div id="in">doctype 5
 html ->
   head ->
     meta charset: 'utf-8'
@@ -134,4 +121,4 @@ html ->
       h2 "Let's count to #{@max}:"
       p i for i in [1..@max]
     footer ->
-      p shoutify('bye')</textarea><textarea id="out"></textarea></div><a href="http://github.com/mauricemach/coffeekup"><img style="position: absolute; top: 0; right: 0; border: 0;" src="/forkme_right_white_ffffff.png" alt="Fork me on GitHub" /></a></body></html>
+      p shoutify('bye')</div><div id="out"></div></div><a href="http://github.com/mauricemach/coffeekup"><img style="position: absolute; top: 0; right: 0; border: 0;" src="forkme_right_white_ffffff.png" alt="Fork me on GitHub" /></a></body></html>

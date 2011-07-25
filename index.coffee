@@ -6,7 +6,10 @@ template = ->
       title 'CoffeeKup'
       link id: 'bespin_base', href: 'bespin'
       script src: 'jquery-1.6.2.min.js'
-      script src: 'bespin/BespinEmbedded.js'
+      script src: 'ace-0.1.6/src/ace.js'
+      script src: 'ace-0.1.6/src/mode-coffee.js'
+      script src: 'ace-0.1.6/src/mode-html.js'
+      script src: 'ace-0.1.6/src/theme-twilight.js'
       script src: 'coffee-script.js'
       script src: 'coffeekup.js'
       script @js
@@ -19,8 +22,8 @@ template = ->
       div id: 'container', ->
         h1 id: 'logo', ->
           span class: 'delim', -> h('<')
-          span class: 'u', -> 'Ũ' #'ỦŰ'
-          span class: 'wing', -> 'ↄ' # ƿↄ
+          span class: 'u', -> 'Ũ'
+          span class: 'wing', -> 'ↄ'
           span class: 'delim', -> h('/>')
         h2 id: 'desc', ->
           text 'CoffeeKup is <strong>markup</strong> as <strong>CoffeeScript</strong>. '
@@ -35,23 +38,20 @@ template = ->
             label for: 'format', -> 'Format Output'
 
         p id: 'errors'
-        textarea id: 'in', -> @sample
-        textarea id: 'out'
+        div id: 'in', -> @sample
+        div id: 'out'
 
       a href: 'http://github.com/mauricemach/coffeekup', ->
-        img style: 'position: absolute; top: 0; right: 0; border: 0;', src: '/forkme_right_white_ffffff.png', alt: 'Fork me on GitHub'
+        img style: 'position: absolute; top: 0; right: 0; border: 0;', src: 'forkme_right_white_ffffff.png', alt: 'Fork me on GitHub'
 
 @js = ->
-  editor = null
-  out = null
-
-  window.onBespinLoad = ->
+  $(document).ready ->
     compile = ->
       try
         options = options: {format: $('#format').is(':checked'), autoescape: yes}
         eval 'opts = ' + $('#opts').val()
-        out.value = CoffeeKup.render editor.value, opts, options
-        out.setLineNumber 1
+        out.getSession().setValue(CoffeeKup.render editor.getSession().getValue(), opts, options)
+        out.gotoLine 1
         $('#errors').hide()
       catch err
         $('#errors').show().html err.message
@@ -59,13 +59,25 @@ template = ->
     $('#opts').bind 'keyup', -> compile()
     $('#format').bind 'click', -> compile()
 
-    $('#opts').attr 'value', "{title: 'Foo', path: '/zig', user: {}, max: 12, locals: {shoutify: function(s){return s.toUpperCase() + \'!\';}}}"
-    bespin.useBespin('out', stealFocus: yes, syntax: 'html', settings: {tabstop: 2}).then (env) ->
-      out = env.editor
-    bespin.useBespin('in', stealFocus: yes, syntax: 'coffee', settings: {tabstop: 2, fontface: 'Monaco, DejaVu Sans Mono, monospace'}, fontsize: '8px').then (env) ->
-      editor = env.editor
-      editor.textChanged.add (old_range, new_range, new_text) -> compile()
-      compile()
+    $('#opts').val "{title: 'Foo', path: '/zig', user: {}, max: 12, locals: {shoutify: function(s){return s.toUpperCase() + \'!\';}}}"
+
+    editor = ace.edit 'in'
+    out = ace.edit 'out'
+
+    CoffeeMode = require("ace/mode/coffee").Mode
+    editor.getSession().setMode(new CoffeeMode())
+
+    HtmlMode = require("ace/mode/html").Mode
+    out.getSession().setMode(new HtmlMode())
+
+    editor.setTheme("ace/theme/twilight")
+    out.setTheme("ace/theme/twilight")
+    
+    $('.ace_gutter').css('background-color', '#2a211c').css('color', '#555')
+    
+    editor.getSession().on 'change', -> compile()
+    
+    compile()
 
 @js = "(#{@js}).call(this);"
 
@@ -95,20 +107,21 @@ template = ->
   }
   #info {color: #999; font-size: 20px; margin-left: 10px}
   #info:hover {color: #ccc}
-  textarea {
-    width: 545px; height: 700px;
-    background: #2a211c; color: #fff;
+  #in, #out {
+    position: absolute;
+    text-align: left;
+    width: 555px; height: 700px;
     margin-bottom: 10px;
-  }
-  .bespin {
-    border: 2px solid #4c4542;
+    font-size: 12px;
     -webkit-box-shadow: 0px 0px 20px #222;
     -moz-box-shadow: 0px 0px 20px #222;
     box-shadow: 0px 0px 20px #222;
   }
-  @-moz-document url-prefix() {.bespin .container {position: relative; top: -15px}}
+  #in {top: 200px; left: 0}
+  #out {top: 200px; right: 0}
   #errors {
-    position: absolute; right: 8px; top: 132px; z-index: 1;
+    display: none;
+    position: absolute; right: 4px; top: 190px; z-index: 1;
     background: #f00;
     padding: 10px;
     color: #fff;
@@ -116,9 +129,9 @@ template = ->
     -moz-box-shadow: 0px 0px 30px #000000;
     box-shadow: 0px 0px 30px #000000;
   }
-  #options {clear: left; margin-bottom: 10px}
+  #options {clear: left; margin-bottom: 20px}
   #options section {display: inline; margin-right: 20px}
-  #options input[type=text] {font-size: 18px; border: 1px solid #333; width: 840px; padding: 5px; background: #2a211c; color: #ccc;}
+  #options input[type=text] {font-size: 14px; border: 1px solid #333; width: 840px; padding: 5px; background: #2a211c; color: #ccc;}
 """
 
 @sample = """
