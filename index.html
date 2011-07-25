@@ -1,33 +1,33 @@
-<!DOCTYPE html><html><head><meta charset="utf-8" /><title>CoffeeKup</title><link id="bespin_base" href="bespin" /><script src="zepto.min.js"></script><script src="bespin/BespinEmbedded.js"></script><script src="coffee-script.js"></script><script src="coffeekup.js"></script><script>(function () {
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>CoffeeKup</title><link id="bespin_base" href="bespin" /><script src="jquery-1.6.2.min.js"></script><script src="bespin/BespinEmbedded.js"></script><script src="coffee-script.js"></script><script src="coffeekup.js"></script><script>(function () {
   var editor, out;
   editor = null;
   out = null;
-  return (window.onBespinLoad = function() {
+  return window.onBespinLoad = function() {
     var compile;
     compile = function() {
-      var opts;
+      var options;
       try {
-        opts = {
-          format: $('#format').is(':checked'),
-          autoescape: true
+        options = {
+          options: {
+            format: $('#format').is(':checked'),
+            autoescape: true
+          }
         };
-        eval('opts.context = ' + $('#context').dom[0].value);
-        eval('opts.locals = ' + $('#locals').dom[0].value);
-        out.value = CoffeeKup.render(editor.value, opts);
+        eval('opts = ' + $('#opts').val());
+        out.value = CoffeeKup.render(editor.value, opts, options);
         out.setLineNumber(1);
         return $('#errors').hide();
       } catch (err) {
         return $('#errors').show().html(err.message);
       }
     };
-    $('#context, #locals').bind('keyup', function() {
+    $('#opts').bind('keyup', function() {
       return compile();
     });
     $('#format').bind('click', function() {
       return compile();
     });
-    $('#context').attr('value', "{title: 'Foo', path: '/zig', user: {}, max: 12}");
-    $('#locals').attr('value', '{shoutify: function(s){return s.toUpperCase() + \'!\';}}');
+    $('#opts').attr('value', "{title: 'Foo', path: '/zig', user: {}, max: 12, locals: {shoutify: function(s){return s.toUpperCase() + \'!\';}}}");
     bespin.useBespin('out', {
       stealFocus: true,
       syntax: 'html',
@@ -35,7 +35,7 @@
         tabstop: 2
       }
     }).then(function(env) {
-      return (out = env.editor);
+      return out = env.editor;
     });
     return bespin.useBespin('in', {
       stealFocus: true,
@@ -52,7 +52,7 @@
       });
       return compile();
     });
-  });
+  };
 }).call(this);</script><style>html, body {margin: 0; padding: 0}
 body {
   background: #473e39;
@@ -99,9 +99,9 @@ textarea {
   -moz-box-shadow: 0px 0px 30px #000000;
   box-shadow: 0px 0px 30px #000000;
 }
-#options {clear: left}
+#options {clear: left; margin-bottom: 10px}
 #options section {display: inline; margin-right: 20px}
-#options input[type=text] {font-size: 18px; border: 1px solid #333; width: 380px; padding: 5px; background: #2a211c; color: #ccc;}</style><script>var _gaq=[['_setAccount','UA-4475762-17'],['_trackPageview']];(function(d,t){        var g=d.createElement(t),s=d.getElementsByTagName(t)[0];        g.async=1;g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)        })(document,'script')</script></script></head><body><div id="container"><h1 id="logo"><span class="delim">&lt;</span><span class="u">Ũ</span><span class="wing">ↄ</span><span class="delim">/&gt;</span></h1><h2 id="desc">CoffeeKup is <strong>markup</strong> as <strong>CoffeeScript</strong>. <a id="info" href="http://github.com/mauricemach/coffeekup">More Info</a></h2><p id="errors"></p><textarea id="in">doctype 5
+#options input[type=text] {font-size: 18px; border: 1px solid #333; width: 840px; padding: 5px; background: #2a211c; color: #ccc;}</style><script>var _gaq=[['_setAccount','UA-4475762-17'],['_trackPageview']];(function(d,t){        var g=d.createElement(t),s=d.getElementsByTagName(t)[0];        g.async=1;g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)        })(document,'script')</script></script></head><body><div id="container"><h1 id="logo"><span class="delim">&lt;</span><span class="u">Ũ</span><span class="wing">ↄ</span><span class="delim">/&gt;</span></h1><h2 id="desc">CoffeeKup is <strong>markup</strong> as <strong>CoffeeScript</strong>. <a id="info" href="http://github.com/mauricemach/coffeekup">More Info</a></h2><section id="options"><section><label for="opts">Params: </label><input id="opts" type="text" /></section><section><input id="format" type="checkbox" checked="true" /><label for="format">Format Output</label></section></section><p id="errors"></p><textarea id="in">doctype 5
 html ->
   head ->
     meta charset: 'utf-8'
@@ -134,4 +134,4 @@ html ->
       h2 "Let's count to #{@max}:"
       p i for i in [1..@max]
     footer ->
-      p shoutify('bye')</textarea><textarea id="out"></textarea><section id="options"><section><label for="context">Context: </label><input id="context" type="text" /></section><section><label for="locals">Locals: </label><input id="locals" type="text" /></section><section><input id="format" type="checkbox" checked="true" /><label for="format">Format Output</label></section></section></div><a href="http://github.com/mauricemach/coffeekup"><img style="position: absolute; top: 0; right: 0; border: 0;" src="/forkme_right_white_ffffff.png" alt="Fork me on GitHub" /></a></body></html>
+      p shoutify('bye')</textarea><textarea id="out"></textarea></div><a href="http://github.com/mauricemach/coffeekup"><img style="position: absolute; top: 0; right: 0; border: 0;" src="/forkme_right_white_ffffff.png" alt="Fork me on GitHub" /></a></body></html>

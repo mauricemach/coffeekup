@@ -5,7 +5,7 @@ template = ->
       meta charset: 'utf-8'
       title 'CoffeeKup'
       link id: 'bespin_base', href: 'bespin'
-      script src: 'zepto.min.js'
+      script src: 'jquery-1.6.2.min.js'
       script src: 'bespin/BespinEmbedded.js'
       script src: 'coffee-script.js'
       script src: 'coffeekup.js'
@@ -26,20 +26,17 @@ template = ->
           text 'CoffeeKup is <strong>markup</strong> as <strong>CoffeeScript</strong>. '
           a id: 'info', href: 'http://github.com/mauricemach/coffeekup', -> 'More Info'
 
-        p id: 'errors'
-        textarea id: 'in', -> @sample
-        textarea id: 'out'
-
         section id: 'options', ->
           section ->
-            label for: 'context', -> 'Context: '
-            input id: 'context', type: 'text'
-          section ->
-            label for: 'locals', -> 'Locals: '
-            input id: 'locals', type: 'text'
+            label for: 'opts', -> 'Params: '
+            input id: 'opts', type: 'text'
           section ->
             input id: 'format', type: 'checkbox', checked: yes
             label for: 'format', -> 'Format Output'
+
+        p id: 'errors'
+        textarea id: 'in', -> @sample
+        textarea id: 'out'
 
       a href: 'http://github.com/mauricemach/coffeekup', ->
         img style: 'position: absolute; top: 0; right: 0; border: 0;', src: '/forkme_right_white_ffffff.png', alt: 'Fork me on GitHub'
@@ -51,20 +48,18 @@ template = ->
   window.onBespinLoad = ->
     compile = ->
       try
-        opts = format: $('#format').is(':checked'), autoescape: yes
-        eval 'opts.context = ' + $('#context').dom[0].value
-        eval 'opts.locals = ' + $('#locals').dom[0].value
-        out.value = CoffeeKup.render editor.value, opts
+        options = options: {format: $('#format').is(':checked'), autoescape: yes}
+        eval 'opts = ' + $('#opts').val()
+        out.value = CoffeeKup.render editor.value, opts, options
         out.setLineNumber 1
         $('#errors').hide()
       catch err
         $('#errors').show().html err.message
 
-    $('#context, #locals').bind 'keyup', -> compile()
+    $('#opts').bind 'keyup', -> compile()
     $('#format').bind 'click', -> compile()
 
-    $('#context').attr 'value', "{title: 'Foo', path: '/zig', user: {}, max: 12}"
-    $('#locals').attr 'value', '{shoutify: function(s){return s.toUpperCase() + \'!\';}}'
+    $('#opts').attr 'value', "{title: 'Foo', path: '/zig', user: {}, max: 12, locals: {shoutify: function(s){return s.toUpperCase() + \'!\';}}}"
     bespin.useBespin('out', stealFocus: yes, syntax: 'html', settings: {tabstop: 2}).then (env) ->
       out = env.editor
     bespin.useBespin('in', stealFocus: yes, syntax: 'coffee', settings: {tabstop: 2, fontface: 'Monaco, DejaVu Sans Mono, monospace'}, fontsize: '8px').then (env) ->
@@ -121,9 +116,9 @@ template = ->
     -moz-box-shadow: 0px 0px 30px #000000;
     box-shadow: 0px 0px 30px #000000;
   }
-  #options {clear: left}
+  #options {clear: left; margin-bottom: 10px}
   #options section {display: inline; margin-right: 20px}
-  #options input[type=text] {font-size: 18px; border: 1px solid #333; width: 380px; padding: 5px; background: #2a211c; color: #ccc;}
+  #options input[type=text] {font-size: 18px; border: 1px solid #333; width: 840px; padding: 5px; background: #2a211c; color: #ccc;}
 """
 
 @sample = """
