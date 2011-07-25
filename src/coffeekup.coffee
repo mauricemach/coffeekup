@@ -94,7 +94,7 @@ skeleton = (data) ->
 
     repeat: (string, count) -> Array(count + 1).join string
 
-    indent: -> @text @repeat('  ', @tabs) if @options.format
+    indent: -> text @repeat('  ', @tabs) if @options.format
 
     # Adapter to keep the builtin tag functions DRY.
     tag: (name, args) ->
