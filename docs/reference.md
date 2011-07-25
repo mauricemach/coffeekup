@@ -50,9 +50,17 @@ Version of CoffeeKup running.
 
 ### doctypes
 
-List of doctypes available to the `doctype` function in templates. It can be customized at will.
+List of doctypes available to the `doctype` function in templates. Object with doctype names as keys and their string contents as values. Can be customized at will.
 
 The doctype named "default" will be used when none is specified (`doctype()`).
+
+### tags
+
+List of HTML elements available as functions. Array of strings, can be customized.
+
+### self_closing
+
+List of self-closing tags. Array of strings, can be customized.
 
 ## The template scope
 

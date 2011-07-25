@@ -54,7 +54,7 @@ coffeescript_helpers = """
 
 # All possible HTML tags, from all versions (hopefully). But only those
 # referenced in the template will be included in the compiled function.
-tags = 'a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont
+coffeekup.tags = 'a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont
 |bdo|big|blockquote|body|br|button|canvas|caption|center|cite|code|col|colgroup
 |command|datalist|dd|del|details|dfn|dir|div|dl|dt|em|embed|fieldset|figcaption
 |figure|font|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr
@@ -63,6 +63,9 @@ tags = 'a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont
 |progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|span|strike
 |strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title
 |tr|tt|u|ul|video|xmp'.replace(/\n/g, '').split '|'
+
+coffeekup.self_closing = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr',
+  'img', 'input', 'link', 'meta', 'param']
 
 # This is the basic material from which compiled templates will be formed.
 # It will be manipulated in its string form at the `coffeekup.compile` function
@@ -83,9 +86,6 @@ skeleton = (data) ->
     options: data.options
   
     buffer: []
-
-    self_closing: ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr',
-      'img', 'input', 'link', 'meta', 'param']
       
     esc: (txt) ->
       if @options.autoescape then h(txt) else String(txt)
@@ -246,7 +246,7 @@ coffeekup.compile = (template, options = {}) ->
   tag_functions = ''
   tags_used = []
   
-  for t in tags
+  for t in coffeekup.tags
     if template.indexOf(t) > -1 or hardcoded_locals.indexOf(t) > -1
       tags_used.push t
       
@@ -259,6 +259,7 @@ coffeekup.compile = (template, options = {}) ->
 
   code += "__ck.doctypes = #{JSON.stringify coffeekup.doctypes};"
   code += "__ck.coffeescript_helpers = #{JSON.stringify coffeescript_helpers};"
+  code += "__ck.self_closing = #{JSON.stringify coffeekup.self_closing};"
 
   # If `locals` is set, wrap the template inside a `with` block. This is the
   # most flexible but slower approach to specifying local variables.
