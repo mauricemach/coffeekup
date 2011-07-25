@@ -112,6 +112,14 @@ Just grab [node.js](http://nodejs.org/#download) and [npm](http://github.com/isa
 To get the `coffeekup` command, install it globally:
 
     npm install coffeekup -g
+    
+Or to use the latest version:
+
+    git clone git@github.com:mauricemach/coffeekup.git && cd coffeekup
+    cake build
+    npm link
+    cd ~/myproject
+    npm link coffeekup
 
 ## Using
 
@@ -202,7 +210,9 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
 
 ## Knowing more
 
-Check out Mark Hahn's excellent [A Beginners's Introduction to CoffeeKup](https://github.com/mark-hahn/coffeekup-intro). It's a work in progress, but already a great introduction on how CoffeeKup operates.
+You can find the complete reference at `/docs/reference.md`.
+
+There's also Mark Hahn's excellent [A Beginners's Introduction to CoffeeKup](https://github.com/mark-hahn/coffeekup-intro). It's a work in progress, but already a great introduction on how CoffeeKup operates.
 
 ## Compatibility
 
