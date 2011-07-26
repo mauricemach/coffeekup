@@ -3,14 +3,12 @@
   "description": "Markup as CoffeeScript.",
   "version": "0.3.0beta",
   "author": "Maurice Machado <maurice@bitbending.com>",
-  "contributors": [ 
-    {"name": "Maurice Machado", "email": "maurice@bitbending.com"},
-    {"name": "Vladimir Dronnikov", "email": "dronnikov@gmail.com"}
-  ],
-  "repository": {"type": "git", "url": "http://github.com/mauricemach/coffeekup.git"},
+  "homepage": "http://coffeekup.org",
+  "repository": {"type": "git", "url": "git://github.com/mauricemach/coffeekup.git"},
   "dependencies": {"coffee-script": ">= 1.1.1"},
+  "devDependencies": {"jade": ">= 0.13.0", "eco": ">= 1.1.0-rc-1", "ejs": ">= 0.4.3", "haml": ">= 0.4.2"},
   "keywords": ["template", "view", "coffeescript"],
   "bin": "./bin/coffeekup",
   "main": "./lib/coffeekup",
-  "engines": {"node": ">= 0.4.9"}
+  "engines": {"node": ">= 0.4.7"}
 }
