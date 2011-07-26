@@ -28,15 +28,13 @@ All attributes in `input` will be available to the template at `@` (`this`). Som
 
 - `locals`: if the template was compiled with the `locals` option, it will pass this variable to the `with` statement, putting all its attributes to the local scope.
 
-- `options`: an object containing rendering options:
+- `format`: `false` by default. Whether to generate formatted HTML with indentation and line breaks, or just the natural "faux-minified" output.
 
-  - `format`: `false` by default. Whether to generate formatted HTML with indentation and line breaks, or just the natural "faux-minified" output.
-
-  - `autoescape`: `false` by default. Whether to autoescape all content or let you handle it on a case by case basis with the `h` function.
+- `autoescape`: `false` by default. Whether to autoescape all content or let you handle it on a case by case basis with the `h` function.
 
 ### render
 
-`CoffeeKup.render(template, data, options)`
+`CoffeeKup.render(template, input, options)`
 
 Compiles the template provided, runs it, and returns the resulting HTML string.
 

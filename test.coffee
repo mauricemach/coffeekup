@@ -114,7 +114,7 @@ tests =
   'Autoescaping':
     template: "h1 \"<script>alert('\\\"pwned\\\" by c&a &copy;')</script>\""
     expected: "<h1>&lt;script&gt;alert('&quot;pwned&quot; by c&amp;a &amp;copy;')&lt;/script&gt;</h1>"
-    params: {options: {autoescape: yes}}
+    params: {autoescape: yes}
 
   'ID/class shortcut (combo)':
     template: "div '#myid.myclass1.myclass2', 'foo'"
@@ -159,7 +159,7 @@ tests =
       </html>
       
     '''
-    params: {options: {format: yes}}
+    params: {format: yes}
 
 ck = require './src/coffeekup'
 render = ck.render
