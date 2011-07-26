@@ -70,33 +70,33 @@ coffeekup.self_closing = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr'
 # This is the basic material from which compiled templates will be formed.
 # It will be manipulated in its string form at the `coffeekup.compile` function
 # to generate the final template function. 
-skeleton = (input = {}) ->
+skeleton = (data = {}) ->
   # Whether to generate formatted HTML with indentation and line breaks, or
   # just the natural "faux-minified" output.
-  input.format ?= off
+  data.format ?= off
 
   # Whether to autoescape all content or let you handle it on a case by case
   # basis with the `h` function.
-  input.autoescape ?= off
+  data.autoescape ?= off
 
   # Internal CoffeeKup stuff.
   __ck =
     buffer: []
       
     esc: (txt) ->
-      if input.autoescape then h(txt) else String(txt)
+      if data.autoescape then h(txt) else String(txt)
 
     tabs: 0
 
     repeat: (string, count) -> Array(count + 1).join string
 
-    indent: -> text @repeat('  ', @tabs) if input.format
+    indent: -> text @repeat('  ', @tabs) if data.format
 
     # Adapter to keep the builtin tag functions DRY.
     tag: (name, args) ->
       combo = [name]
       combo.push i for i in args
-      tag.apply input, combo
+      tag.apply data, combo
 
     render_idclass: (str) ->
       classes = []
@@ -131,13 +131,13 @@ skeleton = (input = {}) ->
         when 'string', 'number', 'boolean'
           text @esc(contents)
         when 'function'
-          text '\n' if input.format
+          text '\n' if data.format
           @tabs++
-          result = contents.call input
+          result = contents.call data
           if typeof result is 'string'
             @indent()
             text @esc(result)
-            text '\n' if input.format
+            text '\n' if data.format
           @tabs--
           @indent()
 
@@ -150,14 +150,14 @@ skeleton = (input = {}) ->
   
       if name in @self_closing
         text ' />'
-        text '\n' if input.format
+        text '\n' if data.format
       else
         text '>'
   
         @render_contents(contents)
 
         text "</#{name}>"
-        text '\n' if input.format
+        text '\n' if data.format
   
       null
 
@@ -189,7 +189,7 @@ skeleton = (input = {}) ->
     
   doctype = (type = 'default') ->
     text __ck.doctypes[type]
-    text '\n' if input.format
+    text '\n' if data.format
     
   text = (txt) ->
     __ck.buffer.push String(txt)
@@ -197,7 +197,7 @@ skeleton = (input = {}) ->
 
   comment = (cmt) ->
     text "<!--#{cmt}-->"
-    text '\n' if input.format
+    text '\n' if data.format
   
   coffeescript = (param) ->
     switch typeof param
@@ -222,7 +222,7 @@ skeleton = (input = {}) ->
     text "<!--[if #{condition}]>"
     __ck.render_contents(contents)
     text "<![endif]-->"
-    text '\n' if input.format
+    text '\n' if data.format
 
   null
 
@@ -251,8 +251,8 @@ coffeekup.compile = (template, options = {}) ->
   if options.hardcode
     for k, v of options.hardcode
       if typeof v is 'function'
-        # Make sure these functions have access to `input` as `@/this`.
-        hardcoded_locals += "var #{k} = function(){return (#{v}).apply(input, arguments);};"
+        # Make sure these functions have access to `data` as `@/this`.
+        hardcoded_locals += "var #{k} = function(){return (#{v}).apply(data, arguments);};"
       else hardcoded_locals += "var #{k} = #{JSON.stringify v};"
 
   # Add a function for each tag this template references. We don't want to have
@@ -277,12 +277,12 @@ coffeekup.compile = (template, options = {}) ->
 
   # If `locals` is set, wrap the template inside a `with` block. This is the
   # most flexible but slower approach to specifying local variables.
-  code += 'with(input.locals){' if options.locals
-  code += "(#{template}).call(input);"
+  code += 'with(data.locals){' if options.locals
+  code += "(#{template}).call(data);"
   code += '}' if options.locals
   code += "return __ck.buffer.join('');"
 
-  new Function('input', code)
+  new Function('data', code)
 
 cache = {}
 
@@ -295,14 +295,14 @@ cache = {}
 # data, but the two will be merged and passed down to the compiler (which uses
 # `locals` and `hardcode`), and the template (which understands `locals`, `format`
 # and `autoescape`).
-coffeekup.render = (template, input = {}, options = {}) ->
-  input[k] = v for k, v of options
-  input.cache ?= off
+coffeekup.render = (template, data = {}, options = {}) ->
+  data[k] = v for k, v of options
+  data.cache ?= off
 
-  if input.cache and cache[template]? then tpl = cache[template]
-  else if input.cache then tpl = cache[template] = coffeekup.compile(template, input)
-  else tpl = coffeekup.compile(template, input)
-  tpl(input)
+  if data.cache and cache[template]? then tpl = cache[template]
+  else if data.cache then tpl = cache[template] = coffeekup.compile(template, data)
+  else tpl = coffeekup.compile(template, data)
+  tpl(data)
 
 unless window?
   coffeekup.adapters =
@@ -312,8 +312,8 @@ unless window?
     
     # Allows `partial 'foo'` instead of `text @partial 'foo'`.
     express:
-      compile: (template, input) -> 
-        input.hardcode =
+      compile: (template, data) -> 
+        data.hardcode =
           partial: ->
             text @partial.apply @, arguments
-        coffeekup.compile(template, input)
+        coffeekup.compile(template, data)

@@ -22,9 +22,9 @@ Options:
 
 The compiled template returned will be a function accepting a single object parameter:
 
-`template(input)`
+`template(data)`
 
-All attributes in `input` will be available to the template at `@` (`this`). Some attribute names are special and will trigger additional features:
+All attributes in `data` will be available to the template at `@` (`this`). Some attribute names are special and will trigger additional features:
 
 - `locals`: if the template was compiled with the `locals` option, it will pass this variable to the `with` statement, putting all its attributes to the local scope.
 
@@ -34,7 +34,7 @@ All attributes in `input` will be available to the template at `@` (`this`). Som
 
 ### render
 
-`CoffeeKup.render(template, input, options)`
+`CoffeeKup.render(template, data, options)`
 
 Compiles the template provided, runs it, and returns the resulting HTML string.
 
