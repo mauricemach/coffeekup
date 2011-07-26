@@ -302,7 +302,7 @@ cache = {}
 # 
 coffeekup.render = (template, data = {}, options = {}) ->
   data[k] = v for k, v of options
-  data.cache ?= on
+  data.cache ?= off
 
   if data.cache and cache[template]? then tpl = cache[template]
   else if data.cache then tpl = cache[template] = coffeekup.compile(template, data)

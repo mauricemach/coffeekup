@@ -42,7 +42,7 @@ Compiles the template provided, runs it, and returns the resulting HTML string.
 
 Options:
 
-- `cache`: `true` by default. Whether to reuse compiled templates, or re-compile them every time.
+- `cache`: `false` by default. Whether to reuse compiled templates, or re-compile them every time.
 
 ### version
 

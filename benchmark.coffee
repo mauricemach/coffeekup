@@ -187,15 +187,21 @@ benchmark = (title, code) ->
 
 @run = ->
   benchmark 'CoffeeKup (precompiled)', -> coffeekup_compiled_template data
-  benchmark 'CoffeeKup (code)', -> coffeekup.render coffeekup_template, data
-  benchmark 'CoffeeKup (code, cache off)', -> coffeekup.render coffeekup_template, data, cache: off
-  benchmark 'CoffeeKup (string)', -> coffeekup.render coffeekup_string_template, data, cache: on
-  benchmark 'CoffeeKup (string, cache off)', -> coffeekup.render coffeekup_string_template, data, cache: off
   benchmark 'Jade (precompiled)', -> jade_compiled_template data
-  benchmark 'Jade (cache off)', -> jade.render jade_template, locals: data
-  benchmark 'Jade (cache on)', -> jade.render jade_template, locals: data, cache: on, filename: 'test'
-  benchmark 'Eco', -> eco.render eco_template, data
-  benchmark 'ejs (cache off)', -> ejs.render ejs_template, locals: data
-  benchmark 'ejs (cache on)', -> ejs.render ejs_template, locals: data, cache: on, filename: 'test'
-  benchmark 'haml-js', -> haml.render haml_template, locals: data
   benchmark 'haml-js (precompiled)', -> haml_template_compiled data
+  benchmark 'Eco', -> eco.render eco_template, data
+
+  console.log '\n'
+
+  benchmark 'CoffeeKup (function, cache on)', -> coffeekup.render coffeekup_template, data, cache: on
+  benchmark 'CoffeeKup (string, cache on)', -> coffeekup.render coffeekup_string_template, data, cache: on
+  benchmark 'Jade (cache on)', -> jade.render jade_template, locals: data, cache: on, filename: 'test'
+  benchmark 'ejs (cache on)', -> ejs.render ejs_template, locals: data, cache: on, filename: 'test'
+
+  console.log '\n'
+
+  benchmark 'CoffeeKup (function, cache off)', -> coffeekup.render coffeekup_template, data
+  benchmark 'CoffeeKup (string, cache off)', -> coffeekup.render coffeekup_string_template, data, cache: off
+  benchmark 'Jade (cache off)', -> jade.render jade_template, locals: data
+  benchmark 'haml-js', -> haml.render haml_template, locals: data
+  benchmark 'ejs (cache off)', -> ejs.render ejs_template, locals: data
