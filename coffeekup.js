@@ -116,7 +116,10 @@
         _results = [];
         for (k in obj) {
           v = obj[k];
-          _results.push(text(" " + k + "=\"" + (this.esc(v)) + "\""));
+          if (typeof v === 'boolean' && v) {
+            v = k;
+          }
+          _results.push(v ? text(" " + k + "=\"" + (this.esc(v)) + "\"") : void 0);
         }
         return _results;
       },
