@@ -122,7 +122,13 @@ skeleton = (data) ->
 
     render_attrs: (obj) ->
       for k, v of obj
-        text " #{k}=\"#{@esc(v)}\""
+        # true is rendered as `selected="selected"`.
+        if typeof v is 'boolean' and v
+          v = k
+        # undefined, false and null result in the attribute not being rendered.
+        if v
+          # strings, numbers, objects, arrays and functions are rendered "as is".
+          text " #{k}=\"#{@esc(v)}\""
 
     render_tag: (name, idclass, attrs, contents) ->
       @indent()
