@@ -152,6 +152,17 @@ Writes the doctype. Usage: `doctype()` (picks the default), `doctype 'xml'` (spe
 
 Writes an HTML comment.
 
+#### ie
+
+Writes an IE conditional comment. Ex.:
+
+    ie 'gte IE8', ->
+      link href: 'ie.css', rel: 'stylesheet'
+
+    <!--[if gte IE8]>
+      <link href="ie.css" rel="stylesheet" />
+    <![endif]-->
+
 #### text
 
 Writes arbitrary text to the buffer.

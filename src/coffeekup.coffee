@@ -130,6 +130,21 @@ skeleton = (data) ->
           # strings, numbers, objects, arrays and functions are rendered "as is".
           text " #{k}=\"#{@esc(v)}\""
 
+    render_contents: (contents) ->
+      switch typeof contents
+        when 'string', 'number', 'boolean'
+          text @esc(contents)
+        when 'function'
+          text '\n' if @options.format
+          @tabs++
+          result = contents.call data
+          if typeof result is 'string'
+            @indent()
+            text @esc(result)
+            text '\n' if @options.format
+          @tabs--
+          @indent()
+
     render_tag: (name, idclass, attrs, contents) ->
       @indent()
     
@@ -143,22 +158,10 @@ skeleton = (data) ->
       else
         text '>'
   
-        switch typeof contents
-          when 'string', 'number', 'boolean'
-            text @esc(contents)
-          when 'function'
-            text '\n' if @options.format
-            @tabs++
-            result = contents.call data
-            if typeof result is 'string'
-              @indent()
-              text @esc(result)
-              text '\n' if @options.format
-            @tabs--
-            @indent()
+        @render_contents(contents)
 
         text "</#{name}>"
-        text '\n' if __ck.options.format
+        text '\n' if @options.format
   
       null
 
@@ -215,6 +218,15 @@ skeleton = (data) ->
       when 'object'
         input.type = 'text/coffeescript'
         script input
+  
+  # Conditional IE comments.
+  ie = (condition, contents) ->
+    __ck.indent()
+    
+    text "<!--[if #{condition}]>"
+    __ck.render_contents(contents)
+    text "<![endif]-->"
+    text '\n' if data.options.format
 
   null
 
