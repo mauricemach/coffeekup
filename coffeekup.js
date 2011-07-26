@@ -38,7 +38,7 @@
 |tr|tt|u|ul|video|xmp'.replace(/\n/g, '').split('|');
   coffeekup.self_closing = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link', 'meta', 'param'];
   skeleton = function(data) {
-    var coffeescript, comment, doctype, h, tag, text, __ck, _base, _base2, _ref, _ref2, _ref3;
+    var coffeescript, comment, doctype, h, ie, tag, text, __ck, _base, _base2, _ref, _ref2, _ref3;
         if ((_ref = data.options) != null) {
       _ref;
     } else {
@@ -123,8 +123,31 @@
         }
         return _results;
       },
-      render_tag: function(name, idclass, attrs, contents) {
+      render_contents: function(contents) {
         var result;
+        switch (typeof contents) {
+          case 'string':
+          case 'number':
+          case 'boolean':
+            return text(this.esc(contents));
+          case 'function':
+            if (this.options.format) {
+              text('\n');
+            }
+            this.tabs++;
+            result = contents.call(data);
+            if (typeof result === 'string') {
+              this.indent();
+              text(this.esc(result));
+              if (this.options.format) {
+                text('\n');
+              }
+            }
+            this.tabs--;
+            return this.indent();
+        }
+      },
+      render_tag: function(name, idclass, attrs, contents) {
         this.indent();
         text("<" + name);
         if (idclass) {
@@ -140,30 +163,9 @@
           }
         } else {
           text('>');
-          switch (typeof contents) {
-            case 'string':
-            case 'number':
-            case 'boolean':
-              text(this.esc(contents));
-              break;
-            case 'function':
-              if (this.options.format) {
-                text('\n');
-              }
-              this.tabs++;
-              result = contents.call(data);
-              if (typeof result === 'string') {
-                this.indent();
-                text(this.esc(result));
-                if (this.options.format) {
-                  text('\n');
-                }
-              }
-              this.tabs--;
-              this.indent();
-          }
+          this.render_contents(contents);
           text("</" + name + ">");
-          if (__ck.options.format) {
+          if (this.options.format) {
             text('\n');
           }
         }
@@ -235,6 +237,15 @@
         case 'object':
           input.type = 'text/coffeescript';
           return script(input);
+      }
+    };
+    ie = function(condition, contents) {
+      __ck.indent();
+      text("<!--[if " + condition + "]>");
+      __ck.render_contents(contents);
+      text("<![endif]-->");
+      if (data.options.format) {
+        return text('\n');
       }
     };
     return null;
