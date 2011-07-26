@@ -66,13 +66,13 @@ tests =
     template: 'h1 "harcoded: " + obj.foo'
     run: ->
       obj = {foo: 'bar'}
+      @compiled = ck.compile(@template, hardcode: {obj})
       @expected = '<h1>harcoded: bar</h1>'
-      @result = render(@template, hardcode: {obj})
+      @result = @compiled()
       @success = @result is @expected
       if @success
         obj.foo = 'baz'
-        @expected = '<h1>harcoded: bar</h1>'
-        @result = render(@template, hardcode: {obj})
+        @result = @compiled()
         @success = @result is @expected
 
   'Local vars, hard-coded (functions)':
