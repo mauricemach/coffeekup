@@ -110,7 +110,7 @@ template = ->
   #in, #out {
     position: absolute;
     text-align: left;
-    width: 555px; height: 700px;
+    width: 555px; height: 1000px;
     margin-bottom: 10px;
     font-size: 12px;
     -webkit-box-shadow: 0px 0px 20px #222;
