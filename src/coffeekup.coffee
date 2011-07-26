@@ -70,7 +70,7 @@ coffeekup.self_closing = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr'
 # This is the basic material from which compiled templates will be formed.
 # It will be manipulated in its string form at the `coffeekup.compile` function
 # to generate the final template function. 
-skeleton = (data) ->
+skeleton = (data = {}) ->
   data.options ?= {}
 
   # Whether to generate formatted HTML with indentation and line breaks, or
