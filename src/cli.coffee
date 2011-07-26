@@ -7,11 +7,16 @@ puts = console.log
 argv = process.argv[2..]
 options = null
 
+handle_error = (err) -> console.log err.stack if err
+
 render = (input_path, output_directory) ->
   fs.readFile input_path, (err, contents) ->
-    throw err if err
-    html = coffeekup.render String(contents), options
-    write input_path, html, output_directory
+    handle_error err
+    try
+      html = coffeekup.render String(contents), options
+      write input_path, html, output_directory
+    catch err
+      handle_error err
 
 write = (input_path, html, output_directory) ->
   filename = path.basename(input_path, path.extname(input_path)) + '.html'
@@ -22,7 +27,7 @@ write = (input_path, html, output_directory) ->
     output_path = path.join dir, filename
     html = ' ' if html.length <= 0
     fs.writeFile output_path, html, (err) ->
-      throw err if err
+      handle_error err
       puts html if options.print
       puts "Compiled #{input_path}" if options.watch
 
