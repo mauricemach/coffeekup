@@ -228,6 +228,8 @@ Latest version tested with node 0.4.9 and CoffeeScript 1.1.1.
 
 [Eco](https://github.com/sstephenson/eco) - "Embedded CoffeeScript templates": "EJS/ERB" for CoffeeScript.
 
+[html2coffeekup](https://github.com/brandonbloom/html2coffeekup) - "Converts HTML to CoffeeKup markup"
+
 ## Special thanks
 
   - [Jeremy Ashkenas](https://github.com/jashkenas), for the amazing CoffeeScript language.
