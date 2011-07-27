@@ -224,6 +224,8 @@ Latest version tested with node 0.4.9 and CoffeeScript 1.1.1.
 
 [ice](https://github.com/ludicast/ice) - "Javascript templates for ruby apps": CoffeeKup and Eco in Rails ([screencast](http://vimeo.com/25907220)).
 
+[coffee-world](https://github.com/khoomeister/coffee-world) - "Watches the current folder to compile CoffeeScript into CSS, HTML & JS".
+
 ## Related projects
 
 [ck](https://github.com/aeosynth/ck) - "a smaller, faster coffeekup": Alternative, barebones implementation.
@@ -231,6 +233,12 @@ Latest version tested with node 0.4.9 and CoffeeScript 1.1.1.
 [ckup](https://github.com/satyr/ckup) - "Markup as Coco": Similar engine but for [Coco](https://github.com/satyr/coco) ("Unfancy CoffeeScript").
 
 [Eco](https://github.com/sstephenson/eco) - "Embedded CoffeeScript templates": "EJS/ERB" for CoffeeScript.
+
+[timbits](https://github.com/Postmedia/timbits) - "Widget framework based on Express and CoffeeScript".
+
+[coffee-css](https://github.com/khoomeister/coffee-css) - "More CSS for CoffeeScript".
+
+[ccss](https://github.com/aeosynth/ccss) - "CoffeeScript CSS".
 
 ## Special thanks
 
