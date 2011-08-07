@@ -10,5 +10,14 @@
   "keywords": ["template", "view", "coffeescript"],
   "bin": "./bin/coffeekup",
   "main": "./lib/coffeekup",
-  "engines": {"node": ">= 0.4.7"}
+  "engines": {"node": ">= 0.4.7"},
+  "contributors": [
+    "Luis Pedro Coelho <lpc@cmu.edu>",
+    "Vladimir Dronnikov <dronnikov@gmail.com>",
+    "James Campos <james.r.campos@gmail.com>",
+    "Martin Westergaard Lassen <martin@mwl.dk>",
+    "Esa-Matti Suuronen <esa-matti@suuronen.org>",
+    "Brandon Bloom <brandon@brandonbloom.name>",
+    "Nicholas Kinsey <nicholas.kinsey@feistystudios.com>"
+  ]
 }
