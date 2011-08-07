@@ -1,10 +1,13 @@
-get '/': ->
-  @people = ['bob', 'alice', 'sinatra', 'zappa']
-  render 'default'
+require('zappa') ->
+  enable 'default layout'
+  
+  get '/': ->
+    @franks = ['miller', 'oz', 'sinatra', 'zappa']
+    render 'index'
 
-view ->
-  @title = 'Zappa example'
-  h1 @title
-  ul ->
-    for p in @people
-      li p
+  view index: ->
+    @title = 'Zappa example'
+    h1 @title
+    ul ->
+      for f in @franks
+        li f
