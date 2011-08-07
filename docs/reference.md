@@ -1,4 +1,4 @@
-# CoffeeKup 0.3.0beta Reference
+# CoffeeKup 0.3.0beta2 Reference
 
 ## The CoffeeKup object
 

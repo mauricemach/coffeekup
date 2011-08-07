@@ -1,3 +1,5 @@
+**v0.3.0beta2** (xxxx-xx-xx):
+
 **v0.3.0beta** (2011-07-27):
 
   - Added documentation: API reference at `/docs/reference.md` and annotated source at `/docs/coffeekup.html`.

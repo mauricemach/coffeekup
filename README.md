@@ -226,6 +226,8 @@ Latest version tested with node 0.4.9 and CoffeeScript 1.1.1.
 
 [coffee-world](https://github.com/khoomeister/coffee-world) - "Watches the current folder to compile CoffeeScript into CSS, HTML & JS".
 
+cupcake
+
 ## Related projects
 
 [ck](https://github.com/aeosynth/ck) - "a smaller, faster coffeekup": Alternative, barebones implementation.
