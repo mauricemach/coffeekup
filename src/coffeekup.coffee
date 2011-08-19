@@ -16,7 +16,7 @@ else
   coffeekup = exports
   coffee = require 'coffee-script'
 
-coffeekup.version = '0.3.0beta2'
+coffeekup.version = '0.3.0beta3'
 
 # Values available to the `doctype` function inside a template.
 # Ex.: `doctype 'strict'`
@@ -313,7 +313,7 @@ unless window?
     # Allows `partial 'foo'` instead of `text @partial 'foo'`.
     express:
       compile: (template, data) -> 
-        data.hardcode =
-          partial: ->
+        data.hardcode ?= {}
+        data.hardcode.partial = ->
             text @partial.apply @, arguments
         coffeekup.compile(template, data)
