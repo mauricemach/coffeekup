@@ -1,4 +1,4 @@
-# CoffeeKup <Ũp/>
+# CoffeeKup <☕/>
 ## Markup as CoffeeScript
 
 CoffeeKup is a templating engine for [node.js](http://nodejs.org) and browsers that lets you to write your HTML templates in 100% pure [CoffeeScript](http://coffeescript.org).
@@ -208,39 +208,43 @@ Command-line:
 
 See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions. Please note that even though all examples are given in CoffeeScript, you can also use their plain JavaScript counterparts just fine.
 
-## Knowing more
+## Resources
 
-You can find the complete reference at `/docs/reference.md`.
+- [API reference](https://github.com/mauricemach/coffeekup/blob/master/docs/reference.md)
 
-There's also Mark Hahn's excellent [A Beginners's Introduction to CoffeeKup](https://github.com/mark-hahn/coffeekup-intro). It's a work in progress, but already a great introduction on how CoffeeKup operates.
+- [Mailing list](https://groups.google.com/group/coffeekup)
+
+- [Issues](https://github.com/mauricemach/coffeekup/issues)
+
+- [A Beginners's Introduction to CoffeeKup](https://github.com/mark-hahn/coffeekup-intro)
+
+## Tools
+
+- [html2coffeekup](https://github.com/brandonbloom/html2coffeekup) - Converts HTML to CoffeeKup templates.
+
+- [ice](https://github.com/ludicast/ice) - CoffeeKup and Eco in Rails ([screencast](http://vimeo.com/25907220)).
+
+- [coffee-world](https://github.com/khoomeister/coffee-world) - Tool to watch and compile HTML with CoffeeKup, CSS with coffee-css and JS with CoffeeScript.
+
+- [cupcake](https://github.com/twilson63/cupcake) - Express app generator with CoffeeKup support.
+
+## Related projects
+
+- [ck](https://github.com/aeosynth/ck) - "a smaller, faster coffeekup": Alternative, barebones implementation.
+
+- [ckup](https://github.com/satyr/ckup) - "Markup as Coco": Similar engine but for [Coco](https://github.com/satyr/coco) ("Unfancy CoffeeScript").
+
+- [Eco](https://github.com/sstephenson/eco) - "Embedded CoffeeScript templates": "EJS/ERB" for CoffeeScript.
+
+- [timbits](https://github.com/Postmedia/timbits) - "Widget framework based on Express and CoffeeScript".
+
+- [coffee-css](https://github.com/khoomeister/coffee-css) - "More CSS for CoffeeScript".
+
+- [ccss](https://github.com/aeosynth/ccss) - "CoffeeScript CSS".
 
 ## Compatibility
 
 Latest version tested with node 0.4.9 and CoffeeScript 1.1.1.
-
-## Resources
-
-[html2coffeekup](https://github.com/brandonbloom/html2coffeekup) - "Converts HTML to CoffeeKup markup".
-
-[ice](https://github.com/ludicast/ice) - "Javascript templates for ruby apps": CoffeeKup and Eco in Rails ([screencast](http://vimeo.com/25907220)).
-
-[coffee-world](https://github.com/khoomeister/coffee-world) - "Watches the current folder to compile CoffeeScript into CSS, HTML & JS".
-
-cupcake
-
-## Related projects
-
-[ck](https://github.com/aeosynth/ck) - "a smaller, faster coffeekup": Alternative, barebones implementation.
-
-[ckup](https://github.com/satyr/ckup) - "Markup as Coco": Similar engine but for [Coco](https://github.com/satyr/coco) ("Unfancy CoffeeScript").
-
-[Eco](https://github.com/sstephenson/eco) - "Embedded CoffeeScript templates": "EJS/ERB" for CoffeeScript.
-
-[timbits](https://github.com/Postmedia/timbits) - "Widget framework based on Express and CoffeeScript".
-
-[coffee-css](https://github.com/khoomeister/coffee-css) - "More CSS for CoffeeScript".
-
-[ccss](https://github.com/aeosynth/ccss) - "CoffeeScript CSS".
 
 ## Special thanks
 
