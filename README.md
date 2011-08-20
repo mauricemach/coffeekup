@@ -216,6 +216,8 @@ See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) fo
 
 - [Issues](https://github.com/mauricemach/coffeekup/issues)
 
+- **IRC**: #coffeekup on irc.freenode.net
+
 - [A Beginners's Introduction to CoffeeKup](https://github.com/mark-hahn/coffeekup-intro)
 
 ## Tools
