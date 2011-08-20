@@ -245,8 +245,8 @@ and <code>autoescape</code>).</p>             </td>             <td class="code"
     <span class="nv">meryl: </span><span class="nx">coffeekup</span><span class="p">.</span><span class="nx">render</span>
     </pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>Allows <code>partial 'foo'</code> instead of <code>text @partial 'foo'</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">express:</span>
       <span class="nv">compile: </span><span class="nf">(template, data) -&gt;</span> 
-        <span class="nv">data.hardcode =</span>
-          <span class="nv">partial: </span><span class="o">-&gt;</span>
+        <span class="nx">data</span><span class="p">.</span><span class="nx">hardcode</span> <span class="o">?=</span> <span class="p">{}</span>
+        <span class="nv">data.hardcode.partial = </span><span class="o">-&gt;</span>
             <span class="nx">text</span> <span class="nx">@partial</span><span class="p">.</span><span class="nx">apply</span> <span class="err">@</span><span class="p">,</span> <span class="nx">arguments</span>
         <span class="nx">coffeekup</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="nx">template</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span>
 
