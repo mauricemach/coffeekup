@@ -206,7 +206,9 @@ Command-line:
       -v, --version      display CoffeeKup version
       -h, --help         display this help message
 
-See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions. Please note that even though all examples are given in CoffeeScript, you can also use their plain JavaScript counterparts just fine.
+See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions (you have to run `cake build` first).
+
+Please note that even though all examples are given in CoffeeScript, you can also use their plain JavaScript counterparts just fine.
 
 ## Resources
 
