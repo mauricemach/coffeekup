@@ -22,7 +22,7 @@ run = (args...) ->
   
   command += ' ' + params.join ' ' if params?
   cmd = spawn '/bin/sh', ['-c', command], options
-  cmd.stdout.on 'data', (data) -> log data.toString()
-  cmd.stderr.on 'data', (data) -> log data.toString()
+  cmd.stdout.on 'data', (data) -> process.stdout.write data
+  cmd.stderr.on 'data', (data) -> process.stderr.write data
   process.on 'SIGHUP', -> cmd.kill()
   cmd.on 'exit', (code) -> callback() if callback? and code is 0
