@@ -1,6 +1,7 @@
 **v0.3.0beta2** (xxxx-xx-xx):
 
   - Fixed #64 (`hardcode` option masked in express adapter). [smathy]
+  - Added missing elements from the HTML 5 spec (both valid and obsolete). Closes #66 (thanks @aeosynth).
 
 **v0.3.0beta** (2011-07-27):
 

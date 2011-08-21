@@ -52,20 +52,44 @@ coffeescript_helpers = """
     } return -1; };
 """.replace /\n/g, ''
 
-# All possible HTML tags, from all versions (hopefully). But only those
-# referenced in the template will be included in the compiled function.
-coffeekup.tags = 'a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont
-|bdo|big|blockquote|body|br|button|canvas|caption|center|cite|code|col|colgroup
-|command|datalist|dd|del|details|dfn|dir|div|dl|dt|em|embed|fieldset|figcaption
-|figure|font|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr
-|html|i|iframe|img|input|ins|keygen|kbd|label|legend|li|link|map|mark|menu|meta
-|meter|nav|noframes|noscript|object|ol|optgroup|option|output|p|param|pre
-|progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|span|strike
-|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title
-|tr|tt|u|ul|video|xmp'.replace(/\n/g, '').split '|'
+# Private HTML element reference.
+# Please mind the gap (1 space at the beginning of each subsequent line).
+elements =
+  # Valid HTML 5 elements requiring a closing tag.
+  # Note: the `var` element is out for obvious reasons, please use `tag 'var'`.
+  regular: 'a abbr address article aside audio b bdi bdo blockquote body button
+ canvas caption cite code colgroup datalist dd del details dfn div dl dt em
+ fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup
+ html i iframe ins kbd label legend li map mark menu meter nav noscript object
+ ol optgroup option output p pre progress q rp rt ruby s samp script section
+ select small span strong style sub summary sup table tbody td textarea tfoot
+ th thead time title tr u ul video'
 
-coffeekup.self_closing = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr',
-  'img', 'input', 'link', 'meta', 'param']
+  # Valid self-closing HTML 5 elements.
+  void: 'area base br col command embed hr img input keygen link meta param
+ source track wbr'
+
+  obsolete: 'applet acronym bgsound dir frameset noframes isindex listing
+ nextid noembed plaintext rb strike xmp big blink center font marquee multicol
+ nobr spacer tt'
+
+  obsolete_void: 'basefont frame'
+
+# Create a unique list of element names merging the desired groups.
+merge_elements = (args...) ->
+  result = []
+  for a in args
+    for element in elements[a].split ' '
+      result.push element unless result.indexOf(element) > -1
+  result
+
+# Public/customizable list of possible elements.
+# For each name in this list that is also present in the input template code,
+# a function with the same name will be added to the compiled template.
+coffeekup.tags = merge_elements 'regular', 'obsolete', 'void', 'obsolete_void'
+
+# Public/customizable list of elements that should be rendered self-closed.
+coffeekup.self_closing = merge_elements 'void', 'obsolete_void'
 
 # This is the basic material from which compiled templates will be formed.
 # It will be manipulated in its string form at the `coffeekup.compile` function
@@ -281,7 +305,7 @@ coffeekup.compile = (template, options = {}) ->
   code += "(#{template}).call(data);"
   code += '}' if options.locals
   code += "return __ck.buffer.join('');"
-
+  
   new Function('data', code)
 
 cache = {}
