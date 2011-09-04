@@ -81,4 +81,5 @@ switches = [
       fs.watchFile file, {persistent: true, interval: 500}, (curr, prev) ->
         return if curr.size is prev.size and curr.mtime.getTime() is prev.mtime.getTime()
         compile file, options.output, options.js, options.namespace
-    else compile file, options.output, options.js, options.namespace
+    
+    compile file, options.output, options.js, options.namespace
