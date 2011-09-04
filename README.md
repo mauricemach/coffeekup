@@ -186,7 +186,7 @@ On the browser:
 
     <script src="template.js"></script>
     <script>
-      $('body').append(template({foo: 'bar'}));
+      $('body').append(templates.template({foo: 'bar'}));
     </script>
 
 This is one of many browser deployment possibilities, pre-compiling your template on the server to a standalone function. To see all serving suggestions, check out [regular](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/regular/index.html), [decaf](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/decaf/index.html) and [crème](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/creme/index.html).
@@ -198,6 +198,8 @@ Command-line:
     Usage:
       coffeekup [options] path/to/template.coffee
 
+          --js           compile template to js function
+      -n, --namespace    global object holding the templates (default: "templates")
       -w, --watch        watch templates for changes, and recompile
       -o, --output       set the directory for compiled html
       -p, --print        print the compiled html to stdout

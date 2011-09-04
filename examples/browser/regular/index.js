@@ -1,6 +1,6 @@
 (function() {
   $().ready(function() {
-    return $('body').append(template({
+    return $('body').append(templates.template({
       stooges: ['moe', 'larry', 'curly']
     }));
   });

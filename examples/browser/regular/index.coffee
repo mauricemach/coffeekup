@@ -1,2 +1,2 @@
 $().ready ->
-  $('body').append template(stooges: ['moe', 'larry', 'curly'])
+  $('body').append templates.template(stooges: ['moe', 'larry', 'curly'])
