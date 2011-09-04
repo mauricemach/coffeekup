@@ -10,10 +10,10 @@ options = null
 handle_error = (err) -> console.log err.stack if err
 
 render = (input_path, output_directory) ->
-  fs.readFile input_path, (err, contents) ->
+  fs.readFile input_path, 'utf-8', (err, contents) ->
     handle_error err
     try
-      html = coffeekup.render String(contents), options
+      html = coffeekup.render contents, options
       write input_path, html, output_directory
     catch err
       handle_error err
@@ -57,8 +57,8 @@ switches = [
   if options.utils
     options.locals ?= {}
     options.locals.render = (file) ->
-      contents = fs.readFileSync file
-      coffeekup.render String(contents), options
+      contents = fs.readFileSync file, 'utf-8'
+      coffeekup.render contents, options
 
   if args.length > 0
     file = args[0]
