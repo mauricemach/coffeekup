@@ -1,4 +1,4 @@
-# CoffeeKup 0.3.0beta2 Reference
+# CoffeeKup 0.3.0 Reference
 
 ## The CoffeeKup object
 
@@ -216,6 +216,8 @@ When installing CoffeeKup with `npm install coffeekup -g`, you get a `coffeekup`
     Usage:
       coffeekup [options] path/to/template.coffee
 
+          --js           compile template to js function
+      -n, --namespace    global object holding the templates (default: "templates")
       -w, --watch        watch templates for changes, and recompile
       -o, --output       set the directory for compiled html
       -p, --print        print the compiled html to stdout
