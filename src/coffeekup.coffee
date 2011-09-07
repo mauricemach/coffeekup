@@ -16,7 +16,7 @@ else
   coffeekup = exports
   coffee = require 'coffee-script'
 
-coffeekup.version = '0.3.0'
+coffeekup.version = '0.3.0edge'
 
 # Values available to the `doctype` function inside a template.
 # Ex.: `doctype 'strict'`
@@ -80,7 +80,7 @@ merge_elements = (args...) ->
   result = []
   for a in args
     for element in elements[a].split ' '
-      result.push element unless result.indexOf(element) > -1
+      result.push element unless element in result
   result
 
 # Public/customizable list of possible elements.
@@ -126,7 +126,7 @@ skeleton = (data = {}) ->
       classes = []
         
       for i in str.split '.'
-        if i.indexOf('#') is 0
+        if '#' in i
           id = i.replace '#', ''
         else
           classes.push i unless i is ''

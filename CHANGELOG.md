@@ -1,3 +1,7 @@
+**v0.3.0edge** (unreleased):
+
+  - Fixed #71: indexOf not supported in IE7 (thanks @jaekwon).
+
 **v0.3.0** (2011-09-04):
 
   - Fixed #64 (`hardcode` option masked in express adapter). [smathy]
