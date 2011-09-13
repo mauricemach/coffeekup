@@ -105,8 +105,23 @@ skeleton = (data = {}) ->
 
   # Internal CoffeeKup stuff.
   __ck =
+    # support for coffekup.inline begins here
+    buffers: []
+    
     buffer: []
-      
+    
+    # pushes a new buffer onto the buffers stack and returns it
+    start: ->
+      new_buffer = []
+      __ck.buffers.push new_buffer
+      __ck.buffer = new_buffer
+
+    # pops the new, replaces the old, and returns the previous buffer
+    stop: ->
+      old_buffer = __ck.buffers.pop()
+      __ck.buffer = __ck.buffers[__ck.buffers.length - 1]
+      old_buffer
+    
     esc: (txt) ->
       if data.autoescape then h(txt) else String(txt)
 
@@ -248,6 +263,8 @@ skeleton = (data = {}) ->
     text "<![endif]-->"
     text '\n' if data.format
 
+  # initialize the buffers
+  __ck.buffers = [__ck.buffer]
   null
 
 # Stringify the skeleton and unwrap it from its enclosing `function(){}`, then
@@ -291,6 +308,8 @@ coffeekup.compile = (template, options = {}) ->
   tag_functions += "var #{tags_used.join ','};"
   for t in tags_used
     tag_functions += "#{t} = function(){return __ck.tag('#{t}', arguments);};"
+    # the easy part: add an inline version that starts a new buffer, runs the tag as usual, and then pops the buffer, returning the contents as a string
+    tag_functions += "#{t}.inline = function(){__ck.start(); __ck.tag('#{t}', arguments); return __ck.stop().join('');};"
 
   # Main function assembly.
   code = tag_functions + hardcoded_locals + skeleton
