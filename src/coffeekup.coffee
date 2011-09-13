@@ -334,14 +334,15 @@ unless window?
     simple: coffeekup.render
     meryl: coffeekup.render
     
-    # Allows `partial 'foo'` instead of `text @partial 'foo'`.
     express:
       TemplateError: class extends Error
         constructor: (@message) ->
           Error.call this, @message
           Error.captureStackTrace this, arguments.callee
-        name: "TemplateError"
+        name: 'TemplateError'
+        
       compile: (template, data) -> 
+        # Allows `partial 'foo'` instead of `text @partial 'foo'`.
         data.hardcode ?= {}
         data.hardcode.partial = ->
             text @partial.apply @, arguments
@@ -349,7 +350,7 @@ unless window?
         TemplateError = @TemplateError
         try tpl = coffeekup.compile(template, data)
         catch e then throw new TemplateError "Error compiling #{data.filename}: #{e.message}"
-          
+        
         return ->
           try tpl arguments...
           catch e then throw new TemplateError "Error rendering #{data.filename}: #{e.message}"
