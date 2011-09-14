@@ -185,6 +185,17 @@ CoffeeScript-friendly shortcut to `script`:
     coffeescript src: 'script.coffee'
     <script type="text/coffeescript" src="script.coffee"></script>
 
+#### yield
+
+Returns the output of a template chunk as a string instead of writing it to the buffer. Useful for string interpolations. Ex.:
+
+    p "This text could use #{yield -> a href: '/', 'a link'}."
+    <p>This text could use <a href="/">a link</a>.</p>
+
+Without it, the `a` function runs first, writes to the buffer and returns `null`, resulting in a useless output:
+
+    p "This text could use #{a href: '/', 'a link'}."
+    <a href="/">a link</a><p>This text could use null.</p>
 
 #### @
 

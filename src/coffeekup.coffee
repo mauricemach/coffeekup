@@ -220,6 +220,14 @@ skeleton = (data = {}) ->
 
     __ck.render_tag(name, idclass, attrs, contents)
 
+  yield = (f) ->
+    temp_buffer = []
+    old_buffer = __ck.buffer
+    __ck.buffer = temp_buffer
+    f()
+    __ck.buffer = old_buffer
+    temp_buffer.join ''
+
   h = (txt) ->
     String(txt).replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
@@ -353,10 +361,23 @@ unless window?
     simple: coffeekup.render
     meryl: coffeekup.render
     
-    # Allows `partial 'foo'` instead of `text @partial 'foo'`.
     express:
+      TemplateError: class extends Error
+        constructor: (@message) ->
+          Error.call this, @message
+          Error.captureStackTrace this, arguments.callee
+        name: 'TemplateError'
+        
       compile: (template, data) -> 
+        # Allows `partial 'foo'` instead of `text @partial 'foo'`.
         data.hardcode ?= {}
         data.hardcode.partial = ->
             text @partial.apply @, arguments
-        coffeekup.compile(template, data)
+        
+        TemplateError = @TemplateError
+        try tpl = coffeekup.compile(template, data)
+        catch e then throw new TemplateError "Error compiling #{data.filename}: #{e.message}"
+        
+        return ->
+          try tpl arguments...
+          catch e then throw new TemplateError "Error rendering #{data.filename}: #{e.message}"
