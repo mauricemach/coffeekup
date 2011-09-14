@@ -2,6 +2,7 @@
 
   - Fixed #71: indexOf not supported in IE7 (thanks @jaekwon).
   - Added better error reporting to express adapter. [benekastah]
+  - Added `yield`: see `/docs/reference.md`. Closes #16 (thanks @pyrotechnick, @colinta and @smathy).
 
 **v0.3.0** (2011-09-04):
 

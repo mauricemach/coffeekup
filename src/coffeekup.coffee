@@ -205,6 +205,14 @@ skeleton = (data = {}) ->
 
     __ck.render_tag(name, idclass, attrs, contents)
 
+  yield = (f) ->
+    temp_buffer = []
+    old_buffer = __ck.buffer
+    __ck.buffer = temp_buffer
+    f()
+    __ck.buffer = old_buffer
+    temp_buffer.join ''
+
   h = (txt) ->
     String(txt).replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')

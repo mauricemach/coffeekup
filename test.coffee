@@ -160,6 +160,10 @@ tests =
       
     '''
     params: {format: yes}
+    
+  'yield':
+    template: "p \"This text could use \#{yield -> strong -> a href: '/', 'a link'}.\""
+    expected: '<p>This text could use <strong><a href="/">a link</a></strong>.</p>'
 
 ck = require './src/coffeekup'
 render = ck.render
