@@ -353,7 +353,7 @@ unless window?
         # Allows `partial 'foo'` instead of `text @partial 'foo'`.
         data.hardcode ?= {}
         data.hardcode.partial = ->
-            text @partial.apply @, arguments
+          text @partial.apply @, arguments
         
         TemplateError = @TemplateError
         try tpl = coffeekup.compile(template, data)
