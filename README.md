@@ -228,6 +228,8 @@ Please note that even though all examples are given in CoffeeScript, you can als
 
 - [html2coffeekup](https://github.com/brandonbloom/html2coffeekup) - Converts HTML to CoffeeKup templates.
 
+- [htmlkup](https://github.com/colinta/htmlkup) - Another HTML converter, stdin/stdout based.
+
 - [ice](https://github.com/ludicast/ice) - CoffeeKup and Eco in Rails ([screencast](http://vimeo.com/25907220)).
 
 - [coffee-world](https://github.com/khoomeister/coffee-world) - Tool to watch and compile HTML with CoffeeKup, CSS with coffee-css and JS with CoffeeScript.
