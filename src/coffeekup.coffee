@@ -354,16 +354,25 @@ unless window?
           Error.captureStackTrace this, arguments.callee
         name: 'TemplateError'
         
-      compile: (template, data) -> 
+      compile: (template, options) -> 
         # Allows `partial 'foo'` instead of `text @partial 'foo'`.
-        data.hardcode ?= {}
-        data.hardcode.partial = ->
+        options.hardcode ?= {}
+        options.hardcode.partial = ->
             text @partial.apply @, arguments
+        for helpers in [options.app._locals, options.app.dynamicViewHelpers]
+          for own local, content of helpers
+            if content instanceof Function then options.hardcode[local] = content
         
         TemplateError = @TemplateError
-        try tpl = coffeekup.compile(template, data)
-        catch e then throw new TemplateError "Error compiling #{data.filename}: #{e.message}"
+        try tpl = coffeekup.compile(template, options)
+        catch e then throw new TemplateError "Error compiling #{options.filename}: #{e.message}"
         
         return ->
-          try tpl arguments...
-          catch e then throw new TemplateError "Error rendering #{data.filename}: #{e.message}"
+          data = arguments[0]
+          data.locals ?= {}
+          for helpers in [data.app._locals, data.app.dynamicViewHelpers]
+            for own local, content of helpers
+              if not content instanceof Function then data.locals[local] = content
+          tpl data, options.filename
+          # try tpl data
+          # catch e then throw new TemplateError "Error rendering #{options.filename}: #{e.message}"
