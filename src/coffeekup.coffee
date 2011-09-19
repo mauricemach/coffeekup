@@ -140,15 +140,20 @@ skeleton = (data = {}) ->
           text c
         text '"'
 
-    render_attrs: (obj) ->
+    render_attrs: (obj, prefix = '') ->
       for k, v of obj
         # true is rendered as `selected="selected"`.
         if typeof v is 'boolean' and v
           v = k
+        
+        if typeof v is 'object'
+          # if you have a lot of data attributes, it gets repetitive to keep typing 'data-'
+          # plus, it looks really good to group them together, e.g. data: { icon: 'gear', iconpos: 'right' }
+          @render_attrs(v, prefix + k + '-')
         # undefined, false and null result in the attribute not being rendered.
-        if v
+        else if v
           # strings, numbers, objects, arrays and functions are rendered "as is".
-          text " #{k}=\"#{@esc(v)}\""
+          text " #{prefix + k}=\"#{@esc(v)}\""
 
     render_contents: (contents) ->
       switch typeof contents
