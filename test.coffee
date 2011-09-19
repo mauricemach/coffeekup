@@ -19,6 +19,10 @@ tests =
     template: "tag 'custom', foo: 'bar', ping: 'pong'"
     expected: '<custom foo="bar" ping="pong"></custom>'
 
+  'Custom tag with nested data attributes':
+    template: "tag 'custom', data: { foo: 'bar', ping: 'pong' }"
+    expected: '<custom data-foo="bar" data-ping="pong"></custom>'
+
   'Custom tag with attributes and inner content':
     template: "tag 'custom', foo: 'bar', ping: 'pong', -> 'zag'"
     expected: '<custom foo="bar" ping="pong">zag</custom>'

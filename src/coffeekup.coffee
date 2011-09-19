@@ -140,15 +140,20 @@ skeleton = (data = {}) ->
           text c
         text '"'
 
-    render_attrs: (obj) ->
+    render_attrs: (obj, prefix = '') ->
       for k, v of obj
         # true is rendered as `selected="selected"`.
         if typeof v is 'boolean' and v
           v = k
+        
+        if typeof v is 'object'
+          # if you have a lot of data attributes, it gets repetitive to keep typing 'data-'
+          # plus, it looks really good to group them together, e.g. data: { icon: 'gear', iconpos: 'right' }
+          @render_attrs(v, prefix + k + '-')
         # undefined, false and null result in the attribute not being rendered.
-        if v
+        else if v
           # strings, numbers, objects, arrays and functions are rendered "as is".
-          text " #{k}=\"#{@esc(v)}\""
+          text " #{prefix + k}=\"#{@esc(v)}\""
 
     render_contents: (contents) ->
       switch typeof contents
@@ -349,16 +354,25 @@ unless window?
           Error.captureStackTrace this, arguments.callee
         name: 'TemplateError'
         
-      compile: (template, data) -> 
+      compile: (template, options) -> 
         # Allows `partial 'foo'` instead of `text @partial 'foo'`.
-        data.hardcode ?= {}
-        data.hardcode.partial = ->
+        options.hardcode ?= {}
+        options.hardcode.partial = ->
             text @partial.apply @, arguments
+        for helpers in [options.app._locals, options.app.dynamicViewHelpers]
+          for own local, content of helpers
+            if content instanceof Function then options.hardcode[local] = content
         
         TemplateError = @TemplateError
-        try tpl = coffeekup.compile(template, data)
-        catch e then throw new TemplateError "Error compiling #{data.filename}: #{e.message}"
+        try tpl = coffeekup.compile(template, options)
+        catch e then throw new TemplateError "Error compiling #{options.filename}: #{e.message}"
         
         return ->
-          try tpl arguments...
-          catch e then throw new TemplateError "Error rendering #{data.filename}: #{e.message}"
+          data = arguments[0]
+          data.locals ?= {}
+          for helpers in [data.app._locals, data.app.dynamicViewHelpers]
+            for own local, content of helpers
+              if not content instanceof Function then data.locals[local] = content
+          tpl data, options.filename
+          # try tpl data
+          # catch e then throw new TemplateError "Error rendering #{options.filename}: #{e.message}"
