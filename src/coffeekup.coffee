@@ -142,17 +142,16 @@ skeleton = (data = {}) ->
 
     render_attrs: (obj, prefix = '') ->
       for k, v of obj
-        # true is rendered as `selected="selected"`.
+        # `true` is rendered as `selected="selected"`.
         if typeof v is 'boolean' and v
           v = k
         
-        if typeof v is 'object'
-          # if you have a lot of data attributes, it gets repetitive to keep typing 'data-'
-          # plus, it looks really good to group them together, e.g. data: { icon: 'gear', iconpos: 'right' }
+        if typeof v is 'object' and v not instanceof Array
+          # `data: {icon: 'foo'}` is rendered as `data-icon="foo"`.
           @render_attrs(v, prefix + k + '-')
         # undefined, false and null result in the attribute not being rendered.
         else if v
-          # strings, numbers, objects, arrays and functions are rendered "as is".
+          # strings, numbers, arrays and functions are rendered "as is".
           text " #{prefix + k}=\"#{@esc(v)}\""
 
     render_contents: (contents) ->

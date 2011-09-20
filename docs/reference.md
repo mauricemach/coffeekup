@@ -70,8 +70,6 @@ By far the most important of these functions are those equivalent to each HTML e
 
 They're designed to look very similar to their HTML output when written in CoffeeScript.
 
-Below are examples on using these functions, their equivalent JavaScript code, and the corresponding HTML output.
-
 Empty tags:
 
     div()
@@ -82,63 +80,68 @@ Empty tags:
 
 Attributes:
 
-    img src: '/foo.png', alt: 'Foo'
-    img({src: '/foo.png', alt: 'Foo'});
-    <img src="/foo.png" alt="Foo" />
+    div str: 'str', num: 42, bool: yes, arr: [1, 2, 3], obj: {foo: 'bar', ping: 'pong'}
+    <div str="str" num="42" bool="bool" arr="1,2,3" obj-foo="bar" obj-ping="pong"><div>
     
 Contents (string):
     
     h1 'foo'
-    h1('foo');
     <h1>Foo</h1>
+
+    h1 attr: 'value', 'foo'
+    <h1 attr="value">Foo</h1>
     
     script '''
       alert('foo');
       console.log('bar');
     '''
-    script("alert('foo');\nconsole.log('bar');");
     <script>alert('foo');
       console.log('bar');</script>
     
 Contents (function):
     
     div -> 'Foo'
-    div(function(){return 'Foo'});
     <div>Foo</div>
-    
+
+    # equivalent to js: div(function(){'Foo'; return 'Bar';});
     div ->
       'Foo'
       'Bar'
-    div(function(){'Foo'; return 'Bar';});
-    <div>Bar</div>
-    
+    <div>
+      Bar
+    </div>
+
+    # equivalent to js: div(function(){'Foo'; div('Ping'); return 'Bar';});
     div ->
       'Foo'
       div 'Ping'
       'Bar'
-    div(function(){'Foo'; div('Ping'); return 'Bar';});
-    <div><div>Ping</div>Bar</div>
+    <div>
+      <div>Ping</div>
+      Bar
+    </div>
     
+    # equivalent to js: div(function(){text('Foo'); div('Ping'); return 'Bar';});
     div ->
       text 'Foo'
       div 'Ping'
       'Bar'
-    div(function(){text('Foo'); div('Ping'); return 'Bar';});
-    <div>Foo<div>Ping</div>Bar</div>
+    <div>
+      Foo
+      <div>Ping</div>
+      Bar
+    </div>
 
 ID/class shortcut
 
     div '#id.class.anotherclass', 'string contents'
-    div('#id.class.anotherclass', 'string contents');
-    <div id="id" class="class anotherclass"></div>
+    <div id="id" class="class anotherclass">string contents</div>
 
     div '#id.class.anotherclass', -> h1 'Hullo'
-    div('#id.class.anotherclass', function(){return h1('hullo')});
     <div id="id" class="class anotherclass"><h1>Hullo</h1></div>
 
-    div '#id.class.anotherclass', style: 'position: fixed'
-    div('#id.class.anotherclass', {style: 'position: fixed'});
-    <div id="id" class="class anotherclass" style="position: fixed"></div>
+    div '#id.class.anotherclass', style: 'position: fixed', 'string contents'
+    <div id="id" class="class anotherclass" style="position: fixed">string contents</div>
   
 ### Other locals
 
