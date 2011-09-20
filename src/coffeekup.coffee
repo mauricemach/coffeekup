@@ -143,13 +143,16 @@ skeleton = (data = {}) ->
     render_attrs: (obj, prefix = '') ->
       for k, v of obj
         # `true` is rendered as `selected="selected"`.
-        if typeof v is 'boolean' and v
-          v = k
+        v = k if typeof v is 'boolean' and v
         
+        # Functions are rendered in an executable form.
+        v = "(#{v}).call(this);" if typeof v is 'function'
+
+        # Prefixed attribute.
         if typeof v is 'object' and v not instanceof Array
           # `data: {icon: 'foo'}` is rendered as `data-icon="foo"`.
           @render_attrs(v, prefix + k + '-')
-        # undefined, false and null result in the attribute not being rendered.
+        # `undefined`, `false` and `null` result in the attribute not being rendered.
         else if v
           # strings, numbers, arrays and functions are rendered "as is".
           text " #{prefix + k}=\"#{@esc(v)}\""

@@ -83,6 +83,9 @@ Attributes:
     div str: 'str', num: 42, bool: yes, arr: [1, 2, 3], obj: {foo: 'bar', ping: 'pong'}
     <div str="str" num="42" bool="bool" arr="1,2,3" obj-foo="bar" obj-ping="pong"><div>
     
+    div onclick: -> alert 'hi'
+    <div onclick="(function(){return alert('hi');}).call(this);"></div>
+    
 Contents (string):
     
     h1 'foo'
