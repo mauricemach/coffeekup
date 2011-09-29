@@ -1,6 +1,6 @@
 <!DOCTYPE html><html><head><meta charset="utf-8" /><title>CoffeeKup</title><script src="jquery-1.6.2.min.js"></script><script src="ace-0.1.6/src/ace.js"></script><script src="ace-0.1.6/src/mode-coffee.js"></script><script src="ace-0.1.6/src/mode-html.js"></script><script src="ace-0.1.6/src/theme-twilight.js"></script><script src="coffee-script.js"></script><script src="coffeekup.js"></script><script>(function () {
   return $(function() {
-    var CoffeeMode, HtmlMode, compile, editor, out;
+    var CoffeeMode, HtmlMode, compile, editor, editor_session, out, out_session;
     compile = function() {
       var options;
       try {
@@ -9,8 +9,10 @@
           autoescape: true
         };
         eval('opts = ' + $('#opts').val());
-        out.getSession().setValue(CoffeeKup.render(editor.getSession().getValue(), opts, options));
-        out.gotoLine(1);
+        out_session.setValue(CoffeeKup.render(editor_session.getValue(), opts, options));
+        setTimeout((function() {
+          return out.gotoLine(1);
+        }), 100);
         return $('#errors').hide();
       } catch (err) {
         return $('#errors').show().html(err.message);
@@ -24,18 +26,20 @@
     });
     $('#opts').val("{title: 'Foo', path: '/zig', user: {}, max: 12, locals: {shoutify: function(s){return s.toUpperCase() + \'!\';}}}");
     editor = ace.edit('in');
+    editor_session = editor.getSession();
     out = ace.edit('out');
+    out_session = out.getSession();
     CoffeeMode = require("ace/mode/coffee").Mode;
-    editor.getSession().setMode(new CoffeeMode());
+    editor_session.setMode(new CoffeeMode());
     HtmlMode = require("ace/mode/html").Mode;
-    out.getSession().setMode(new HtmlMode());
+    out_session.setMode(new HtmlMode());
     editor.setTheme("ace/theme/twilight");
     out.setTheme("ace/theme/twilight");
-    editor.getSession().setTabSize(2);
-    editor.getSession().setUseSoftTabs(true);
+    editor_session.setTabSize(2);
+    editor_session.setUseSoftTabs(true);
     out.setReadOnly(true);
     $('.ace_gutter').css('background-color', '#2a211c').css('color', '#555');
-    editor.getSession().on('change', function() {
+    editor_session.on('change', function() {
       return compile();
     });
     return compile();

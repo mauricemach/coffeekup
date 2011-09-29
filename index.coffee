@@ -48,8 +48,8 @@ template = ->
       try
         options = format: $('#format').is(':checked'), autoescape: yes
         eval 'opts = ' + $('#opts').val()
-        out.getSession().setValue(CoffeeKup.render(editor.getSession().getValue(), opts, options))
-        out.gotoLine 1
+        out_session.setValue(CoffeeKup.render(editor_session.getValue(), opts, options))
+        setTimeout (-> out.gotoLine 1), 100
         $('#errors').hide()
       catch err
         $('#errors').show().html err.message
@@ -60,23 +60,25 @@ template = ->
     $('#opts').val "{title: 'Foo', path: '/zig', user: {}, max: 12, locals: {shoutify: function(s){return s.toUpperCase() + \'!\';}}}"
 
     editor = ace.edit 'in'
+    editor_session = editor.getSession()
     out = ace.edit 'out'
+    out_session = out.getSession()
 
     CoffeeMode = require("ace/mode/coffee").Mode
-    editor.getSession().setMode(new CoffeeMode())
+    editor_session.setMode(new CoffeeMode())
 
     HtmlMode = require("ace/mode/html").Mode
-    out.getSession().setMode(new HtmlMode())
+    out_session.setMode(new HtmlMode())
 
     editor.setTheme("ace/theme/twilight")
     out.setTheme("ace/theme/twilight")
-    editor.getSession().setTabSize 2
-    editor.getSession().setUseSoftTabs on
+    editor_session.setTabSize 2
+    editor_session.setUseSoftTabs on
     out.setReadOnly on
     
     $('.ace_gutter').css('background-color', '#2a211c').css('color', '#555')
     
-    editor.getSession().on 'change', -> compile()
+    editor_session.on 'change', -> compile()
     
     compile()
 
