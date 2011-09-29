@@ -45,12 +45,12 @@ template = ->
         img style: 'position: absolute; top: 0; right: 0; border: 0;', src: 'forkme_right_white_ffffff.png', alt: 'Fork me on GitHub'
 
 @js = ->
-  $(document).ready ->
+  $ ->
     compile = ->
       try
-        options = options: {format: $('#format').is(':checked'), autoescape: yes}
+        options = format: $('#format').is(':checked'), autoescape: yes
         eval 'opts = ' + $('#opts').val()
-        out.getSession().setValue(CoffeeKup.render editor.getSession().getValue(), opts, options)
+        out.getSession().setValue(CoffeeKup.render(editor.getSession().getValue(), opts, options))
         out.gotoLine 1
         $('#errors').hide()
       catch err

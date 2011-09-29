@@ -1,14 +1,12 @@
 <!DOCTYPE html><html><head><meta charset="utf-8" /><title>CoffeeKup</title><link id="bespin_base" href="bespin" /><script src="jquery-1.6.2.min.js"></script><script src="ace-0.1.6/src/ace.js"></script><script src="ace-0.1.6/src/mode-coffee.js"></script><script src="ace-0.1.6/src/mode-html.js"></script><script src="ace-0.1.6/src/theme-twilight.js"></script><script src="coffee-script.js"></script><script src="coffeekup.js"></script><script>(function () {
-  return $(document).ready(function() {
+  return $(function() {
     var CoffeeMode, HtmlMode, compile, editor, out;
     compile = function() {
       var options;
       try {
         options = {
-          options: {
-            format: $('#format').is(':checked'),
-            autoescape: true
-          }
+          format: $('#format').is(':checked'),
+          autoescape: true
         };
         eval('opts = ' + $('#opts').val());
         out.getSession().setValue(CoffeeKup.render(editor.getSession().getValue(), opts, options));
