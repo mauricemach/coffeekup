@@ -4,7 +4,6 @@ template = ->
     head ->
       meta charset: 'utf-8'
       title 'CoffeeKup'
-      link id: 'bespin_base', href: 'bespin'
       script src: 'jquery-1.6.2.min.js'
       script src: 'ace-0.1.6/src/ace.js'
       script src: 'ace-0.1.6/src/mode-coffee.js'
@@ -22,8 +21,7 @@ template = ->
       div id: 'container', ->
         h1 id: 'logo', ->
           span class: 'delim', -> h('<')
-          span class: 'u', -> 'Ũ'
-          span class: 'wing', -> 'ↄ'
+          span class: 'cup', -> '☕'
           span class: 'delim', -> h('/>')
         h2 id: 'desc', ->
           text 'CoffeeKup is <strong>markup</strong> as <strong>CoffeeScript</strong>. '
@@ -72,6 +70,9 @@ template = ->
 
     editor.setTheme("ace/theme/twilight")
     out.setTheme("ace/theme/twilight")
+    editor.getSession().setTabSize 2
+    editor.getSession().setUseSoftTabs on
+    out.setReadOnly on
     
     $('.ace_gutter').css('background-color', '#2a211c').css('color', '#555')
     
@@ -92,15 +93,14 @@ template = ->
   a {color: #09f}
   a:hover {color: #0cf}
   #logo {
-    position: absolute; top: 15px; right: 20px;
+    position: absolute;
+    top: 15px; right: 20px;
     margin: 0;
-    font-size: 90px;
-    font-weight: normal; display: inline;
+    font-weight: normal;
     font-family: Gill Sans, DejaVu Sans, Segoe UI, Calibri, Lucida Sans Unicode, sans-serif;
   }
-  #logo .u {color: #fff; text-decoration: none}
-  #logo .wing {font-size: 0.5em; color: #fff; margin-left: -0.1em; position: relative; top: -0.7em}
-  #logo .delim {color: #666}
+  #logo .cup {color: #fff; font-size: 90px}
+  #logo .delim {color: #666; font-size: 60px}
   #desc {
     position: absolute; top: 90px; left: 25px;
     color: #fff; font-size: 22px; margin: 0; margin-left: 0.5em; margin-right: 7.5em; display: inline; font-weight: normal;
@@ -112,7 +112,7 @@ template = ->
     text-align: left;
     width: 555px; height: 1000px;
     margin-bottom: 10px;
-    font-size: 12px;
+    font-size: 14px;
     -webkit-box-shadow: 0px 0px 20px #222;
     -moz-box-shadow: 0px 0px 20px #222;
     box-shadow: 0px 0px 20px #222;
@@ -148,7 +148,7 @@ template = ->
       '''
       script src: '/javascripts/jquery.js'
       coffeescript ->
-        $().ready ->
+        $ ->
           alert 'Alerts are so annoying...'
     body ->
       header ->
