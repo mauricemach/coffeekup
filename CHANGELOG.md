@@ -1,3 +1,5 @@
+**v0.3.1edge** (unreleased):
+
 **v0.3.1** (2011-09-29):
 
   - Fixed #71: indexOf not supported in IE7 (thanks @jaekwon).
