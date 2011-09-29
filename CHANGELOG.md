@@ -1,4 +1,4 @@
-**v0.3.0edge** (unreleased):
+**v0.3.1** (2011-09-29):
 
   - Fixed #71: indexOf not supported in IE7 (thanks @jaekwon).
   - Added better error reporting to express adapter. [benekastah]

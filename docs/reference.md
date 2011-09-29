@@ -1,4 +1,4 @@
-# CoffeeKup 0.3.0 Reference
+# CoffeeKup 0.3.1 Reference
 
 ## The CoffeeKup object
 
