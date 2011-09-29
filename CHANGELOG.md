@@ -4,7 +4,7 @@
   - Added better error reporting to express adapter. [benekastah]
   - Added `yield`: see `/docs/reference.md`. Closes #16 (thanks @pyrotechnick, @colinta and @smathy).
   - Added prefixed attributes: `data: {icon: 'foo.png'}` renders as `data-icon="foo.png"`. [colinta]
-  - Changed: `onclick: -> alert 'hi'` renders in executable form. Closes #79 (thanks @smathy).
+  - Added functions as attribute values: `onclick: -> alert 'hi'`. Closes #79 (thanks @smathy).
 
 **v0.3.0** (2011-09-04):
 
