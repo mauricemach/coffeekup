@@ -1,11 +1,18 @@
 (function() {
-  var cache, coffee, coffeekup, coffeescript_helpers, skeleton;
-  var __indexOf = Array.prototype.indexOf || function(item) {
+  var cache, coffee, coffeekup, coffeescript_helpers, elements, merge_elements, skeleton;
+  var __slice = Array.prototype.slice, __indexOf = Array.prototype.indexOf || function(item) {
     for (var i = 0, l = this.length; i < l; i++) {
       if (this[i] === item) return i;
     }
     return -1;
-  }, __slice = Array.prototype.slice;
+  }, __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  };
   if (typeof window !== "undefined" && window !== null) {
     coffeekup = window.CoffeeKup = {};
     coffee = typeof CoffeeScript !== "undefined" && CoffeeScript !== null ? CoffeeScript : null;
@@ -13,7 +20,7 @@
     coffeekup = exports;
     coffee = require('coffee-script');
   }
-  coffeekup.version = '0.3.0beta';
+  coffeekup.version = '0.3.1';
   coffeekup.doctypes = {
     'default': '<!DOCTYPE html>',
     '5': '<!DOCTYPE html>',
@@ -27,38 +34,54 @@
     'ce': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "ce-html-1.0-transitional.dtd">'
   };
   coffeescript_helpers = "var __slice = Array.prototype.slice;\nvar __hasProp = Object.prototype.hasOwnProperty;\nvar __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };\nvar __extends = function(child, parent) {\n  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }\n  function ctor() { this.constructor = child; }\n  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;\n  return child; };\nvar __indexOf = Array.prototype.indexOf || function(item) {\n  for (var i = 0, l = this.length; i < l; i++) {\n    if (this[i] === item) return i;\n  } return -1; };".replace(/\n/g, '');
-  coffeekup.tags = 'a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont\
-|bdo|big|blockquote|body|br|button|canvas|caption|center|cite|code|col|colgroup\
-|command|datalist|dd|del|details|dfn|dir|div|dl|dt|em|embed|fieldset|figcaption\
-|figure|font|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr\
-|html|i|iframe|img|input|ins|keygen|kbd|label|legend|li|link|map|mark|menu|meta\
-|meter|nav|noframes|noscript|object|ol|optgroup|option|output|p|param|pre\
-|progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|span|strike\
-|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title\
-|tr|tt|u|ul|video|xmp'.replace(/\n/g, '').split('|');
-  coffeekup.self_closing = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link', 'meta', 'param'];
+  elements = {
+    regular: 'a abbr address article aside audio b bdi bdo blockquote body button\
+ canvas caption cite code colgroup datalist dd del details dfn div dl dt em\
+ fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup\
+ html i iframe ins kbd label legend li map mark menu meter nav noscript object\
+ ol optgroup option output p pre progress q rp rt ruby s samp script section\
+ select small span strong style sub summary sup table tbody td textarea tfoot\
+ th thead time title tr u ul video',
+    "void": 'area base br col command embed hr img input keygen link meta param\
+ source track wbr',
+    obsolete: 'applet acronym bgsound dir frameset noframes isindex listing\
+ nextid noembed plaintext rb strike xmp big blink center font marquee multicol\
+ nobr spacer tt',
+    obsolete_void: 'basefont frame'
+  };
+  merge_elements = function() {
+    var a, args, element, result, _i, _j, _len, _len2, _ref;
+    args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    result = [];
+    for (_i = 0, _len = args.length; _i < _len; _i++) {
+      a = args[_i];
+      _ref = elements[a].split(' ');
+      for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+        element = _ref[_j];
+        if (__indexOf.call(result, element) < 0) {
+          result.push(element);
+        }
+      }
+    }
+    return result;
+  };
+  coffeekup.tags = merge_elements('regular', 'obsolete', 'void', 'obsolete_void');
+  coffeekup.self_closing = merge_elements('void', 'obsolete_void');
   skeleton = function(data) {
-    var coffeescript, comment, doctype, h, ie, tag, text, __ck, _base, _base2, _ref, _ref2, _ref3;
-        if ((_ref = data.options) != null) {
-      _ref;
-    } else {
-      data.options = {};
-    };
-        if ((_ref2 = (_base = data.options).format) != null) {
-      _ref2;
-    } else {
-      _base.format = false;
-    };
-        if ((_ref3 = (_base2 = data.options).autoescape) != null) {
-      _ref3;
-    } else {
-      _base2.autoescape = false;
-    };
+    var coffeescript, comment, doctype, h, ie, tag, text, yield, __ck, _ref, _ref2;
+    if (data == null) {
+      data = {};
+    }
+    if ((_ref = data.format) == null) {
+      data.format = false;
+    }
+    if ((_ref2 = data.autoescape) == null) {
+      data.autoescape = false;
+    }
     __ck = {
-      options: data.options,
       buffer: [],
       esc: function(txt) {
-        if (this.options.autoescape) {
+        if (data.autoescape) {
           return h(txt);
         } else {
           return String(txt);
@@ -69,7 +92,7 @@
         return Array(count + 1).join(string);
       },
       indent: function() {
-        if (this.options.format) {
+        if (data.format) {
           return text(this.repeat('  ', this.tabs));
         }
       },
@@ -83,12 +106,12 @@
         return tag.apply(data, combo);
       },
       render_idclass: function(str) {
-        var c, classes, i, id, _i, _j, _len, _len2, _ref4;
+        var c, classes, i, id, _i, _j, _len, _len2, _ref3;
         classes = [];
-        _ref4 = str.split('.');
-        for (_i = 0, _len = _ref4.length; _i < _len; _i++) {
-          i = _ref4[_i];
-          if (i.indexOf('#') === 0) {
+        _ref3 = str.split('.');
+        for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+          i = _ref3[_i];
+          if (__indexOf.call(i, '#') >= 0) {
             id = i.replace('#', '');
           } else {
             if (i !== '') {
@@ -111,15 +134,21 @@
           return text('"');
         }
       },
-      render_attrs: function(obj) {
+      render_attrs: function(obj, prefix) {
         var k, v, _results;
+        if (prefix == null) {
+          prefix = '';
+        }
         _results = [];
         for (k in obj) {
           v = obj[k];
           if (typeof v === 'boolean' && v) {
             v = k;
           }
-          _results.push(v ? text(" " + k + "=\"" + (this.esc(v)) + "\"") : void 0);
+          if (typeof v === 'function') {
+            v = "(" + v + ").call(this);";
+          }
+          _results.push(typeof v === 'object' && !(v instanceof Array) ? this.render_attrs(v, prefix + k + '-') : v ? text(" " + (prefix + k) + "=\"" + (this.esc(v)) + "\"") : void 0);
         }
         return _results;
       },
@@ -131,7 +160,7 @@
           case 'boolean':
             return text(this.esc(contents));
           case 'function':
-            if (this.options.format) {
+            if (data.format) {
               text('\n');
             }
             this.tabs++;
@@ -139,7 +168,7 @@
             if (typeof result === 'string') {
               this.indent();
               text(this.esc(result));
-              if (this.options.format) {
+              if (data.format) {
                 text('\n');
               }
             }
@@ -158,14 +187,14 @@
         }
         if (__indexOf.call(this.self_closing, name) >= 0) {
           text(' />');
-          if (this.options.format) {
+          if (data.format) {
             text('\n');
           }
         } else {
           text('>');
           this.render_contents(contents);
           text("</" + name + ">");
-          if (this.options.format) {
+          if (data.format) {
             text('\n');
           }
         }
@@ -202,6 +231,15 @@
       }
       return __ck.render_tag(name, idclass, attrs, contents);
     };
+    yield = function(f) {
+      var old_buffer, temp_buffer;
+      temp_buffer = [];
+      old_buffer = __ck.buffer;
+      __ck.buffer = temp_buffer;
+      f();
+      __ck.buffer = old_buffer;
+      return temp_buffer.join('');
+    };
     h = function(txt) {
       return String(txt).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     };
@@ -210,7 +248,7 @@
         type = 'default';
       }
       text(__ck.doctypes[type]);
-      if (data.options.format) {
+      if (data.format) {
         return text('\n');
       }
     };
@@ -220,23 +258,23 @@
     };
     comment = function(cmt) {
       text("<!--" + cmt + "-->");
-      if (data.options.format) {
+      if (data.format) {
         return text('\n');
       }
     };
-    coffeescript = function(input) {
-      switch (typeof input) {
+    coffeescript = function(param) {
+      switch (typeof param) {
         case 'function':
-          return script("" + __ck.coffeescript_helpers + "(" + input + ").call(this);");
+          return script("" + __ck.coffeescript_helpers + "(" + param + ").call(this);");
         case 'string':
           return script({
             type: 'text/coffeescript'
           }, function() {
-            return input;
+            return param;
           });
         case 'object':
-          input.type = 'text/coffeescript';
-          return script(input);
+          param.type = 'text/coffeescript';
+          return script(param);
       }
     };
     ie = function(condition, contents) {
@@ -244,13 +282,13 @@
       text("<!--[if " + condition + "]>");
       __ck.render_contents(contents);
       text("<![endif]-->");
-      if (data.options.format) {
+      if (data.format) {
         return text('\n');
       }
     };
     return null;
   };
-  skeleton = String(skeleton).replace(/function\s*\(data\)\s*\{/, '').replace(/return null;\s*\}$/, '');
+  skeleton = String(skeleton).replace(/function\s*\(.*\)\s*\{/, '').replace(/return null;\s*\}$/, '');
   skeleton = coffeescript_helpers + skeleton;
   coffeekup.compile = function(template, options) {
     var code, hardcoded_locals, k, t, tag_functions, tags_used, v, _i, _j, _len, _len2, _ref, _ref2;
@@ -318,11 +356,9 @@
       v = options[k];
       data[k] = v;
     }
-        if ((_ref = data.cache) != null) {
-      _ref;
-    } else {
-      data.cache = true;
-    };
+    if ((_ref = data.cache) == null) {
+      data.cache = false;
+    }
     if (data.cache && (cache[template] != null)) {
       tpl = cache[template];
     } else if (data.cache) {
@@ -337,13 +373,37 @@
       simple: coffeekup.render,
       meryl: coffeekup.render,
       express: {
+        TemplateError: (function() {
+          __extends(_Class, Error);
+          function _Class(message) {
+            this.message = message;
+            Error.call(this, this.message);
+            Error.captureStackTrace(this, arguments.callee);
+          }
+          _Class.prototype.name = 'TemplateError';
+          return _Class;
+        })(),
         compile: function(template, data) {
-          data.hardcode = {
-            partial: function() {
-              return text(this.partial.apply(this, arguments));
+          var TemplateError, tpl, _ref;
+          if ((_ref = data.hardcode) == null) {
+            data.hardcode = {};
+          }
+          data.hardcode.partial = function() {
+            return text(this.partial.apply(this, arguments));
+          };
+          TemplateError = this.TemplateError;
+          try {
+            tpl = coffeekup.compile(template, data);
+          } catch (e) {
+            throw new TemplateError("Error compiling " + data.filename + ": " + e.message);
+          }
+          return function() {
+            try {
+              return tpl.apply(null, arguments);
+            } catch (e) {
+              throw new TemplateError("Error rendering " + data.filename + ": " + e.message);
             }
           };
-          return coffeekup.compile(template, data);
         }
       }
     };
