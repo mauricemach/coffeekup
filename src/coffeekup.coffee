@@ -15,6 +15,7 @@ if window?
 else
   coffeekup = exports
   coffee = require 'coffee-script'
+  compiler = require __dirname + '/compiler'
 
 coffeekup.version = '0.3.1edge'
 
@@ -90,6 +91,9 @@ coffeekup.tags = merge_elements 'regular', 'obsolete', 'void', 'obsolete_void'
 
 # Public/customizable list of elements that should be rendered self-closed.
 coffeekup.self_closing = merge_elements 'void', 'obsolete_void'
+
+if compiler?
+  compiler.setTags coffeekup.tags, coffeekup.self_closing
 
 # This is the basic material from which compiled templates will be formed.
 # It will be manipulated in its string form at the `coffeekup.compile` function
@@ -280,7 +284,7 @@ coffeekup.compile = (template, options = {}) ->
   if typeof template is 'function' then template = String(template)
   else if typeof template is 'string' and coffee?
     template = coffee.compile template, bare: yes
-    template = "function(){#{template}}"
+    template = "(function(){#{template}})"
 
   # If an object `hardcode` is provided, insert the stringified value
   # of each variable directly in the function body. This is a less flexible but
@@ -293,6 +297,9 @@ coffeekup.compile = (template, options = {}) ->
         # Make sure these functions have access to `data` as `@/this`.
         hardcoded_locals += "var #{k} = function(){return (#{v}).apply(data, arguments);};"
       else hardcoded_locals += "var #{k} = #{JSON.stringify v};"
+
+  if compiler?
+    return compiler.compile template, options
 
   # Add a function for each tag this template references. We don't want to have
   # all hundred-odd tags wasting space in the compiled function.
