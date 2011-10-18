@@ -14,6 +14,12 @@ skeleton = '''
     if (typeof txt === 'string') __ck.buffer.push(txt);
     else if (typeof txt === 'number') __ck.buffer.push(String(txt));
   };
+  h = function(txt) {
+    return String(txt).replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  };
 
 '''
 
@@ -54,7 +60,6 @@ exports.compile = (source, hardcoded_locals, options) ->
                 value = uglify.gen_code attr[1]
                 code += " #{key}=\"' + #{value} + '\""
             else
-              # TODO: dynamic id and class definitions
               if arg[0] is 'string' and args.length > 1 and arg is args[0]
                 classes = []
 
