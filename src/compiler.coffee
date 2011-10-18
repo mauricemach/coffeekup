@@ -32,6 +32,21 @@ call_bound_func = (func) ->
 parse_expr = (expr) ->
   return parser.parse(expr)[1][0]
 
+# Bind this function to the ast walker and call it on an array of statement
+# nodes.  If the parent statement ends with a semicolon and is not an argument
+# to a function, return the statements as separate nodes. Otherwise wrap them
+# in an anonymous function.
+wrap_func = (funcbody) ->
+  if @parent()[0] is 'stat'
+    return ['splice', funcbody]
+
+  return call_bound_func([
+    'function'
+    null # Anonymous function
+    [] # Takes no arguments
+    funcbody
+  ])
+
 exports.compile = (source, hardcoded_locals, options) ->
 
   ast = parser.parse hardcoded_locals + "(#{source}).call(data);"
@@ -46,6 +61,18 @@ exports.compile = (source, hardcoded_locals, options) ->
                   [['string', coffeekup.doctypes[String(args[0][1])]]]]
         else
           throw new Error 'Invalid doctype'
+
+      else if name is 'comment'
+        comment = args[0]
+        if comment[0] is 'string'
+          code = ["text('<!--#{comment[1]}-->');"]
+        else
+          code = [
+            "text('<!--');"
+            "text(#{uglify.gen_code comment});"
+            "text('-->');"
+          ]
+        return wrap_func.call(w, (parse_expr stmt for stmt in code))
 
       else if name in coffeekup.tags or name is 'tag'
         if name is 'tag'
@@ -95,18 +122,7 @@ exports.compile = (source, hardcoded_locals, options) ->
         if tagclose?
           funcbody.push parse_expr tagclose
 
-        # If this function call ends with a semicolon and is not an argument to
-        # a function, unwrap it from its function wrapper.
-        if w.parent()[0] is 'stat'
-          return ['splice', funcbody]
-
-        # Otherwise bind it to `data`
-        return call_bound_func([
-          'function'
-          null # Anonymous function
-          [] # Takes no arguments
-          funcbody
-        ])
+        return wrap_func.call(w, funcbody)
 
       return [this[0], w.walk(expr), uglify.MAP(args, w.walk)]
     , ->
