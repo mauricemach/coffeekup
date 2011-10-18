@@ -282,7 +282,6 @@ coffeekup.compile = (template, options = {}) ->
   if typeof template is 'function' then template = String(template)
   else if typeof template is 'string' and coffee?
     template = coffee.compile template, bare: yes
-    template = "(function(){#{template}})"
 
   # If an object `hardcode` is provided, insert the stringified value
   # of each variable directly in the function body. This is a less flexible but
@@ -298,6 +297,7 @@ coffeekup.compile = (template, options = {}) ->
 
   if compiler?
     return compiler.compile template, options
+  template = "function(){#{template}}"
 
   # Add a function for each tag this template references. We don't want to have
   # all hundred-odd tags wasting space in the compiled function.
