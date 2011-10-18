@@ -47,7 +47,10 @@ exports.compile = (source, hardcoded_locals, options) ->
         else
           throw new Error 'Invalid doctype'
 
-      else if name in coffeekup.tags
+      else if name in coffeekup.tags or name is 'tag'
+        if name is 'tag'
+          name = args.shift()[1]
+
         code = "'<#{name}"
 
         for arg in args
