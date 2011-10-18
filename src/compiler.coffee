@@ -115,7 +115,7 @@ exports.compile = (source, hardcoded_locals, options) ->
     indent_level: 2
 
   # Main function assembly.
-  code = hardcoded_locals + skeleton + compiled
+  code = hardcoded_locals + skeleton + "(function(){#{compiled}}).call(data);"
   code += "return __ck.buffer.join('');"
 
   return new Function 'data', code
