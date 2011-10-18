@@ -45,15 +45,34 @@ exports.compile = (source, hardcoded_locals, options) ->
       tag = expr[1]
       if tag in coffeekup.tags
         code = "'<#{tag}"
+
         for arg in args
           switch arg[0]
             when 'function'
-              contents = arg
+              contents = call_bound_func(w.walk arg)
             when 'object'
               for attr in arg[1]
                 key = attr[0]
                 value = uglify.gen_code attr[1]
                 code += " #{key}=\"' + #{value} + '\""
+            else
+              # TODO: dynamic id and class definitions
+              if arg[0] is 'string' and args.length > 1 and arg is args[0]
+                classes = []
+
+                for i in arg[1].split '.'
+                  if '#' in i
+                    id = i.replace '#', ''
+                  else
+                    classes.push i unless i is ''
+
+                code += " id=\"#{id}\"" if id
+
+                if classes.length > 0
+                  code += " class=\"#{classes.join ' '}\""
+              else
+                contents = arg
+
         if tag in coffeekup.self_closing
           code += "/>'"
         else
@@ -73,7 +92,7 @@ exports.compile = (source, hardcoded_locals, options) ->
                 'name'
                 'text'
               ]
-              [call_bound_func(w.walk contents)]
+              [contents]
             ]
           ]
         ]
