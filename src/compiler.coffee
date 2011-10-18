@@ -1,10 +1,10 @@
 {uglify, parser} = require 'uglify-js'
-tags = null
-self_closing = null
+coffeekup = null
 
-exports.setTags = (t, sc) ->
-  tags = t
-  self_closing = sc
+# Call this from the main script so that the compiler module can have access to
+# coffeekup exports (node does not allow circular imports).
+exports.setup = (ck) ->
+  coffeekup = ck
 
 skeleton = '''
   __ck = {
@@ -43,7 +43,7 @@ exports.compile = (source, options) ->
   ast = w.with_walkers
     call: (expr, args) ->
       tag = expr[1]
-      if tag in tags
+      if tag in coffeekup.tags
         code = "'<#{tag}"
         for arg in args
           switch arg[0]
@@ -54,13 +54,13 @@ exports.compile = (source, options) ->
                 key = attr[0]
                 value = uglify.gen_code attr[1]
                 code += " #{key}=\"' + #{value} + '\""
-        if tag in self_closing
+        if tag in coffeekup.self_closing
           code += "/>'"
         else
           code += ">'"
     
         tagopen = "text(#{code});\n"
-        if not (tag in self_closing)
+        if not (tag in coffeekup.self_closing)
           tagclose = "text('</#{tag}>');\n"
 
         funcbody = [

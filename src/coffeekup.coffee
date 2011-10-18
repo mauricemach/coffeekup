@@ -16,6 +16,7 @@ else
   coffeekup = exports
   coffee = require 'coffee-script'
   compiler = require __dirname + '/compiler'
+  compiler.setup coffeekup
 
 coffeekup.version = '0.3.1edge'
 
@@ -91,9 +92,6 @@ coffeekup.tags = merge_elements 'regular', 'obsolete', 'void', 'obsolete_void'
 
 # Public/customizable list of elements that should be rendered self-closed.
 coffeekup.self_closing = merge_elements 'void', 'obsolete_void'
-
-if compiler?
-  compiler.setTags coffeekup.tags, coffeekup.self_closing
 
 # This is the basic material from which compiled templates will be formed.
 # It will be manipulated in its string form at the `coffeekup.compile` function
