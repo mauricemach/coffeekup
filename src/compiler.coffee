@@ -78,7 +78,8 @@ exports.compile = (source, hardcoded_locals, options) ->
         if name is 'tag'
           name = args.shift()[1]
 
-        code = "'<#{name}"
+        # TODO: refactor this
+        code = ["text('<#{name}"]
 
         for arg in args
           switch arg[0]
@@ -87,8 +88,13 @@ exports.compile = (source, hardcoded_locals, options) ->
             when 'object'
               for attr in arg[1]
                 key = attr[0]
-                value = uglify.gen_code attr[1]
-                code += " #{key}=\"' + #{value} + '\""
+                value = attr[1]
+                if value[0] is 'string'
+                  code[code.length-1] += " #{key}=\"#{value[1]}\""
+                else
+                  code[code.length-1] += " #{key}=\"');"
+                  code.push "text(#{uglify.gen_code value});"
+                  code.push "text('\""
             else
               if arg[0] is 'string' and args.length > 1 and arg is args[0]
                 classes = []
@@ -99,23 +105,23 @@ exports.compile = (source, hardcoded_locals, options) ->
                   else
                     classes.push i unless i is ''
 
-                code += " id=\"#{id}\"" if id
+                code[code.length-1] += " id=\"#{id}\"" if id
 
                 if classes.length > 0
-                  code += " class=\"#{classes.join ' '}\""
+                  code[code.length-1] += " class=\"#{classes.join ' '}\""
               else
                 contents = arg
 
         if name in coffeekup.self_closing
-          code += "/>'"
+          code[code.length-1] += "/>');"
         else
-          code += ">'"
+          code[code.length-1] += ">');"
     
-        tagopen = "text(#{code});\n"
+        tagopen = code
         if not (name in coffeekup.self_closing)
           tagclose = "text('</#{name}>');\n"
 
-        funcbody = [parse_expr tagopen]
+        funcbody = (parse_expr stmt for stmt in tagopen)
         if contents?
           # text(<contents>);
           funcbody.push ['stat', ['call', ['name', 'text'], [contents]]]
