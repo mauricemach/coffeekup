@@ -99,6 +99,12 @@ exports.compile = (source, hardcoded_locals, options) ->
         if tagclose?
           funcbody.push parse_expr tagclose
 
+        if w.parent()[0] is 'stat'
+          return [
+            'splice'
+            funcbody
+          ]
+
         return call_bound_func([
           'function'
           null # Anonymous function
