@@ -12,6 +12,7 @@ skeleton = '''
   };
   text = function(txt) {
     if (typeof txt === 'string') __ck.buffer.push(txt);
+    else if (typeof txt === 'number') __ck.buffer.push(String(txt));
   };
 
 '''
