@@ -42,9 +42,17 @@ exports.compile = (source, hardcoded_locals, options) ->
   w = uglify.ast_walker()
   ast = w.with_walkers
     call: (expr, args) ->
-      tag = expr[1]
-      if tag in coffeekup.tags
-        code = "'<#{tag}"
+      name = expr[1]
+
+      if name is 'doctype'
+        if args.length is 1 and String(args[0][1]) of coffeekup.doctypes
+          return ['call', ['name', 'text'],
+                  [['string', coffeekup.doctypes[String(args[0][1])]]]]
+        else
+          throw new Error 'Invalid doctype'
+
+      else if name in coffeekup.tags
+        code = "'<#{name}"
 
         for arg in args
           switch arg[0]
@@ -73,14 +81,14 @@ exports.compile = (source, hardcoded_locals, options) ->
               else
                 contents = arg
 
-        if tag in coffeekup.self_closing
+        if name in coffeekup.self_closing
           code += "/>'"
         else
           code += ">'"
     
         tagopen = "text(#{code});\n"
-        if not (tag in coffeekup.self_closing)
-          tagclose = "text('</#{tag}>');\n"
+        if not (name in coffeekup.self_closing)
+          tagclose = "text('</#{name}>');\n"
 
         funcbody = [
           parse_expr tagopen
