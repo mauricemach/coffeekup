@@ -18,20 +18,9 @@ skeleton = '''
 '''
 
 call_bound_func = (func) ->
-  return [
-    'call'
-    [
-      'dot'
-      func
-      'call'
-    ]
-    [
-      [
-        'name'
-        'data'
-      ]
-    ]
-  ]
+  # function(){ <func> }.call(data)
+  return ['call', ['dot', func, 'call'],
+          [['name', 'data']]]
 
 # Returns the first ast node for the given expression
 parse_expr = (expr) ->
@@ -93,26 +82,17 @@ exports.compile = (source, hardcoded_locals, options) ->
 
         funcbody = [parse_expr tagopen]
         if contents?
-          funcbody.push [
-            'stat'
-            [
-              'call'
-              [
-                'name'
-                'text'
-              ]
-              [contents]
-            ]
-          ]
+          # text(<contents>);
+          funcbody.push ['stat', ['call', ['name', 'text'], [contents]]]
         if tagclose?
           funcbody.push parse_expr tagclose
 
+        # If this function call ends with a semicolon and is not an argument to
+        # a function, unwrap it from its function wrapper.
         if w.parent()[0] is 'stat'
-          return [
-            'splice'
-            funcbody
-          ]
+          return ['splice', funcbody]
 
+        # Otherwise bind it to `data`
         return call_bound_func([
           'function'
           null # Anonymous function
