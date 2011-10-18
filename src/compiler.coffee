@@ -38,7 +38,7 @@ parse_expr = (expr) ->
 
 exports.compile = (source, hardcoded_locals, options) ->
 
-  ast = parser.parse source
+  ast = parser.parse "(#{source}).call(data);"
   w = uglify.ast_walker()
   ast = w.with_walkers
     call: (expr, args) ->
@@ -121,7 +121,7 @@ exports.compile = (source, hardcoded_locals, options) ->
     indent_level: 2
 
   # Main function assembly.
-  code = hardcoded_locals + skeleton + "(function(){#{compiled}}).call(data);"
+  code = hardcoded_locals + skeleton + compiled
   code += "return __ck.buffer.join('');"
 
   return new Function 'data', code
