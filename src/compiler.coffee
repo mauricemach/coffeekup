@@ -90,9 +90,9 @@ exports.compile = (source, hardcoded_locals, options) ->
         if not (name in coffeekup.self_closing)
           tagclose = "text('</#{name}>');\n"
 
-        funcbody = [
-          parse_expr tagopen
-          [
+        funcbody = [parse_expr tagopen]
+        if contents?
+          funcbody.push [
             'stat'
             [
               'call'
@@ -103,7 +103,6 @@ exports.compile = (source, hardcoded_locals, options) ->
               [contents]
             ]
           ]
-        ]
         if tagclose?
           funcbody.push parse_expr tagclose
 
