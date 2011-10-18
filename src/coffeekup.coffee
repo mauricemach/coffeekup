@@ -296,7 +296,7 @@ coffeekup.compile = (template, options = {}) ->
       else hardcoded_locals += "var #{k} = #{JSON.stringify v};"
 
   if compiler?
-    return compiler.compile template, options
+    return compiler.compile template, hardcoded_locals, options
   template = "function(){#{template}}"
 
   # Add a function for each tag this template references. We don't want to have

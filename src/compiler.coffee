@@ -36,7 +36,7 @@ call_bound_func = (func) ->
 parse_expr = (expr) ->
   return parser.parse(expr)[1][0]
 
-exports.compile = (source, options) ->
+exports.compile = (source, hardcoded_locals, options) ->
 
   ast = parser.parse source
   w = uglify.ast_walker()
@@ -95,7 +95,8 @@ exports.compile = (source, options) ->
     beautify: true
     indent_level: 2
 
-  code = skeleton + compiled
+  # Main function assembly.
+  code = hardcoded_locals + skeleton + compiled
   code += "return __ck.buffer.join('');"
 
   return new Function 'data', code
