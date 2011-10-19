@@ -164,6 +164,12 @@ exports.compile = (source, hardcoded_locals, options) ->
                   else if value[0] is 'string'
                     code.append " #{prefix + key}=\"#{value[1]}\""
 
+                  # Functions are rendered in an executable form.
+                  else if value[0] is 'function'
+                    code.append " #{prefix + key}=\""
+                    code.push call_bound_func(value, 'this')
+                    code.append '"'
+
                   # Prefixed attribute
                   else if value[0] is 'object'
                     # `data: {icon: 'foo'}` is rendered as `data-icon="foo"`.
