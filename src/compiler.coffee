@@ -23,10 +23,10 @@ skeleton = '''
 
 '''
 
-call_bound_func = (func) ->
+call_bound_func = (func, bind = 'data') ->
   # function(){ <func> }.call(data)
   return ['call', ['dot', func, 'call'],
-          [['name', 'data']]]
+          [['name', bind]]]
 
 
 # Represents compiled javascript code to be written to the template function.
@@ -101,18 +101,39 @@ exports.compile = (source, hardcoded_locals, options) ->
 
         return code.get_nodes()
 
-      else if name in coffeekup.tags or name is 'tag'
+      else if name in coffeekup.tags or name in ['tag', 'coffeescript']
         if name is 'tag'
           name = args.shift()[1]
+        if name is 'coffeescript'
+          name = 'script'
+          do (args) ->
+            arg_types = (arg[0] for arg in args)
+            if arg_types.indexOf('function') == -1
+              # Check if an object has been passed to the `coffeescript`
+              # function.  If so, add `type: "text/coffeescript"` to it. If
+              # not, inject `{ type: "text/coffeescript" }` as an argument to
+              # the `coffeescript` function.
+              obj_index = arg_types.indexOf('object')
+              if obj_index == -1
+                args.push ['object', [['type', ['string', 'text/coffeescript']]]]
+              else
+                args[obj_index].push ['type', ['string', 'text/coffeescript']]
 
-        # TODO: refactor this
         code = new Code w.parent()
         code.append "<#{name}"
 
         for arg in args
           switch arg[0]
             when 'function'
-              contents = call_bound_func(w.walk arg)
+              if name is 'script'
+                contents = [
+                  'string'
+                  uglify.gen_code ['stat', call_bound_func(arg, 'this')],
+                    beautify: true
+                    indent_level: 2
+                ]
+              else
+                contents = call_bound_func(w.walk arg)
             when 'object'
               for attr in arg[1]
                 key = attr[0]
