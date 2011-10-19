@@ -117,7 +117,7 @@ exports.compile = (source, hardcoded_locals, options) ->
               if obj_index == -1
                 args.push ['object', [['type', ['string', 'text/coffeescript']]]]
               else
-                args[obj_index].push ['type', ['string', 'text/coffeescript']]
+                args[obj_index][1].push ['type', ['string', 'text/coffeescript']]
 
         code = new Code w.parent()
         code.append "<#{name}"
