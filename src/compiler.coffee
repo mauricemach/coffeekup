@@ -122,9 +122,13 @@ exports.compile = (source, hardcoded_locals, options) ->
         code = new Code w.parent()
         code.append "<#{name}"
 
+        # Iterate over the arguments to the tag function and build the tag html
+        # as calls to the `text()` function.
         for arg in args
           switch arg[0]
+
             when 'function'
+              # If this is a `<script>` tag, stringify the function
               if name is 'script'
                 contents = [
                   'string'
@@ -132,8 +136,11 @@ exports.compile = (source, hardcoded_locals, options) ->
                     beautify: true
                     indent_level: 2
                 ]
+              # Otherwise recursively check for tag functions and inject the
+              # result as a bound function call
               else
                 contents = call_bound_func(w.walk arg)
+
             when 'object'
               for attr in arg[1]
                 key = attr[0]
@@ -149,7 +156,12 @@ exports.compile = (source, hardcoded_locals, options) ->
                   code.append " #{key}=\""
                   code.push value
                   code.append '"'
+
             else
+              # id class string: `"#id.class1.class2"`. Note that this compiler
+              # only supports simple string values: if you need to determine
+              # this tag's id or class dynamically, pass the value in an object
+              # e.g. `div id: "id", class: "class1 class2"`
               if arg[0] is 'string' and args.length > 1 and arg is args[0]
                 classes = []
 
@@ -163,6 +175,10 @@ exports.compile = (source, hardcoded_locals, options) ->
 
                 if classes.length > 0
                   code.append " class=\"#{classes.join ' '}\""
+
+              # For everything else, put into the template function as is. Note
+              # that the `text()` function in the template skeleton will only
+              # output strings and numbers.
               else
                 contents = arg
 
@@ -177,7 +193,7 @@ exports.compile = (source, hardcoded_locals, options) ->
 
         return code.get_nodes()
 
-      # Return the node as-is if it is not a call to a tag function
+      # Return the node as-is if this is not a call to a tag function
       return [this[0], w.walk(expr), uglify.MAP(args, w.walk)]
     , ->
       return w.walk ast
