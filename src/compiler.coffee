@@ -28,24 +28,48 @@ call_bound_func = (func) ->
   return ['call', ['dot', func, 'call'],
           [['name', 'data']]]
 
-# Returns the first ast node for the given expression
-parse_expr = (expr) ->
-  return parser.parse(expr)[1][0]
 
-# Bind this function to the ast walker and call it on an array of statement
-# nodes.  If the parent statement ends with a semicolon and is not an argument
-# to a function, return the statements as separate nodes. Otherwise wrap them
-# in an anonymous function.
-wrap_func = (funcbody) ->
-  if @parent()[0] is 'stat'
-    return ['splice', funcbody]
+# Represents compiled javascript code to be written to the template function.
+class Code
+  constructor: (parent) ->
+    @parent = parent
+    @nodes = []
+    @line = ''
 
-  return call_bound_func([
-    'function'
-    null # Anonymous function
-    [] # Takes no arguments
-    funcbody
-  ])
+  # Returns the ast node for `text(<arg>);`
+  call: (arg) ->
+    return ['stat', ['call', ['name', 'text'], [arg]]]
+
+  # Add `str` to the current line to be written
+  append: (str) ->
+    @line += str
+
+  # Flush the buffered line to the array of nodes
+  flush: ->
+    @nodes.push @call ['string', @line]
+    @line = ''
+
+  # Wrap an ast node in a call to `text()` and add it to the array of nodes
+  push: (node) ->
+    if @line then @flush()
+    @nodes.push @call node
+
+  # If the parent statement ends with a semicolon and is not an argument
+  # to a function, return the statements as separate nodes. Otherwise wrap them
+  # in an anonymous function bound to the `data` object.
+  get_nodes: ->
+    if @line then @flush()
+
+    if @parent[0] is 'stat'
+      return ['splice', @nodes]
+
+    return call_bound_func([
+      'function'
+      null # Anonymous function
+      [] # Takes no arguments
+      @nodes
+    ])
+
 
 exports.compile = (source, hardcoded_locals, options) ->
 
@@ -56,30 +80,34 @@ exports.compile = (source, hardcoded_locals, options) ->
       name = expr[1]
 
       if name is 'doctype'
-        if args.length is 1 and String(args[0][1]) of coffeekup.doctypes
-          return ['call', ['name', 'text'],
-                  [['string', coffeekup.doctypes[String(args[0][1])]]]]
+        doctype = String(args[0][1])
+        if doctype of coffeekup.doctypes
+          code = new Code w.parent()
+          code.append coffeekup.doctypes[doctype]
+          return code.get_nodes()
         else
           throw new Error 'Invalid doctype'
 
       else if name is 'comment'
         comment = args[0]
+        code = new Code w.parent()
+
         if comment[0] is 'string'
-          code = ["text('<!--#{comment[1]}-->');"]
+          code.append "<!--#{comment[1]}-->"
         else
-          code = [
-            "text('<!--');"
-            "text(#{uglify.gen_code comment});"
-            "text('-->');"
-          ]
-        return wrap_func.call(w, (parse_expr stmt for stmt in code))
+          code.append '<!--'
+          code.push comment
+          code.append '-->'
+
+        return code.get_nodes()
 
       else if name in coffeekup.tags or name is 'tag'
         if name is 'tag'
           name = args.shift()[1]
 
         # TODO: refactor this
-        code = ["text('<#{name}"]
+        code = new Code w.parent()
+        code.append "<#{name}"
 
         for arg in args
           switch arg[0]
@@ -89,12 +117,17 @@ exports.compile = (source, hardcoded_locals, options) ->
               for attr in arg[1]
                 key = attr[0]
                 value = attr[1]
+
+                # If `value` is a simple string, include it in the same call to
+                # `text` as the tag
                 if value[0] is 'string'
-                  code[code.length-1] += " #{key}=\"#{value[1]}\""
+                  code.append " #{key}=\"#{value[1]}\""
+
+                # Otherwise put it in a separate tag
                 else
-                  code[code.length-1] += " #{key}=\"');"
-                  code.push "text(#{uglify.gen_code value});"
-                  code.push "text('\""
+                  code.append " #{key}=\""
+                  code.push value
+                  code.append '"'
             else
               if arg[0] is 'string' and args.length > 1 and arg is args[0]
                 classes = []
@@ -105,31 +138,25 @@ exports.compile = (source, hardcoded_locals, options) ->
                   else
                     classes.push i unless i is ''
 
-                code[code.length-1] += " id=\"#{id}\"" if id
+                code.append " id=\"#{id}\"" if id
 
                 if classes.length > 0
-                  code[code.length-1] += " class=\"#{classes.join ' '}\""
+                  code.append " class=\"#{classes.join ' '}\""
               else
                 contents = arg
 
         if name in coffeekup.self_closing
-          code[code.length-1] += "/>');"
+          code.append '/>'
         else
-          code[code.length-1] += ">');"
+          code.append '>'
     
-        tagopen = code
+        code.push contents if contents?
         if not (name in coffeekup.self_closing)
-          tagclose = "text('</#{name}>');\n"
+          code.append "</#{name}>"
 
-        funcbody = (parse_expr stmt for stmt in tagopen)
-        if contents?
-          # text(<contents>);
-          funcbody.push ['stat', ['call', ['name', 'text'], [contents]]]
-        if tagclose?
-          funcbody.push parse_expr tagclose
+        return code.get_nodes()
 
-        return wrap_func.call(w, funcbody)
-
+      # Return the node as-is if it is not a call to a tag function
       return [this[0], w.walk(expr), uglify.MAP(args, w.walk)]
     , ->
       return w.walk ast
