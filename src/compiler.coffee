@@ -20,6 +20,14 @@ skeleton = '''
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
   };
+  yield = function(f) {
+    var temp_buffer = [];
+    var old_buffer = __ck.buffer;
+    __ck.buffer = temp_buffer;
+    f();
+    __ck.buffer = old_buffer;
+    return temp_buffer.join('');
+  };
 
 '''
 
@@ -205,7 +213,7 @@ exports.compile = (source, hardcoded_locals, options) ->
               # that the `text()` function in the template skeleton will only
               # output strings and numbers.
               else
-                contents = arg
+                contents = w.walk arg
 
         if name in coffeekup.self_closing
           code.append '/>'
