@@ -155,21 +155,24 @@ exports.compile = (source, hardcoded_locals, options) ->
                   key = attr[0]
                   value = attr[1]
 
-                  switch value[0]
-                    # If `value` is a simple string, include it in the same call to
-                    # `text` as the tag
-                    when 'string'
-                      code.append " #{prefix + key}=\"#{value[1]}\""
+                  # `true` is rendered as `selected="selected"`.
+                  if value[0] is 'name' and value[1] is 'true'
+                    code.append " #{key}=\"#{key}\""
 
-                    # Prefixed attribute
-                    when 'object'
-                      # `data: {icon: 'foo'}` is rendered as `data-icon="foo"`.
-                      render_attrs value[1], prefix + key + '-'
+                  # If `value` is a simple string, include it in the same call to
+                  # `text` as the tag
+                  else if value[0] is 'string'
+                    code.append " #{prefix + key}=\"#{value[1]}\""
 
-                    else
-                      code.append " #{prefix + key}=\""
-                      code.push value
-                      code.append '"'
+                  # Prefixed attribute
+                  else if value[0] is 'object'
+                    # `data: {icon: 'foo'}` is rendered as `data-icon="foo"`.
+                    render_attrs value[1], prefix + key + '-'
+
+                  else
+                    code.append " #{prefix + key}=\""
+                    code.push value
+                    code.append '"'
 
               render_attrs arg[1]
 
