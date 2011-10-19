@@ -11,8 +11,12 @@ skeleton = '''
     buffer: []
   };
   text = function(txt) {
-    if (typeof txt === 'string') __ck.buffer.push(txt);
-    else if (typeof txt === 'number') __ck.buffer.push(String(txt));
+    if (typeof txt === 'string' || txt instanceof String) {
+      __ck.buffer.push(txt);
+    }
+    else if (typeof txt === 'number' || txt instanceof Number) {
+    __ck.buffer.push(String(txt));
+    }
   };
   h = function(txt) {
     return String(txt).replace(/&/g, '&amp;')
@@ -35,7 +39,6 @@ call_bound_func = (func, bind = 'data') ->
   # function(){ <func> }.call(data)
   return ['call', ['dot', func, 'call'],
           [['name', bind]]]
-
 
 # Represents compiled javascript code to be written to the template function.
 class Code
@@ -80,6 +83,12 @@ class Code
 
 
 exports.compile = (source, hardcoded_locals, options) ->
+
+  escape = (node) ->
+    if options.autoescape
+      # h(<node>)
+      return ['call', ['name', 'h'], [node]]
+    return node
 
   ast = parser.parse hardcoded_locals + "(#{source}).call(data);"
   w = uglify.ast_walker()
@@ -175,7 +184,7 @@ exports.compile = (source, hardcoded_locals, options) ->
                   # Functions are rendered in an executable form.
                   else if value[0] is 'function'
                     code.append " #{prefix + key}=\""
-                    code.push call_bound_func(value, 'this')
+                    code.push escape call_bound_func(value, 'this')
                     code.append '"'
 
                   # Prefixed attribute
@@ -185,17 +194,17 @@ exports.compile = (source, hardcoded_locals, options) ->
 
                   else
                     code.append " #{prefix + key}=\""
-                    code.push value
+                    code.push escape value
                     code.append '"'
 
               render_attrs arg[1]
 
-            else
+            when 'string'
               # id class string: `"#id.class1.class2"`. Note that this compiler
               # only supports simple string values: if you need to determine
               # this tag's id or class dynamically, pass the value in an object
-              # e.g. `div id: "id", class: "class1 class2"`
-              if arg[0] is 'string' and args.length > 1 and arg is args[0] and name != 'script'
+              # e.g. `div id: @getId(), class: getClasses()`
+              if args.length > 1 and arg is args[0] and name != 'script'
                 classes = []
 
                 for i in arg[1].split '.'
@@ -209,11 +218,19 @@ exports.compile = (source, hardcoded_locals, options) ->
                 if classes.length > 0
                   code.append " class=\"#{classes.join ' '}\""
 
-              # For everything else, put into the template function as is. Note
-              # that the `text()` function in the template skeleton will only
-              # output strings and numbers.
+              # Simple string, render it as is.
               else
-                contents = w.walk arg
+                code.append arg[1]
+
+            # A concatenated string e.g. `"id-" + @id`
+            when 'binary'
+              contents = escape w.walk arg
+
+            # For everything else, put into the template function as is. Note
+            # that the `text()` function in the template skeleton will only
+            # output strings and numbers.
+            else
+              contents = w.walk arg
 
         if name in coffeekup.self_closing
           code.append '/>'
@@ -227,7 +244,7 @@ exports.compile = (source, hardcoded_locals, options) ->
         return code.get_nodes()
 
       # Return the node as-is if this is not a call to a tag function
-      return [this[0], w.walk(expr), uglify.MAP(args, w.walk)]
+      return null
     , ->
       return w.walk ast
 
