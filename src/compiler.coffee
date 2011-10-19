@@ -203,6 +203,8 @@ exports.compile = (source, hardcoded_locals, options) ->
     indent_level: 2
 
   # Main function assembly.
+  if options.locals
+    compiled = "with(data.locals){#{compiled}}"
   code = skeleton + compiled + "return __ck.buffer.join('');"
 
   return new Function 'data', code
