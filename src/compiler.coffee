@@ -101,6 +101,14 @@ exports.compile = (source, hardcoded_locals, options) ->
 
         return code.get_nodes()
 
+      else if name is 'ie'
+        [condition, contents] = args
+        code = new Code w.parent()
+        code.append "<!--[if #{condition[1]}]>"
+        code.push call_bound_func(w.walk contents)
+        code.append '<![endif]-->'
+        return code.get_nodes()
+
       else if name in coffeekup.tags or name in ['tag', 'coffeescript']
         if name is 'tag'
           name = args.shift()[1]
