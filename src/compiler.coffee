@@ -162,7 +162,7 @@ exports.compile = (source, hardcoded_locals, options) ->
               # only supports simple string values: if you need to determine
               # this tag's id or class dynamically, pass the value in an object
               # e.g. `div id: "id", class: "class1 class2"`
-              if arg[0] is 'string' and args.length > 1 and arg is args[0]
+              if arg[0] is 'string' and args.length > 1 and arg is args[0] and name != 'script'
                 classes = []
 
                 for i in arg[1].split '.'
