@@ -150,20 +150,28 @@ exports.compile = (source, hardcoded_locals, options) ->
                 contents = call_bound_func(w.walk arg)
 
             when 'object'
-              for attr in arg[1]
-                key = attr[0]
-                value = attr[1]
+              render_attrs = (obj, prefix = '') ->
+                for attr in obj
+                  key = attr[0]
+                  value = attr[1]
 
-                # If `value` is a simple string, include it in the same call to
-                # `text` as the tag
-                if value[0] is 'string'
-                  code.append " #{key}=\"#{value[1]}\""
+                  switch value[0]
+                    # If `value` is a simple string, include it in the same call to
+                    # `text` as the tag
+                    when 'string'
+                      code.append " #{prefix + key}=\"#{value[1]}\""
 
-                # Otherwise put it in a separate tag
-                else
-                  code.append " #{key}=\""
-                  code.push value
-                  code.append '"'
+                    # Prefixed attribute
+                    when 'object'
+                      # `data: {icon: 'foo'}` is rendered as `data-icon="foo"`.
+                      render_attrs value[1], prefix + key + '-'
+
+                    else
+                      code.append " #{prefix + key}=\""
+                      code.push value
+                      code.append '"'
+
+              render_attrs arg[1]
 
             else
               # id class string: `"#id.class1.class2"`. Note that this compiler
