@@ -113,20 +113,23 @@ exports.compile = (source, hardcoded_locals, options) ->
       else if name is 'comment'
         comment = args[0]
         code = new Code w.parent()
-
         if comment[0] is 'string'
           code.append "<!--#{comment[1]}-->"
         else
           code.append '<!--'
           code.push escape comment
           code.append '-->'
-
         return code.get_nodes()
 
       else if name is 'ie'
         [condition, contents] = args
         code = new Code w.parent()
-        code.append "<!--[if #{condition[1]}]>"
+        if condition[0] is 'string'
+          code.append "<!--[if #{condition[1]}]>"
+        else
+          code.append '<!--[if '
+          code.push escape condition
+          code.append ']>'
         code.push call_bound_func(w.walk contents)
         code.append '<![endif]-->'
         return code.get_nodes()
