@@ -103,13 +103,16 @@ exports.compile = (source, hardcoded_locals, options) ->
       name = expr[1]
 
       if name is 'doctype'
-        doctype = String(args[0][1])
-        if doctype of coffeekup.doctypes
-          code = new Code w.parent()
-          code.append coffeekup.doctypes[doctype]
-          return code.get_nodes()
+        code = new Code w.parent()
+        if args.length > 0
+          doctype = String(args[0][1])
+          if doctype of coffeekup.doctypes
+            code.append coffeekup.doctypes[doctype]
+          else
+            throw new Error 'Invalid doctype'
         else
-          throw new Error 'Invalid doctype'
+          code.append coffeekup.doctypes.default
+        return code.get_nodes()
 
       else if name is 'comment'
         comment = args[0]
