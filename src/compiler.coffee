@@ -13,16 +13,21 @@ skeleton = '''
   text = function(txt) {
     if (typeof txt === 'string' || txt instanceof String) {
       __ck.buffer.push(txt);
-    }
-    else if (typeof txt === 'number' || txt instanceof Number) {
-    __ck.buffer.push(String(txt));
+    } else if (typeof txt === 'number' || txt instanceof Number) {
+      __ck.buffer.push(String(txt));
     }
   };
   h = function(txt) {
-    return String(txt).replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+    var escaped;
+    if (typeof txt === 'string' || txt instanceof String) {
+      escaped = txt.replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    } else {
+      escaped = txt;
+    }
+    return escaped;
   };
   yield = function(f) {
     var temp_buffer = [];
@@ -163,9 +168,16 @@ exports.compile = (source, hardcoded_locals, options) ->
                     indent_level: 2
                 ]
               # Otherwise recursively check for tag functions and inject the
-              # result as a bound function call
+              # result as a bound function call, escaping return values if necessary
               else
-                contents = call_bound_func(w.walk arg)
+                func = w.walk arg
+
+                # Escape return values unless they are hardcoded strings
+                for node, idx in func[3]
+                  if node[0] is 'return' and node[1]? and node[1][0] != 'string'
+                    func[3][idx][1] = escape node[1]
+
+                contents = call_bound_func(func)
 
             when 'object'
               render_attrs = (obj, prefix = '') ->
