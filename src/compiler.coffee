@@ -240,11 +240,10 @@ exports.compile = (source, hardcoded_locals, options) ->
                   else if value[0] is 'string'
                     code.append " #{prefix + key}=\"#{value[1]}\""
 
-                  # Functions are rendered in an executable form.
+                  # Functions are prerendered as text
                   else if value[0] is 'function'
-                    code.append " #{prefix + key}=\""
-                    code.push escape call_bound_func(value, 'this')
-                    code.append '"'
+                    func = uglify.gen_code(value).replace(/"/g, '&quot;')
+                    code.append " #{prefix + key}=\"#{func}.call(this);\""
 
                   # Prefixed attribute
                   else if value[0] is 'object'
