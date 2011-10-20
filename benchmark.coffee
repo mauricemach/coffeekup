@@ -65,6 +65,8 @@ coffeekup_string_template = """
 
 coffeekup_compiled_template = coffeekup.compile coffeekup_template
 
+coffeekup_optimized_template = coffeekup.compile coffeekup_template, optimize: yes
+
 jade_template = '''
   !!! 5
   html(lang="en")
@@ -189,6 +191,7 @@ benchmark = (title, code) ->
 
 
 benchmark 'CoffeeKup (precompiled)', -> coffeekup_compiled_template data
+benchmark 'CoffeeKup (precompiled, optimized)', -> coffeekup_optimized_template data
 benchmark 'Jade (precompiled)', -> jade_compiled_template data
 benchmark 'haml-js (precompiled)', -> haml_template_compiled data
 benchmark 'Eco', -> eco.render eco_template, data
