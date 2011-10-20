@@ -1,3 +1,5 @@
+#!/usr/bin/env coffee
+
 tests =
   'Literal text':
     template: "text 'Just text'"
@@ -219,3 +221,5 @@ render = ck.render
       print t.template + "\n"
       printc 'green', t.expected + "\n"
       printc 'redder', t.result.stack + "\n\n"
+
+@run()
