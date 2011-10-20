@@ -118,7 +118,7 @@ exports.compile = (source, hardcoded_locals, options) ->
           code.append "<!--#{comment[1]}-->"
         else
           code.append '<!--'
-          code.push comment
+          code.push escape comment
           code.append '-->'
 
         return code.get_nodes()
