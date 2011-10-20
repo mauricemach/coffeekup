@@ -202,7 +202,7 @@ exports.compile = (source, hardcoded_locals, options) ->
 
             when 'string'
               # id class string: `"#id.class1.class2"`. Note that this compiler
-              # only supports simple string values: if you need to determine
+              # only supports hardcoded string values: if you need to determine
               # this tag's id or class dynamically, pass the value in an object
               # e.g. `div id: @getId(), class: getClasses()`
               if args.length > 1 and arg is args[0]
@@ -219,13 +219,15 @@ exports.compile = (source, hardcoded_locals, options) ->
                 if classes.length > 0
                   code.append " class=\"#{classes.join ' '}\""
 
-              # Simple string, render it as is.
+              # Hardcoded string, render it as is.
               else
                 code.append arg[1]
 
             # A concatenated string e.g. `"id-" + @id`
             when 'binary'
 
+              # Traverse the ast nodes, selectively escaping anything other
+              # than hardcoded strings and calls to `yield`.
               escape_all = (node) ->
                 switch node[0]
                   when 'binary'
@@ -247,7 +249,7 @@ exports.compile = (source, hardcoded_locals, options) ->
             # that the `text()` function in the template skeleton will only
             # output strings and numbers.
             else
-              contents = w.walk arg
+              contents = escape w.walk arg
 
         if name in coffeekup.self_closing
           code.append '/>'
