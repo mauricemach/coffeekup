@@ -41,10 +41,10 @@ skeleton = '''
 
 '''
 
-call_bound_func = (func, bind = 'data') ->
+call_bound_func = (func) ->
   # function(){ <func> }.call(data)
   return ['call', ['dot', func, 'call'],
-          [['name', bind]]]
+          [['name', 'data']]]
 
 # Represents compiled javascript code to be written to the template function.
 class Code
@@ -191,12 +191,10 @@ exports.compile = (source, hardcoded_locals, options) ->
             when 'function'
               # If this is a `<script>` tag, stringify the function
               if name is 'script'
-                contents = [
-                  'string'
-                  uglify.gen_code ['stat', call_bound_func(arg, 'this')],
+                func = uglify.gen_code arg,
                     beautify: true
                     indent_level: 2
-                ]
+                contents = ['string', "#{func}.call(this);"]
               # Otherwise recursively check for tag functions and inject the
               # result as a bound function call, escaping return values if necessary
               else
