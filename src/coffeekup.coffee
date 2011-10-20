@@ -296,7 +296,9 @@ coffeekup.compile = (template, options = {}) ->
         hardcoded_locals += "var #{k} = function(){return (#{v}).apply(data, arguments);};"
       else hardcoded_locals += "var #{k} = #{JSON.stringify v};"
 
-  if compiler?
+  # If `optimize` is set on the options hash, use uglify-js to parse the
+  # template function's code and optimize it using static analysis.
+  if options.optimize and compiler?
     return compiler.compile template, hardcoded_locals, options
 
   # Add a function for each tag this template references. We don't want to have
