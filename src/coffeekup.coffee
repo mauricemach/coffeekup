@@ -345,6 +345,10 @@ coffeekup.render = (template, data = {}, options = {}) ->
   data[k] = v for k, v of options
   data.cache ?= off
 
+  # Do not optimize templates if the cache is disabled, as it will slow
+  # everything down considerably.
+  if data.optimize and not data.cache then data.optimize = no
+
   if data.cache and cache[template]? then tpl = cache[template]
   else if data.cache then tpl = cache[template] = coffeekup.compile(template, data)
   else tpl = coffeekup.compile(template, data)
