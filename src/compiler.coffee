@@ -267,7 +267,7 @@ exports.compile = (source, hardcoded_locals, options) ->
               contents = escape w.walk arg
 
         if name in coffeekup.self_closing
-          code.append '/>'
+          code.append ' />'
         else
           code.append '>'
     
