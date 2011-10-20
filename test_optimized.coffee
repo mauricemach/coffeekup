@@ -111,11 +111,10 @@ tests =
     expected: "<h1>&lt;script&gt;alert('&quot;pwned&quot; by c&amp;a &amp;copy;')&lt;/script&gt;</h1>"
 
   'Autoescaping':
-    template: "h1 @script"
+    template: "h1 \"<script>alert('\\\"pwned\\\" by c&a &copy;')</script>\""
     expected: "<h1>&lt;script&gt;alert('&quot;pwned&quot; by c&amp;a &amp;copy;')&lt;/script&gt;</h1>"
     params:
       autoescape: yes
-      script: "<script>alert('\"pwned\" by c&a &copy;')</script>"
 
   'ID/class shortcut (combo)':
     template: "div '#myid.myclass1.myclass2', 'foo'"
@@ -183,8 +182,10 @@ render = ck.render
       if not test.params?
         test.params =
           optimize: true
+          cache: on
       else
         test.params.optimize = true
+        test.params.cache = true
       test.original_params = JSON.stringify test.params
 
       if test.run
