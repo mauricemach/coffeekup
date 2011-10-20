@@ -129,6 +129,7 @@ exports.compile = (source, hardcoded_locals, options) ->
       else if name in coffeekup.tags or name in ['tag', 'coffeescript']
         if name is 'tag'
           name = args.shift()[1]
+        # TODO: fix this
         if name is 'coffeescript'
           name = 'script'
           do (args) ->
@@ -204,7 +205,7 @@ exports.compile = (source, hardcoded_locals, options) ->
               # only supports simple string values: if you need to determine
               # this tag's id or class dynamically, pass the value in an object
               # e.g. `div id: @getId(), class: getClasses()`
-              if args.length > 1 and arg is args[0] and name != 'script'
+              if args.length > 1 and arg is args[0]
                 classes = []
 
                 for i in arg[1].split '.'
@@ -224,7 +225,23 @@ exports.compile = (source, hardcoded_locals, options) ->
 
             # A concatenated string e.g. `"id-" + @id`
             when 'binary'
-              contents = escape w.walk arg
+
+              escape_all = (node) ->
+                switch node[0]
+                  when 'binary'
+                    node[2] = escape_all node[2]
+                    node[3] = escape_all node[3]
+                    return node
+                  when 'string'
+                    return node
+                  when 'call'
+                    if node[1][0] is 'name' and node[1][1] is 'yield'
+                      return node
+                    return escape node
+                  else
+                    return escape node
+
+              contents = escape_all w.walk arg
 
             # For everything else, put into the template function as is. Note
             # that the `text()` function in the template skeleton will only
