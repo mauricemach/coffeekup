@@ -274,8 +274,12 @@ exports.compile = (source, hardcoded_locals, options) ->
                 if classes.length > 0
                   code.append " class=\"#{classes.join ' '}\""
 
-              # Hardcoded string, render it as is.
+              # Hardcoded string, escape and render it.
               else
+                arg[1] = arg[1].replace(/&/g, '&amp;')
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;')
+                  .replace(/"/g, '&quot;')
                 contents = arg
 
             # A concatenated string e.g. `"id-" + @id`
