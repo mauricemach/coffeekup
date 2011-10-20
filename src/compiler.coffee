@@ -1,3 +1,4 @@
+coffee = require 'coffee-script'
 {uglify, parser} = require 'uglify-js'
 coffeekup = null
 
@@ -137,21 +138,17 @@ exports.compile = (source, hardcoded_locals, options) ->
       else if name in coffeekup.tags or name in ['tag', 'coffeescript']
         if name is 'tag'
           name = args.shift()[1]
-        # TODO: fix this
+
+        # Compile coffeescript strings to js
         if name is 'coffeescript'
           name = 'script'
-          do (args) ->
-            arg_types = (arg[0] for arg in args)
-            if arg_types.indexOf('function') == -1
-              # Check if an object has been passed to the `coffeescript`
-              # function.  If so, add `type: "text/coffeescript"` to it. If
-              # not, inject `{ type: "text/coffeescript" }` as an argument to
-              # the `coffeescript` function.
-              obj_index = arg_types.indexOf('object')
-              if obj_index == -1
-                args.push ['object', [['type', ['string', 'text/coffeescript']]]]
-              else
-                args[obj_index][1].push ['type', ['string', 'text/coffeescript']]
+          for arg in args
+            # Dynamically generated coffeescript not supported
+            if arg[0] not in ['string', 'object', 'function']
+              throw new Error 'Invalid argument to coffeescript function'
+            # Make sure this isn't an id class string, and compile it to js
+            if arg[0] is 'string' and (args.length is 1 or arg isnt args[0])
+              arg[1] = coffee.compile arg[1], bare: yes
 
         code = new Code w.parent()
         code.append "<#{name}"
@@ -236,7 +233,7 @@ exports.compile = (source, hardcoded_locals, options) ->
 
               # Hardcoded string, render it as is.
               else
-                code.append arg[1]
+                contents = arg
 
             # A concatenated string e.g. `"id-" + @id`
             when 'binary'
