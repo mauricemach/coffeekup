@@ -59,23 +59,50 @@ class Code
 
   # Add `str` to the current line to be written
   append: (str) ->
-    @line += str
+    if @block?
+      @block.append str
+    else
+      @line += str
 
   # Flush the buffered line to the array of nodes
   flush: ->
-    @nodes.push @call ['string', @line]
-    @line = ''
+    if @block?
+      @block.flush()
+    else
+      @nodes.push @call ['string', @line]
+      @line = ''
+
+  # Wrap subsequent calls to `text()` in an if block
+  open_if: (condition) ->
+    @flush()
+    if @block?
+      @block.open_if condition
+    else
+      @block = new Code()
+      @block.condition = condition
+
+  # Close an if block
+  close_if: ->
+    @flush()
+    if @block.block?
+      @block.close_if()
+    else
+      @nodes.push ['if', @block.condition, ['block', @block.nodes]]
+      delete @block
 
   # Wrap an ast node in a call to `text()` and add it to the array of nodes
   push: (node) ->
-    if @line then @flush()
-    @nodes.push @call node
+    @flush()
+    if @block?
+      @block.push node
+    else
+      @nodes.push @call node
 
   # If the parent statement ends with a semicolon and is not an argument
   # to a function, return the statements as separate nodes. Otherwise wrap them
   # in an anonymous function bound to the `data` object.
   get_nodes: ->
-    if @line then @flush()
+    @flush()
 
     if @parent[0] is 'stat'
       return ['splice', @nodes]
@@ -191,6 +218,22 @@ exports.compile = (source, hardcoded_locals, options) ->
                   # `true` is rendered as `selected="selected"`.
                   if value[0] is 'name' and value[1] is 'true'
                     code.append " #{key}=\"#{key}\""
+
+                  # Do not render boolean false values
+                  else if value[0] is 'name' and value[1] in ['undefined', 'null', 'false']
+                    continue
+
+                  # Wrap variables in a conditional block to make sure they are set
+                  else if value[0] in ['name', 'dot']
+                    varname = uglify.gen_code value
+                    # Here we write the `if` condition in js and parse it, as
+                    # writing the nodes manually is tedious and hard to read
+                    condition = "typeof #{varname} !== 'undefined' && #{varname} !== null && #{varname} !== false"
+                    code.open_if parser.parse(condition)[1][0][1] # Strip 'toplevel' and 'stat' labels
+                    code.append " #{prefix + key}=\""
+                    code.push escape value
+                    code.append '"'
+                    code.close_if()
 
                   # If `value` is a simple string, include it in the same call to
                   # `text` as the tag
