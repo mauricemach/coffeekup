@@ -114,9 +114,11 @@ tests =
     expected: "<h1>&lt;script&gt;alert('&quot;pwned&quot; by c&amp;a &amp;copy;')&lt;/script&gt;</h1>"
 
   'Autoescaping':
-    template: "h1 \"<script>alert('\\\"pwned\\\" by c&a &copy;')</script>\""
+    template: "h1 @script"
     expected: "<h1>&lt;script&gt;alert('&quot;pwned&quot; by c&amp;a &amp;copy;')&lt;/script&gt;</h1>"
-    params: {autoescape: yes}
+    params:
+      autoescape: yes
+      script: "<script>alert('\"pwned\" by c&a &copy;')</script>"
 
   'ID/class shortcut (combo)':
     template: "div '#myid.myclass1.myclass2', 'foo'"
