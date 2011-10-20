@@ -137,7 +137,7 @@ tests =
     expected: '<img id="myid" class="myclass" src="/pic.png" />'
       
   'Attribute values':
-    template: "br vrai: yes, faux: no, undef: @foo, nil: null, str: 'str', num: 42, arr: [1, 2, 3], obj: {foo: 'bar'}, func: ->"
+    template: "br vrai: yes, faux: no, undef: @foo, nil: null, str: 'str', num: 42, arr: [1, 2, 3].join(','), obj: {foo: 'bar'}, func: ->"
     expected: '<br vrai="vrai" str="str" num="42" arr="1,2,3" obj-foo="bar" func="(function(){}).call(this);" />'
     
   'IE conditionals':

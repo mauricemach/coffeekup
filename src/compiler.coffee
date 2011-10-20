@@ -14,7 +14,7 @@ skeleton = '''
   text = function(txt) {
     if (typeof txt === 'string' || txt instanceof String) {
       __ck.buffer.push(txt);
-    } else if (typeof txt === 'number' || txt instanceof Number || Array.isArray(txt)) {
+    } else if (typeof txt === 'number' || txt instanceof Number) {
       __ck.buffer.push(String(txt));
     }
   };
