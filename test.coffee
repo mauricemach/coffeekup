@@ -152,18 +152,19 @@ tests =
           ie 'gte IE8', ->
             link href: 'ie.css', rel: 'stylesheet'
     """
-    expected: '''
-      <html>
-        <head>
-          <title>test</title>
-          <!--[if gte IE8]>
-            <link href="ie.css" rel="stylesheet" />
-          <![endif]-->
-        </head>
-      </html>
-      
-    '''
-    params: {format: yes}
+    expected: '<html><head><title>test</title><!--[if gte IE8]><link href="ie.css" rel="stylesheet" /><![endif]--></head></html>'
+    #expected: '''
+    #  <html>
+    #    <head>
+    #      <title>test</title>
+    #      <!--[if gte IE8]>
+    #        <link href="ie.css" rel="stylesheet" />
+    #      <![endif]-->
+    #    </head>
+    #  </html>
+    #  
+    #'''
+    #params: {format: yes}
     
   'yield':
     template: "p \"This text could use \#{yield -> strong -> a href: '/', 'a link'}.\""
