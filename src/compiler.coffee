@@ -9,13 +9,13 @@ exports.setup = (ck) ->
 
 skeleton = '''
   __ck = {
-    buffer: []
+    buffer: ''
   };
   text = function(txt) {
     if (typeof txt === 'string' || txt instanceof String) {
-      __ck.buffer.push(txt);
+      __ck.buffer += txt;
     } else if (typeof txt === 'number' || txt instanceof Number) {
-      __ck.buffer.push(String(txt));
+      __ck.buffer += String(txt);
     }
   };
   h = function(txt) {
@@ -31,12 +31,13 @@ skeleton = '''
     return escaped;
   };
   yield = function(f) {
-    var temp_buffer = [];
+    var temp_buffer = '';
     var old_buffer = __ck.buffer;
     __ck.buffer = temp_buffer;
     f();
+    temp_buffer = __ck.buffer;
     __ck.buffer = old_buffer;
-    return temp_buffer.join('');
+    return temp_buffer;
   };
 
 '''
@@ -333,7 +334,7 @@ exports.compile = (source, hardcoded_locals, options) ->
   # Main function assembly.
   if options.locals
     compiled = "with(data.locals){#{compiled}}"
-  code = skeleton + compiled + "return __ck.buffer.join('');"
+  code = skeleton + compiled + "return __ck.buffer;"
 
   return new Function 'data', code
 
