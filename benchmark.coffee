@@ -157,6 +157,8 @@ eco_template = '''
   </html>
 '''
 
+eco_compiled_template = eco.compile eco_template
+
 haml_template = '''
   !!! 5
   %html{lang: "en"}
@@ -194,7 +196,7 @@ benchmark 'CoffeeKup (precompiled)', -> coffeekup_compiled_template data
 benchmark 'CoffeeKup (precompiled, optimized)', -> coffeekup_optimized_template data
 benchmark 'Jade (precompiled)', -> jade_compiled_template data
 benchmark 'haml-js (precompiled)', -> haml_template_compiled data
-benchmark 'Eco', -> eco.render eco_template, data
+benchmark 'Eco (precompiled)', -> eco_compiled_template data
 
 console.log '\n'
 
@@ -202,6 +204,7 @@ benchmark 'CoffeeKup (function, cache on)', -> coffeekup.render coffeekup_templa
 benchmark 'CoffeeKup (string, cache on)', -> coffeekup.render coffeekup_string_template, data, cache: on
 #benchmark 'Jade (cache on)', -> jade.render jade_template, locals: data, cache: on, filename: 'test'
 benchmark 'ejs (cache on)', -> ejs.render ejs_template, locals: data, cache: on, filename: 'test'
+benchmark 'Eco', -> eco.render eco_template, data
 
 console.log '\n'
 
