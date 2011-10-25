@@ -8,17 +8,17 @@ exports.setup = (ck) ->
   coffeekup = ck
 
 skeleton = '''
-  __ck = {
+  var __ck = {
     buffer: ''
   };
-  text = function(txt) {
+  var text = function(txt) {
     if (typeof txt === 'string' || txt instanceof String) {
       __ck.buffer += txt;
     } else if (typeof txt === 'number' || txt instanceof Number) {
       __ck.buffer += String(txt);
     }
   };
-  h = function(txt) {
+  var h = function(txt) {
     var escaped;
     if (typeof txt === 'string' || txt instanceof String) {
       escaped = txt.replace(/&/g, '&amp;')
@@ -30,7 +30,7 @@ skeleton = '''
     }
     return escaped;
   };
-  yield = function(f) {
+  var yield = function(f) {
     var temp_buffer = '';
     var old_buffer = __ck.buffer;
     __ck.buffer = temp_buffer;
