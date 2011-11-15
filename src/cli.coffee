@@ -2,7 +2,7 @@ coffeekup = require './coffeekup'
 fs = require 'fs'
 path = require 'path'
 puts = console.log
-{OptionParser} = require 'coffee-script/lib/optparse'
+{OptionParser} = require 'coffee-script/lib/coffee-script/optparse'
 
 argv = process.argv[2..]
 options = null
