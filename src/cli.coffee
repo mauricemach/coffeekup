@@ -11,6 +11,12 @@ handle_error = (err) -> console.log err.stack if err
 
 compilejs = (paths, output_directory, namespace = 'templates') ->
   templates = ''
+  
+  if paths.length > 1
+    output_filename = namespace
+  else
+    output_filename = path.basename(paths[0], '.coffee')
+  
   paths.forEach (input_path) ->  
     contents = fs.readFileSync input_path, 'utf-8'
     name = path.basename input_path, path.extname(input_path)
@@ -26,30 +32,14 @@ compilejs = (paths, output_directory, namespace = 'templates') ->
   """
   ext = '.js'
 
-  write null, 'templates', output, output_directory, ext
+  write null, output_filename, output, output_directory, ext
 
-compile = (input_path, output_directory, js, namespace = 'templates') ->
+compilehtml = (input_path, output_directory) ->
   fs.readFile input_path, 'utf-8', (err, contents) ->
     handle_error err   
-
     name = path.basename input_path, path.extname(input_path)
-
-    if not js
-      output = coffeekup.render contents, options
-      ext = '.html'
-    else        
-      func = coffeekup.templatize contents, options
-      output = """
-        (function(){ 
-          this.#{namespace} || (this.#{namespace} = {});
-          // builder fn
-          var createBuilder = #{coffeekup.builder()}
-          // endbuilder fn
-          this.#{namespace}[#{JSON.stringify name}] = #{func}; 
-        }).call(this);
-      """
-      ext = '.js'
-
+    output = coffeekup.render contents, options
+    ext = '.html'
     write input_path, name, output, output_directory, ext
 
 write = (input_path, name, contents, output_directory, ext) ->
@@ -97,15 +87,20 @@ switches = [
       coffeekup.render contents, options
 
   if args.length > 0
-    files = fs.readdirSync(args[0])
-    file = args[0]
+    files = [args[0]]  
+    fs.stat args[0], (err, stats) ->
+      files = fs.readdirSync(args[0]) if stats.isDirectory()
+
+      compile = ->
+        compilehtml files[0], options.output
+      if options.js
+        compile = ->
+          compilejs files, options.output, options.namespace
     
-    if options.watch
-      fs.watchFile file, {persistent: true, interval: 500}, (curr, prev) ->
-        return if curr.size is prev.size and curr.mtime.getTime() is prev.mtime.getTime()
-        compile file, options.output, options.js, options.namespace
+      if options.watch      
+        files.forEach (file) ->
+          fs.watchFile file, {persistent: true, interval: 500}, (curr, prev) ->
+            return if curr.size is prev.size and curr.mtime.getTime() is prev.mtime.getTime()
+            compile()
     
-    if options.js
-      compilejs files, options.output, options.namespace
-    else
-      compile file, options.output, options.js, options.namespace
+      compile()
