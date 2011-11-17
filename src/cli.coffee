@@ -11,7 +11,6 @@ handle_error = (err) -> console.log err.stack if err
 
 compilejs = (paths, output_directory, namespace = 'templates') ->
   templates = ''
-  
   if paths.length > 1
     output_filename = namespace
   else
@@ -53,7 +52,7 @@ write = (input_path, name, contents, output_directory, ext) ->
     fs.writeFile output_path, contents, (err) ->
       handle_error err
       puts contents if options.print
-      puts "Compiled #{input_path}" if options.watch
+      puts "Compiled #{ output_path } (#{contents.length} bytes)" if options.watch
 
 usage = '''
   Usage:
@@ -87,9 +86,12 @@ switches = [
       coffeekup.render contents, options
 
   if args.length > 0
-    files = [args[0]]  
-    fs.stat args[0], (err, stats) ->
-      files = fs.readdirSync(args[0]) if stats.isDirectory()
+    src = path.resolve(process.cwd(), args[0])
+    fs.stat src, (err, stats) ->
+      files = [src] 
+      if stats.isDirectory()
+        files = (fs.readdirSync src).map (file) ->
+            path.resolve src, file
 
       compile = ->
         compilehtml files[0], options.output
@@ -97,9 +99,9 @@ switches = [
         compile = ->
           compilejs files, options.output, options.namespace
     
-      if options.watch      
+      if options.watch     
         files.forEach (file) ->
-          fs.watchFile file, {persistent: true, interval: 500}, (curr, prev) ->
+          fs.watchFile file, {persistent: true, interval: 500}, (curr, prev) ->          
             return if curr.size is prev.size and curr.mtime.getTime() is prev.mtime.getTime()
             compile()
     

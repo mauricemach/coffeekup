@@ -1,2 +1,2 @@
 div ->
-    p -> "I am another template"
+    p -> "I am the Grand Inquisitor from Joes Garage"

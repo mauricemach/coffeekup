@@ -106,6 +106,9 @@ skeleton = (data = {}) ->
   # Internal CoffeeKup stuff.
   __ck =
     buffer: []
+
+    compile: ->
+      this.buffer.join('')
       
     esc: (txt) ->
       if data.autoescape then h(txt) else String(txt)
@@ -313,27 +316,42 @@ compile_template = (template) ->
     template = "function(){#{template}}"
   template    
 
+compile_descriptors = (fn_name = '__ck') ->
+  code = ''
+  code += "#{fn_name}.doctypes = #{JSON.stringify coffeekup.doctypes};"
+  code += "#{fn_name}.coffeescript_helpers = #{JSON.stringify coffeescript_helpers};"
+  code += "#{fn_name}.self_closing = #{JSON.stringify coffeekup.self_closing};"
+  code
+
+# If `locals` is set, wrap the template inside a `with` block. This is the
+# most flexible but slower approach to specifying local variables.
+wrap_template = (template, options = {}) ->
+  code = ''
+  code += 'with(data.locals){' if options.locals
+  code += "(#{template}).call(data);"
+  code += '}' if options.locals
+  code
+
+
 # Compiles a template into a standalone JavaScript function.
-internal_compile = (template, fn_name = '__ck', options = {}) ->
+coffeekup.compile = (template, options = {}) ->
+  
+  fn_name = options.fn_name ?= '__ck'
+
   template = compile_template template  
 
   hardcoded_locals = compile_hardcoded_locals options
 
-  tag_functions = compile_tag_functions template, hardcoded_locals
+  tag_functions = compile_tag_functions template, hardcoded_locals, fn_name
 
   # Main function assembly.
   code = tag_functions + hardcoded_locals + skeleton
   
-  code += "#{fn_name}.doctypes = #{JSON.stringify coffeekup.doctypes};"
-  code += "#{fn_name}.coffeescript_helpers = #{JSON.stringify coffeescript_helpers};"
-  code += "#{fn_name}.self_closing = #{JSON.stringify coffeekup.self_closing};"
+  code += compile_descriptors fn_name
 
-  # If `locals` is set, wrap the template inside a `with` block. This is the
-  # most flexible but slower approach to specifying local variables.
-  code += 'with(data.locals){' if options.locals
-  code += "(#{template}).call(data);"
-  code += '}' if options.locals
-  code += "return #{fn_name}.buffer.join('');"
+  code += wrap_template template, options
+
+  code += "return #{fn_name}.compile();"
   
   new Function('data', code)
 
@@ -360,57 +378,26 @@ coffeekup.render = (template, data = {}, options = {}) ->
 # Standalone skeleton function, acting as a reusable builder for templates
 coffeekup.builder = ->
   code = skeleton
-  code += "__ck.doctypes = #{JSON.stringify coffeekup.doctypes};"
-  code += "__ck.coffeescript_helpers = #{JSON.stringify coffeescript_helpers};"
-  code += "__ck.self_closing = #{JSON.stringify coffeekup.self_closing};"
+  code += compile_descriptors '__ck'
   code += "return __ck;"
   new Function('data', code)
 
-coffeekup.compile = (template, options = {}) ->
-    internal_compile template, '__ck', options
 
 coffeekup.templatize = (template, options) ->
-  # The template can be provided as either a function or a CoffeeScript string
-  # (in the latter case, the CoffeeScript compiler must be available).
-  if typeof template is 'function' then template = String(template)
-  else if typeof template is 'string' and coffee?
-    template = coffee.compile template, bare: yes
-    template = "function(){#{template}}"
 
-  # If an object `hardcode` is provided, insert the stringified value
-  # of each variable directly in the function body. This is a less flexible but
-  # faster alternative to the standard method of using `with` (see below). 
-  hardcoded_locals = ''
-  
-  if options.hardcode
-    for k, v of options.hardcode
-      if typeof v is 'function'
-        # Make sure these functions have access to `data` as `@/this`.
-        hardcoded_locals += "var #{k} = function(){return (#{v}).apply(data, arguments);};"
-      else hardcoded_locals += "var #{k} = #{JSON.stringify v};"
+  fn_name = 'builder'
 
-  # Add a function for each tag this template references. We don't want to have
-  # all hundred-odd tags wasting space in the compiled function.
-  tag_functions = ''
-  tags_used = []
-  
-  for t in coffeekup.tags
-    if template.indexOf(t) > -1 or hardcoded_locals.indexOf(t) > -1
-      tags_used.push t
-      
-  tag_functions += "var #{tags_used.join ','};"
-  for t in tags_used
-    tag_functions += "#{t} = function(){return builder.tag('#{t}', arguments);};"
+  template = compile_template template  
+
+  hardcoded_locals = compile_hardcoded_locals options
+
+  tag_functions = compile_tag_functions template, hardcoded_locals, fn_name
 
   # Main function assembly.
-  code = "var builder = createBuilder.call(this, data);"
+  code = "var #{fn_name} = createBuilder.call(this, data);"
   code += tag_functions + hardcoded_locals
-  # If `locals` is set, wrap the template inside a `with` block. This is the
-  # most flexible but slower approach to specifying local variables.
-  code += 'with(data.locals){' if options.locals
-  code += "(#{template}).call(data);"
-  code += '}' if options.locals
-  code += "return builder.buffer.join('');"
+  code += wrap_template template, options
+  code += "return #{fn_name}.compile();"
   
   new Function('data', code)
     
