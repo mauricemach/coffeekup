@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
-../../bin/coffeekup --js templates 
+../../../bin/coffeekup --js templates 
 coffee -c index.coffee 
 
