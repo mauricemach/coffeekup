@@ -196,7 +196,7 @@ Command-line:
     $ coffeekup -h
 
     Usage:
-      coffeekup [options] path/to/template.coffee
+      coffeekup [options] [path/to/template.coffee OR path]     
 
           --js           compile template to js function
       -n, --namespace    global object holding the templates (default: "templates")
@@ -207,6 +207,14 @@ Command-line:
       -u, --utils        add helper locals (currently only "render")
       -v, --version      display CoffeeKup version
       -h, --help         display this help message
+
+    CLI usage:
+      // compile all templates in a directory into single file called 'templates.js' 
+      coffeekup --js ./templates
+
+      // compile all templates in a directory into single file called 'My.Templates.js'
+      coffeekup --js -n 'My.Templates' ./templates
+
 
 See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions (you have to run `cake build` first).
 
