@@ -9,6 +9,25 @@ options = null
 
 handle_error = (err) -> console.log err.stack if err
 
+compilejs = (paths, output_directory, namespace = 'templates') ->
+  templates = ''
+  paths.forEach (input_path) ->  
+    contents = fs.readFileSync input_path, 'utf-8'
+    name = path.basename input_path, path.extname(input_path)
+    func = coffeekup.templatize contents, options
+    templates += "this.#{namespace}[#{JSON.stringify name}] = #{func};"
+  
+  output = """
+      (function(){ 
+      this.#{namespace} || (this.#{namespace} = {});
+      var createBuilder = #{coffeekup.builder()}
+      #{ templates }
+      }).call(this);
+  """
+  ext = '.js'
+
+  write null, 'templates', output, output_directory, ext
+
 compile = (input_path, output_directory, js, namespace = 'templates') ->
   fs.readFile input_path, 'utf-8', (err, contents) ->
     handle_error err   
@@ -18,7 +37,7 @@ compile = (input_path, output_directory, js, namespace = 'templates') ->
     if not js
       output = coffeekup.render contents, options
       ext = '.html'
-    else
+    else        
       func = coffeekup.templatize contents, options
       output = """
         (function(){ 
@@ -31,7 +50,6 @@ compile = (input_path, output_directory, js, namespace = 'templates') ->
       """
       ext = '.js'
 
-    # insertat29 
     write input_path, name, output, output_directory, ext
 
 write = (input_path, name, contents, output_directory, ext) ->
@@ -79,11 +97,15 @@ switches = [
       coffeekup.render contents, options
 
   if args.length > 0
+    files = fs.readdirSync(args[0])
     file = args[0]
-
+    
     if options.watch
       fs.watchFile file, {persistent: true, interval: 500}, (curr, prev) ->
         return if curr.size is prev.size and curr.mtime.getTime() is prev.mtime.getTime()
         compile file, options.output, options.js, options.namespace
     
-    compile file, options.output, options.js, options.namespace
+    if options.js
+      compilejs files, options.output, options.namespace
+    else
+      compile file, options.output, options.js, options.namespace

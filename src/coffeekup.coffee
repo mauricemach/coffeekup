@@ -344,6 +344,7 @@ coffeekup.render = (template, data = {}, options = {}) ->
   else tpl = coffeekup.compile(template, data)
   tpl(data)
 
+# Standalone skeleton function, acting as a reusable builder for templates
 coffeekup.builder = ->
   code = skeleton
   code += "__ck.doctypes = #{JSON.stringify coffeekup.doctypes};"
