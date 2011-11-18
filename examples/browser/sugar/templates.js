@@ -225,7 +225,7 @@ var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnPrope
     };
     __ck.doctypes = {"5":"<!DOCTYPE html>","default":"<!DOCTYPE html>","xml":"<?xml version=\"1.0\" encoding=\"utf-8\" ?>","transitional":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">","strict":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">","frameset":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">","1.1":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">","basic":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML Basic 1.1//EN\" \"http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd\">","mobile":"<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.2//EN\" \"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">","ce":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"ce-html-1.0-transitional.dtd\">"};__ck.coffeescript_helpers = "var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };";__ck.self_closing = ["area","base","br","col","command","embed","hr","img","input","keygen","link","meta","param","source","track","wbr","basefont","frame"];return __ck;
 }
-this.templates["template1"] = function anonymous(data) {
+this.templates["nested"]={};this.templates["nested2"]={};this.templates["nested"]["deep"]={};this.templates["template1"] = function anonymous(data) {
 var builder = createBuilder.call(this, data);var a,div,i,li,p,s,th,u,ul;a = function(){return builder.tag('a', arguments);};div = function(){return builder.tag('div', arguments);};i = function(){return builder.tag('i', arguments);};li = function(){return builder.tag('li', arguments);};p = function(){return builder.tag('p', arguments);};s = function(){return builder.tag('s', arguments);};th = function(){return builder.tag('th', arguments);};u = function(){return builder.tag('u', arguments);};ul = function(){return builder.tag('ul', arguments);};(function(){
 div(function() {
   p(function() {
@@ -249,6 +249,28 @@ div(function() {
   return p(function() {
     return "I am the Grand Inquisitor from " + this.album;
   });
+});
+}).call(data);return builder.compile();
+};this.templates["nested2"]["a"] = function anonymous(data) {
+var builder = createBuilder.call(this, data);var a,div,em,i,p,s,u;a = function(){return builder.tag('a', arguments);};div = function(){return builder.tag('div', arguments);};em = function(){return builder.tag('em', arguments);};i = function(){return builder.tag('i', arguments);};p = function(){return builder.tag('p', arguments);};s = function(){return builder.tag('s', arguments);};u = function(){return builder.tag('u', arguments);};(function(){
+div(function() {
+  return p(function() {
+    return "I am nested2 template a, also";
+  });
+});
+}).call(data);return builder.compile();
+};this.templates["nested"]["a"] = function anonymous(data) {
+var builder = createBuilder.call(this, data);var a,div,em,i,p,s,u;a = function(){return builder.tag('a', arguments);};div = function(){return builder.tag('div', arguments);};em = function(){return builder.tag('em', arguments);};i = function(){return builder.tag('i', arguments);};p = function(){return builder.tag('p', arguments);};s = function(){return builder.tag('s', arguments);};u = function(){return builder.tag('u', arguments);};(function(){
+div(function() {
+  return p(function() {
+    return "I am nested template a";
+  });
+});
+}).call(data);return builder.compile();
+};this.templates["nested"]["deep"]["c"] = function anonymous(data) {
+var builder = createBuilder.call(this, data);var a,em,i,p,s,u;a = function(){return builder.tag('a', arguments);};em = function(){return builder.tag('em', arguments);};i = function(){return builder.tag('i', arguments);};p = function(){return builder.tag('p', arguments);};s = function(){return builder.tag('s', arguments);};u = function(){return builder.tag('u', arguments);};(function(){
+p(function() {
+  return "I am deep, not profound...find me in templates/deep/c.coffee";
 });
 }).call(data);return builder.compile();
 };

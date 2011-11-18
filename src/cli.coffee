@@ -9,18 +9,64 @@ options = null
 
 handle_error = (err) -> console.log err.stack if err
 
-compilejs = (paths, output_directory, namespace = 'templates') ->
+# shamelessly stolen from https://gist.github.com/825583
+readDir = (seed, start, callback) ->
+  fs.lstat start, (err, stat) ->
+    isDir = (abspath) ->
+      fs.stat abspath, (err, stat) ->
+        if stat.isDirectory()
+          found.dirs.push abspath
+          found.ns.push abspath.replace(seed, '')
+          readDir seed, abspath, (err, data) ->
+            found.dirs = found.dirs.concat(data.dirs)
+            found.ns = found.ns.concat(data.ns)
+            found.files = found.files.concat(data.files)
+            callback null, found  if ++processed is total
+        else
+          found.files.push abspath
+          callback null, found  if ++processed is total
+    return callback(err)  if err
+    found =
+      dirs: []
+      files: []
+      ns: []
+
+    total = 0
+    processed = 0
+    if stat.isDirectory()
+      fs.readdir start, (err, files) ->
+        total = files.length
+        x = 0
+        l = files.length
+
+        while x < l
+          isDir path.join(start, files[x])
+          x++
+    else
+      callback new Error("path: " + start + " is not a directory")
+
+compilejs = (paths, output_directory, namespace = 'templates', src_dir) ->
   templates = ''
-  if paths.length > 1
+  if paths.files.length > 1
     output_filename = namespace
   else
-    output_filename = path.basename(paths[0], '.coffee')
-  
-  paths.forEach (input_path) ->  
+    output_filename = path.basename(paths.files[0], '.coffee')
+
+  convertNs = (ns) ->
+    root = "this.#{namespace}"
+    return root if not ns
+    tmp = ''
+    agg = tmp += ("[#{JSON.stringify part}]" or "") for part in ns.split('/') when part isnt ''
+    "#{root}#{agg}"
+
+  templates += "#{convertNs(ns)}={};" for ns in paths.ns
+
+  paths.files.forEach (input_path) ->  
+    ns = path.dirname(input_path).replace(src_dir, '') if src_dir
     contents = fs.readFileSync input_path, 'utf-8'
     name = path.basename input_path, path.extname(input_path)
     func = coffeekup.templatize contents, options
-    templates += "this.#{namespace}[#{JSON.stringify name}] = #{func};"
+    templates += "#{convertNs(ns)}[#{JSON.stringify name}] = #{func};"
   
   output = """
       (function(){ 
@@ -88,21 +134,27 @@ switches = [
   if args.length > 0
     src = path.resolve(process.cwd(), args[0])
     fs.stat src, (err, stats) ->
-      files = [src] 
-      if stats.isDirectory()
-        files = (fs.readdirSync src).map (file) ->
-            path.resolve src, file
-
-      compile = ->
-        compilehtml files[0], options.output
-      if options.js
+      paths = 
+          files : [src] 
+      execute = ->
         compile = ->
-          compilejs files, options.output, options.namespace
+          compilehtml paths.files[0], options.output
+        if options.js
+          compile = ->
+            compilejs paths, options.output, options.namespace, src
     
-      if options.watch     
-        files.forEach (file) ->
-          fs.watchFile file, {persistent: true, interval: 500}, (curr, prev) ->          
-            return if curr.size is prev.size and curr.mtime.getTime() is prev.mtime.getTime()
-            compile()
+        if options.watch     
+          paths.files.forEach (file) ->
+            fs.watchFile file, {persistent: true, interval: 500}, (curr, prev) ->          
+              return if curr.size is prev.size and curr.mtime.getTime() is prev.mtime.getTime()
+              compile()
     
-      compile()
+        compile()
+
+      if stats.isDirectory()
+        readDir src, src, (err, results) ->
+            paths = results
+            execute()
+      else
+        execute()
+
