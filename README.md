@@ -215,6 +215,19 @@ Command-line:
       // compile all templates in a directory into single file called 'My.Templates.js'
       coffeekup --js -n 'My.Templates' ./templates
 
+    Namespaced Templates are supported by convention from the directory structure:
+
+    Given dir structure:
+       - templates
+           MyTemplate.coffee
+           - moduleSpecificTemplates
+               MyIndex.coffee
+               - deepTemplates
+                   abc.coffee
+    Yields:
+        this.templates["MyTemplate"] = ...
+        this.templates["moduleSpecificTemplates"]["MyIndex"] = ...
+        this.templates["moduleSpecificTemplates"]["deepTemplates"]["abc"] = ...
 
 See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions (you have to run `cake build` first).
 
