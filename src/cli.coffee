@@ -136,6 +136,9 @@ switches = [
     fs.stat src, (err, stats) ->
       paths = 
           files : [src] 
+          dirs : []
+          ns : []
+
       execute = ->
         compile = ->
           compilehtml paths.files[0], options.output
