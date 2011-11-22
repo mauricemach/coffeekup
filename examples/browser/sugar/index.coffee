@@ -4,3 +4,4 @@ $().ready ->
   $('#nested').append templates.nested.a()
   $('#nested').append templates.nested.deep.c()
   $('#nested').append templates.nested2.a()
+  $('#helpers').append templates.withHelpers({ id:'textbox1', value:'someTextboxValue', label:'labelForTextbox'})

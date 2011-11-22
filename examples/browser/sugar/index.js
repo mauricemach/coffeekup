@@ -8,6 +8,11 @@
     }));
     $('#nested').append(templates.nested.a());
     $('#nested').append(templates.nested.deep.c());
-    return $('#nested').append(templates.nested2.a());
+    $('#nested').append(templates.nested2.a());
+    return $('#helpers').append(templates.withHelpers({
+      id: 'textbox1',
+      value: 'someTextboxValue',
+      label: 'labelForTextbox'
+    }));
   });
 }).call(this);

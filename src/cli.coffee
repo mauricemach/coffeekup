@@ -46,10 +46,13 @@ readDir = (seed, start, callback) ->
     else
       callback new Error("path: " + start + " is not a directory")
 
-hardcode = (src_dir) ->
+compile_hardcode = (src_dir) ->
+  hardcode = {}
   raw = fs.readFileSync path.join(src_dir, 'helpers', 'index.coffee'), 'utf-8'
   fn = coffeekup.toJSON raw
-  fn()
+  for own hard, code of (fn() ? {})
+      hardcode[hard]= code
+  hardcode
 
 compilejs = (paths, output_directory, namespace = 'templates', src_dir) ->
   templates = ''
@@ -67,7 +70,7 @@ compilejs = (paths, output_directory, namespace = 'templates', src_dir) ->
 
   templates += "#{convertNs(ns)}={};" for ns in paths.ns
 
-  options.hardcode = hardcode(src_dir) if options.each
+  options.hardcode = compile_hardcode(src_dir) if options.each
   paths.files.forEach (input_path) ->  
     ns = path.dirname(input_path).replace(src_dir, '') if src_dir
     contents = fs.readFileSync input_path, 'utf-8'

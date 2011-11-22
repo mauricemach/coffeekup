@@ -226,14 +226,27 @@ var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnPrope
     __ck.doctypes = {"5":"<!DOCTYPE html>","default":"<!DOCTYPE html>","xml":"<?xml version=\"1.0\" encoding=\"utf-8\" ?>","transitional":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">","strict":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">","frameset":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">","1.1":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">","basic":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML Basic 1.1//EN\" \"http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd\">","mobile":"<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.2//EN\" \"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">","ce":"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"ce-html-1.0-transitional.dtd\">"};__ck.coffeescript_helpers = "var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };";__ck.self_closing = ["area","base","br","col","command","embed","hr","img","input","keygen","link","meta","param","source","track","wbr","basefont","frame"];return __ck;
 }
 this.templates["helpers"]={};this.templates["nested"]={};this.templates["nested2"]={};this.templates["nested"]["deep"]={};this.templates["template1"] = function anonymous(data) {
-var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,div,i,label,li,p,s,th,tr,u,ul,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};div = function(){return builder.tag('div', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};li = function(){return builder.tag('li', arguments);};p = function(){return builder.tag('p', arguments);};s = function(){return builder.tag('s', arguments);};th = function(){return builder.tag('th', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};ul = function(){return builder.tag('ul', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var textbox = function(){return (function (attrs) {
-    label({
-      "for": "" + attrs.id
-    }, function() {
-      return "" + attrs.id;
+var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,div,i,label,li,p,rt,s,th,tr,u,ul,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};div = function(){return builder.tag('div', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};li = function(){return builder.tag('li', arguments);};p = function(){return builder.tag('p', arguments);};rt = function(){return builder.tag('rt', arguments);};s = function(){return builder.tag('s', arguments);};th = function(){return builder.tag('th', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};ul = function(){return builder.tag('ul', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var wrap = function(){return (function (fn) {
+    p(function() {
+      return "==========Wrapper Start===>";
     });
-    return input("#" + attrs.id, {
-      type: "text"
+    div(function() {
+      return fn();
+    });
+    return p(function() {
+      return "<===Wrapper End============";
+    });
+  }).apply(data, arguments);};var textbox = function(){return (function (attrs) {
+    return wrap(function() {
+      label({
+        "for": "" + attrs.id
+      }, function() {
+        return "" + attrs.label;
+      });
+      return input("#" + attrs.id, {
+        type: "text",
+        value: "" + attrs.value
+      });
     });
   }).apply(data, arguments);};(function(){
 div(function() {
@@ -251,20 +264,70 @@ div(function() {
     return _results;
   });
 });
+}).call(data);return builder.compile();
+};this.templates["withHelpers"] = function anonymous(data) {
+var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,div,em,h1,head,header,i,label,p,rt,s,th,tr,u,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};div = function(){return builder.tag('div', arguments);};em = function(){return builder.tag('em', arguments);};h1 = function(){return builder.tag('h1', arguments);};head = function(){return builder.tag('head', arguments);};header = function(){return builder.tag('header', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};p = function(){return builder.tag('p', arguments);};rt = function(){return builder.tag('rt', arguments);};s = function(){return builder.tag('s', arguments);};th = function(){return builder.tag('th', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var wrap = function(){return (function (fn) {
+    p(function() {
+      return "==========Wrapper Start===>";
+    });
+    div(function() {
+      return fn();
+    });
+    return p(function() {
+      return "<===Wrapper End============";
+    });
+  }).apply(data, arguments);};var textbox = function(){return (function (attrs) {
+    return wrap(function() {
+      label({
+        "for": "" + attrs.id
+      }, function() {
+        return "" + attrs.label;
+      });
+      return input("#" + attrs.id, {
+        type: "text",
+        value: "" + attrs.value
+      });
+    });
+  }).apply(data, arguments);};(function(){
+header(function() {
+  return h1(function() {
+    return "Helpers compiled from file (see templates/helpers)";
+  });
+});
 
-textbox({
-  id: 'monkey'
+div(function() {
+  wrap(function() {
+    return "This is wrapped content";
+  });
+  return textbox({
+    id: "" + this.id,
+    value: "" + this.value,
+    label: "" + this.label
+  });
 });
 }).call(data);return builder.compile();
 };this.templates["template2"] = function anonymous(data) {
-var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,div,i,label,p,q,s,th,tr,u,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};div = function(){return builder.tag('div', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};p = function(){return builder.tag('p', arguments);};q = function(){return builder.tag('q', arguments);};s = function(){return builder.tag('s', arguments);};th = function(){return builder.tag('th', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var textbox = function(){return (function (attrs) {
-    label({
-      "for": "" + attrs.id
-    }, function() {
-      return "" + attrs.id;
+var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,div,i,label,p,q,rt,s,th,tr,u,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};div = function(){return builder.tag('div', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};p = function(){return builder.tag('p', arguments);};q = function(){return builder.tag('q', arguments);};rt = function(){return builder.tag('rt', arguments);};s = function(){return builder.tag('s', arguments);};th = function(){return builder.tag('th', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var wrap = function(){return (function (fn) {
+    p(function() {
+      return "==========Wrapper Start===>";
     });
-    return input("#" + attrs.id, {
-      type: "text"
+    div(function() {
+      return fn();
+    });
+    return p(function() {
+      return "<===Wrapper End============";
+    });
+  }).apply(data, arguments);};var textbox = function(){return (function (attrs) {
+    return wrap(function() {
+      label({
+        "for": "" + attrs.id
+      }, function() {
+        return "" + attrs.label;
+      });
+      return input("#" + attrs.id, {
+        type: "text",
+        value: "" + attrs.value
+      });
     });
   }).apply(data, arguments);};(function(){
 div(function() {
@@ -274,39 +337,78 @@ div(function() {
 });
 }).call(data);return builder.compile();
 };this.templates["helpers"]["index"] = function anonymous(data) {
-var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,i,label,p,s,tr,u,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};p = function(){return builder.tag('p', arguments);};s = function(){return builder.tag('s', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var textbox = function(){return (function (attrs) {
-    label({
-      "for": "" + attrs.id
-    }, function() {
-      return "" + attrs.id;
+var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,div,i,label,p,rt,s,tr,u,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};div = function(){return builder.tag('div', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};p = function(){return builder.tag('p', arguments);};rt = function(){return builder.tag('rt', arguments);};s = function(){return builder.tag('s', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var wrap = function(){return (function (fn) {
+    p(function() {
+      return "==========Wrapper Start===>";
     });
-    return input("#" + attrs.id, {
-      type: "text"
+    div(function() {
+      return fn();
     });
-  }).apply(data, arguments);};(function(){var helpers;
-
-helpers = {
+    return p(function() {
+      return "<===Wrapper End============";
+    });
+  }).apply(data, arguments);};var textbox = function(){return (function (attrs) {
+    return wrap(function() {
+      label({
+        "for": "" + attrs.id
+      }, function() {
+        return "" + attrs.label;
+      });
+      return input("#" + attrs.id, {
+        type: "text",
+        value: "" + attrs.value
+      });
+    });
+  }).apply(data, arguments);};(function(){
+({
+  wrap: function(fn) {
+    p(function() {
+      return "==========Wrapper Start===>";
+    });
+    div(function() {
+      return fn();
+    });
+    return p(function() {
+      return "<===Wrapper End============";
+    });
+  },
   textbox: function(attrs) {
-    label({
-      "for": "" + attrs.id
-    }, function() {
-      return "" + attrs.id;
-    });
-    return input("#" + attrs.id, {
-      type: "text"
+    return wrap(function() {
+      label({
+        "for": "" + attrs.id
+      }, function() {
+        return "" + attrs.label;
+      });
+      return input("#" + attrs.id, {
+        type: "text",
+        value: "" + attrs.value
+      });
     });
   }
-};
+});
 }).call(data);return builder.compile();
 };this.templates["nested2"]["a"] = function anonymous(data) {
-var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,div,em,i,label,p,s,tr,u,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};div = function(){return builder.tag('div', arguments);};em = function(){return builder.tag('em', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};p = function(){return builder.tag('p', arguments);};s = function(){return builder.tag('s', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var textbox = function(){return (function (attrs) {
-    label({
-      "for": "" + attrs.id
-    }, function() {
-      return "" + attrs.id;
+var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,div,em,i,label,p,rt,s,tr,u,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};div = function(){return builder.tag('div', arguments);};em = function(){return builder.tag('em', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};p = function(){return builder.tag('p', arguments);};rt = function(){return builder.tag('rt', arguments);};s = function(){return builder.tag('s', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var wrap = function(){return (function (fn) {
+    p(function() {
+      return "==========Wrapper Start===>";
     });
-    return input("#" + attrs.id, {
-      type: "text"
+    div(function() {
+      return fn();
+    });
+    return p(function() {
+      return "<===Wrapper End============";
+    });
+  }).apply(data, arguments);};var textbox = function(){return (function (attrs) {
+    return wrap(function() {
+      label({
+        "for": "" + attrs.id
+      }, function() {
+        return "" + attrs.label;
+      });
+      return input("#" + attrs.id, {
+        type: "text",
+        value: "" + attrs.value
+      });
     });
   }).apply(data, arguments);};(function(){
 div(function() {
@@ -316,14 +418,27 @@ div(function() {
 });
 }).call(data);return builder.compile();
 };this.templates["nested"]["a"] = function anonymous(data) {
-var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,div,em,i,label,p,s,tr,u,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};div = function(){return builder.tag('div', arguments);};em = function(){return builder.tag('em', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};p = function(){return builder.tag('p', arguments);};s = function(){return builder.tag('s', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var textbox = function(){return (function (attrs) {
-    label({
-      "for": "" + attrs.id
-    }, function() {
-      return "" + attrs.id;
+var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,div,em,i,label,p,rt,s,tr,u,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};div = function(){return builder.tag('div', arguments);};em = function(){return builder.tag('em', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};p = function(){return builder.tag('p', arguments);};rt = function(){return builder.tag('rt', arguments);};s = function(){return builder.tag('s', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var wrap = function(){return (function (fn) {
+    p(function() {
+      return "==========Wrapper Start===>";
     });
-    return input("#" + attrs.id, {
-      type: "text"
+    div(function() {
+      return fn();
+    });
+    return p(function() {
+      return "<===Wrapper End============";
+    });
+  }).apply(data, arguments);};var textbox = function(){return (function (attrs) {
+    return wrap(function() {
+      label({
+        "for": "" + attrs.id
+      }, function() {
+        return "" + attrs.label;
+      });
+      return input("#" + attrs.id, {
+        type: "text",
+        value: "" + attrs.value
+      });
     });
   }).apply(data, arguments);};(function(){
 div(function() {
@@ -333,14 +448,27 @@ div(function() {
 });
 }).call(data);return builder.compile();
 };this.templates["nested"]["deep"]["c"] = function anonymous(data) {
-var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,em,i,label,p,s,tr,u,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};em = function(){return builder.tag('em', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};p = function(){return builder.tag('p', arguments);};s = function(){return builder.tag('s', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var textbox = function(){return (function (attrs) {
-    label({
-      "for": "" + attrs.id
-    }, function() {
-      return "" + attrs.id;
+var builder = createBuilder.call(this, data);var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };var __extends = function(child, parent) {  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;  return child; };var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };;var a,b,div,em,i,label,p,rt,s,tr,u,tt,input;a = function(){return builder.tag('a', arguments);};b = function(){return builder.tag('b', arguments);};div = function(){return builder.tag('div', arguments);};em = function(){return builder.tag('em', arguments);};i = function(){return builder.tag('i', arguments);};label = function(){return builder.tag('label', arguments);};p = function(){return builder.tag('p', arguments);};rt = function(){return builder.tag('rt', arguments);};s = function(){return builder.tag('s', arguments);};tr = function(){return builder.tag('tr', arguments);};u = function(){return builder.tag('u', arguments);};tt = function(){return builder.tag('tt', arguments);};input = function(){return builder.tag('input', arguments);};var wrap = function(){return (function (fn) {
+    p(function() {
+      return "==========Wrapper Start===>";
     });
-    return input("#" + attrs.id, {
-      type: "text"
+    div(function() {
+      return fn();
+    });
+    return p(function() {
+      return "<===Wrapper End============";
+    });
+  }).apply(data, arguments);};var textbox = function(){return (function (attrs) {
+    return wrap(function() {
+      label({
+        "for": "" + attrs.id
+      }, function() {
+        return "" + attrs.label;
+      });
+      return input("#" + attrs.id, {
+        type: "text",
+        value: "" + attrs.value
+      });
     });
   }).apply(data, arguments);};(function(){
 p(function() {
