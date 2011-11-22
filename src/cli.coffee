@@ -52,12 +52,13 @@ compile_hardcode =  ->
   for filename in files
     do(filename) ->
       raw = fs.readFileSync path.join(options.include, filename), 'utf-8'
-      fn = coffeekup.toJSON raw
-      for own hard, code of (fn() ? {})
+      obj = coffeekup.parse raw
+      for own hard, code of (obj ? {})
         hardcode[hard]= code
   hardcode      
 
 compilejs = (paths, output_directory, namespace = 'templates', src_dir) ->
+  builder = "createBuilder"
   templates = ''
   if paths.files.length > 1
     output_filename = namespace
@@ -72,18 +73,19 @@ compilejs = (paths, output_directory, namespace = 'templates', src_dir) ->
     "#{root}#{agg}"
 
   templates += "#{convertNs(ns)}={};" for ns in paths.ns
-  options.hardcode = compile_hardcode() if options.include
+  options.hardcode = compile_hardcode() if options.include and not options.hardcode?
+  
   paths.files.forEach (input_path) ->  
     ns = path.dirname(input_path).replace(src_dir, '') if src_dir
     contents = fs.readFileSync input_path, 'utf-8'
     name = path.basename input_path, path.extname(input_path)
-    func = coffeekup.templatize contents, options
+    func = coffeekup.templatize contents, builder, options
     templates += "#{convertNs(ns)}[#{JSON.stringify name}] = #{func};"
   
   output = """
       (function(){ 
       this.#{namespace} || (this.#{namespace} = {});
-      var createBuilder = #{coffeekup.builder()}
+      var #{builder} = #{coffeekup.builder()}
       #{ templates }
       }).call(this);
   """

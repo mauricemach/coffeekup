@@ -382,8 +382,10 @@ coffeekup.builder = ->
   code += "return __ck;"
   new Function('data', code)
 
-
-coffeekup.templatize = (template, options) ->
+# Template in, Function out
+# Similar to `compile` but presumes reusable builder for avoiding repetitive
+# skeleton code.
+coffeekup.templatize = (template, builder, options) ->
 
   fn_name = 'builder'
 
@@ -394,18 +396,21 @@ coffeekup.templatize = (template, options) ->
   tag_functions = compile_tag_functions template, hardcoded_locals, fn_name
 
   # Main function assembly.
-  code = "var #{fn_name} = createBuilder.call(this, data);"
+  code = "var #{fn_name} = #{builder}.call(this, data);"
   code += "#{coffeescript_helpers};"
   code += tag_functions + hardcoded_locals
   code += wrap_template template, options
   code += "return #{fn_name}.compile();"
   
   new Function('data', code)
-    
-coffeekup.toJSON = (template ) ->
+
+# Template in, JavaScript object out
+# Creates a new JavaScript object based on template contents 
+# Currently this assumes the template has no root object; ie `myObj = ->`
+coffeekup.parse = (template) ->
   template = coffee.compile template, bare: yes
   template = "var hardcode = #{template}"
-  new Function("#{template} return hardcode;")
+  new Function("#{template} return hardcode;")()
 
 unless window?
   coffeekup.adapters =
