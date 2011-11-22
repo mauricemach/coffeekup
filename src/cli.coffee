@@ -1,4 +1,5 @@
 coffeekup = require './coffeekup'
+
 fs = require 'fs'
 path = require 'path'
 puts = console.log
@@ -45,6 +46,11 @@ readDir = (seed, start, callback) ->
     else
       callback new Error("path: " + start + " is not a directory")
 
+hardcode = (src_dir) ->
+  raw = fs.readFileSync path.join(src_dir, 'helpers', 'index.coffee'), 'utf-8'
+  fn = coffeekup.toJSON raw
+  fn()
+
 compilejs = (paths, output_directory, namespace = 'templates', src_dir) ->
   templates = ''
   if paths.files.length > 1
@@ -61,6 +67,7 @@ compilejs = (paths, output_directory, namespace = 'templates', src_dir) ->
 
   templates += "#{convertNs(ns)}={};" for ns in paths.ns
 
+  options.hardcode = hardcode(src_dir) if options.each
   paths.files.forEach (input_path) ->  
     ns = path.dirname(input_path).replace(src_dir, '') if src_dir
     contents = fs.readFileSync input_path, 'utf-8'
@@ -113,6 +120,7 @@ switches = [
   ['-p', '--print', 'print the compiled html to stdout']
   ['-f', '--format', 'apply line breaks and indentation to html output']
   ['-u', '--utils', 'add helper locals (currently only "render")']
+  ['-e', '--each', 'add helpers to each template']
   ['-v', '--version', 'display CoffeeKup version']
   ['-h', '--help', 'display this help message']
 ]

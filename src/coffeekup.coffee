@@ -395,12 +395,17 @@ coffeekup.templatize = (template, options) ->
 
   # Main function assembly.
   code = "var #{fn_name} = createBuilder.call(this, data);"
+  code += "#{coffeescript_helpers};"
   code += tag_functions + hardcoded_locals
   code += wrap_template template, options
   code += "return #{fn_name}.compile();"
   
   new Function('data', code)
     
+coffeekup.toJSON = (template) ->
+    template = coffee.compile template, bare: yes
+    new Function("#{template} return helpers;")
+
 unless window?
   coffeekup.adapters =
     # Legacy adapters for when CoffeeKup expected data in the `context` attribute.
