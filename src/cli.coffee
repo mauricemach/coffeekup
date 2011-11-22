@@ -46,13 +46,16 @@ readDir = (seed, start, callback) ->
     else
       callback new Error("path: " + start + " is not a directory")
 
-compile_hardcode = (src_dir) ->
+compile_hardcode =  ->
   hardcode = {}
-  raw = fs.readFileSync path.join(src_dir, 'helpers', 'index.coffee'), 'utf-8'
-  fn = coffeekup.toJSON raw
-  for own hard, code of (fn() ? {})
-      hardcode[hard]= code
-  hardcode
+  files = fs.readdirSync path.resolve(process.cwd(), options.include)
+  for filename in files
+    do(filename) ->
+      raw = fs.readFileSync path.join(options.include, filename), 'utf-8'
+      fn = coffeekup.toJSON raw
+      for own hard, code of (fn() ? {})
+        hardcode[hard]= code
+  hardcode      
 
 compilejs = (paths, output_directory, namespace = 'templates', src_dir) ->
   templates = ''
@@ -69,8 +72,7 @@ compilejs = (paths, output_directory, namespace = 'templates', src_dir) ->
     "#{root}#{agg}"
 
   templates += "#{convertNs(ns)}={};" for ns in paths.ns
-
-  options.hardcode = compile_hardcode(src_dir) if options.each
+  options.hardcode = compile_hardcode() if options.include
   paths.files.forEach (input_path) ->  
     ns = path.dirname(input_path).replace(src_dir, '') if src_dir
     contents = fs.readFileSync input_path, 'utf-8'
@@ -123,7 +125,7 @@ switches = [
   ['-p', '--print', 'print the compiled html to stdout']
   ['-f', '--format', 'apply line breaks and indentation to html output']
   ['-u', '--utils', 'add helper locals (currently only "render")']
-  ['-e', '--each', 'add helpers to each template']
+  ['-i', '--include [dir]', 'add hardcoded helpers to each template from file contents']
   ['-v', '--version', 'display CoffeeKup version']
   ['-h', '--help', 'display this help message']
 ]

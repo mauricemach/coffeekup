@@ -403,9 +403,9 @@ coffeekup.templatize = (template, options) ->
   new Function('data', code)
     
 coffeekup.toJSON = (template ) ->
-    template = coffee.compile template, bare: yes
-    template = "var hardcode = #{template}"
-    new Function("#{template} return hardcode;")
+  template = coffee.compile template, bare: yes
+  template = "var hardcode = #{template}"
+  new Function("#{template} return hardcode;")
 
 unless window?
   coffeekup.adapters =

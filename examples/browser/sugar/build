@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-../../../bin/coffeekup --js -e templates
+../../../bin/coffeekup --js -i ./templates/helpers ./templates
 
 coffee -c index.coffee 
 
