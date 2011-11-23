@@ -47,7 +47,7 @@ readDir = (seed, start, callback) ->
       callback new Error("path: " + start + " is not a directory")
 
 compile_hardcode =  ->
-  hardcode = {}
+  hardcode = options.hardcode ? {}
   files = fs.readdirSync path.resolve(process.cwd(), options.include)
   for filename in files
     do(filename) ->
@@ -73,7 +73,7 @@ compilejs = (paths, output_directory, namespace = 'templates', src_dir) ->
     "#{root}#{agg}"
 
   templates += "#{convertNs(ns)}={};" for ns in paths.ns
-  options.hardcode = compile_hardcode() if options.include and not options.hardcode?
+  options.hardcode = compile_hardcode() if options.include?
   
   paths.files.forEach (input_path) ->  
     ns = path.dirname(input_path).replace(src_dir, '') if src_dir
