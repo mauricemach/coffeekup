@@ -236,7 +236,7 @@ Please note that even though all examples are given in CoffeeScript, you can als
 
 - [cupcake](https://github.com/twilson63/cupcake) - Express app generator with CoffeeKup support.
 
-- [docpad](https://github.com/balupton/docpad) - Static site generator and cms with coffeekup support.
+- [docpad](https://github.com/balupton/docpad) - Static site generator and CMS with CoffeeKup support.
 
 ## Related projects
 
