@@ -16,7 +16,7 @@ else
   coffeekup = exports
   coffee = require 'coffee-script'
 
-coffeekup.version = '0.3.1'
+coffeekup.version = '0.3.1edge'
 
 # Values available to the `doctype` function inside a template.
 # Ex.: `doctype 'strict'`
