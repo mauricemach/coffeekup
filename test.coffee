@@ -116,6 +116,11 @@ tests =
     expected: "<h1>&lt;script&gt;alert('&quot;pwned&quot; by c&amp;a &amp;copy;')&lt;/script&gt;</h1>"
     params: {autoescape: yes}
 
+  'Safe filter':
+    template: "h1 -> safe @html"
+    expected: "<h1><span>plop</span></h1>"
+    params: {autoescape: yes, html: "<span>plop</span>"}
+
   'ID/class shortcut (combo)':
     template: "div '#myid.myclass1.myclass2', 'foo'"
     expected: '<div id="myid" class="myclass1 myclass2">foo</div>'
@@ -135,11 +140,11 @@ tests =
   'ID/class shortcut (no string contents)':
     template: "img '#myid.myclass', src: '/pic.png'"
     expected: '<img id="myid" class="myclass" src="/pic.png" />'
-      
+
   'Attribute values':
     template: "br vrai: yes, faux: no, undef: @foo, nil: null, str: 'str', num: 42, arr: [1, 2, 3], obj: {foo: 'bar'}, func: ->"
     expected: '<br vrai="vrai" str="str" num="42" arr="1,2,3" obj-foo="bar" func="(function () {}).call(this);" />'
-    
+
   'IE conditionals':
     template: """
       html ->
@@ -157,10 +162,10 @@ tests =
           <![endif]-->
         </head>
       </html>
-      
+
     '''
     params: {format: yes}
-    
+
   'yield':
     template: "p \"This text could use \#{yield -> strong -> a href: '/', 'a link'}.\""
     expected: '<p>This text could use <strong><a href="/">a link</a></strong>.</p>'
@@ -185,7 +190,7 @@ render = ck.render
       else
         test.result = ck.render(test.template, test.params)
         test.success = test.result is test.expected
-        
+
       if test.success
         passed.push name
         print "[Passed] #{name}\n"
@@ -198,7 +203,7 @@ render = ck.render
       printc 'redder', "[Error]  #{name}\n"
 
   print "\n#{total} tests, #{passed.length} passed, #{failed.length} failed, #{errors.length} errors\n\n"
-  
+
   if failed.length > 0
     printc 'red', "FAILED:\n\n"
 
