@@ -10,8 +10,20 @@
 # stiff.
 
 if window?
-  coffeekup = window.CoffeeKup = {}
-  coffee = if CoffeeScript? then CoffeeScript else null
+  # coffee is explicitly defined in this scope otherwise coffeescript's lexical 
+  # scoping would stop us from accessing it in the AMD define() callback.
+  # coffeekup is also explicit here as AMD load needs it initialized as normal.
+  coffee = null
+  coffeekup = {}
+
+  # Register this module using AMD if available.
+  if typeof define is 'function' and define.amd
+    define ['coffee-script'], (CoffeeScript) ->
+      coffee = CoffeeScript
+      return coffeekup
+  else
+    window.CoffeeKup = coffeekup
+    coffee = CoffeeScript if CoffeeScript?
 else
   coffeekup = exports
   coffee = require 'coffee-script'
