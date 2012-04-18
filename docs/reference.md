@@ -230,8 +230,23 @@ When installing CoffeeKup with `npm install coffeekup -g`, you get a `coffeekup`
 
     $ coffeekup -h
 
-    Usage:
-      coffeekup [options] path/to/template.coffee
+When you provide a directory instead of a file for the template, it will apply namespacing to the templates
+according to the folder structure. So given directory structure:
+    - templates
+        MyTemplate.coffee
+        - moduleSpecificTemplates
+            MyIndex.coffee
+            - deepTemplates
+                abc.coffee
+Yields:
+    this.templates["MyTemplate"] = ...
+    this.templates["moduleSpecificTemplates"]["MyIndex"] = ...
+    this.templates["moduleSpecificTemplates"]["deepTemplates"]["abc"] = ...
+
+###Usage:
+`coffeekup [options] path/to/template.coffee`
+_or_
+`coffeekup [options] path/to/templates`
 
           --js           compile template to js function
       -n, --namespace    global object holding the templates (default: "templates")
@@ -240,5 +255,6 @@ When installing CoffeeKup with `npm install coffeekup -g`, you get a `coffeekup`
       -p, --print        print the compiled html to stdout
       -f, --format       apply line breaks and indentation to html output
       -u, --utils        add helper locals (currently only "render")
+      -i, --include      add hardcoded helpers to each template from file contents
       -v, --version      display CoffeeKup version
       -h, --help         display this help message

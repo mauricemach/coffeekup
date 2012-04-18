@@ -189,14 +189,14 @@ On the browser:
       $('body').append(templates.template({foo: 'bar'}));
     </script>
 
-This is one of many browser deployment possibilities, pre-compiling your template on the server to a standalone function. To see all serving suggestions, check out [regular](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/regular/index.html), [decaf](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/decaf/index.html) and [crème](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/creme/index.html).
+This is one of many browser deployment possibilities, pre-compiling your template on the server to a standalone function. To see all serving suggestions, check out [regular](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/regular/index.html), [decaf](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/decaf/index.html), [crème](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/creme/index.html), and [sugar](http://github.com/mauricemach/coffeekup/blob/master/examples/browser/sugar/index.html).
 
 Command-line:
 
     $ coffeekup -h
 
     Usage:
-      coffeekup [options] path/to/template.coffee
+      coffeekup [options] [path/to/template.coffee OR path]     
 
           --js           compile template to js function
       -n, --namespace    global object holding the templates (default: "templates")
@@ -205,8 +205,33 @@ Command-line:
       -p, --print        print the compiled html to stdout
       -f, --format       apply line breaks and indentation to html output
       -u, --utils        add helper locals (currently only "render")
+      -i, --include      add hardcoded helpers to each template from file contents
       -v, --version      display CoffeeKup version
       -h, --help         display this help message
+
+    CLI usage:
+      // compile all templates in a directory into single file called 'templates.js' 
+      coffeekup --js ./templates
+
+      // compile all templates in a directory into single file called 'My.Templates.js'
+      coffeekup --js -n 'My.Templates' ./templates
+
+      // include files from directory containing helpers
+      coffeekup --js -i ./helpers ./templates
+
+    Namespaced Templates are supported by convention from the directory structure:
+
+    Given dir structure:
+       - templates
+           MyTemplate.coffee
+           - moduleSpecificTemplates
+               MyIndex.coffee
+               - deepTemplates
+                   abc.coffee
+    Yields:
+        this.templates["MyTemplate"] = ...
+        this.templates["moduleSpecificTemplates"]["MyIndex"] = ...
+        this.templates["moduleSpecificTemplates"]["deepTemplates"]["abc"] = ...
 
 See [/examples](http://github.com/mauricemach/coffeekup/tree/master/examples) for complete versions (you have to run `cake build` first).
 
