@@ -15,6 +15,8 @@ if window?
 else
   coffeekup = exports
   coffee = require 'coffee-script'
+  compiler = require __dirname + '/compiler'
+  compiler.setup coffeekup
 
 coffeekup.version = '0.3.1edge'
 
@@ -294,6 +296,11 @@ coffeekup.compile = (template, options = {}) ->
         hardcoded_locals += "var #{k} = function(){return (#{v}).apply(data, arguments);};"
       else hardcoded_locals += "var #{k} = #{JSON.stringify v};"
 
+  # If `optimize` is set on the options hash, use uglify-js to parse the
+  # template function's code and optimize it using static analysis.
+  if options.optimize and compiler?
+    return compiler.compile template, hardcoded_locals, options
+
   # Add a function for each tag this template references. We don't want to have
   # all hundred-odd tags wasting space in the compiled function.
   tag_functions = ''
@@ -337,6 +344,10 @@ cache = {}
 coffeekup.render = (template, data = {}, options = {}) ->
   data[k] = v for k, v of options
   data.cache ?= off
+
+  # Do not optimize templates if the cache is disabled, as it will slow
+  # everything down considerably.
+  if data.optimize and not data.cache then data.optimize = no
 
   if data.cache and cache[template]? then tpl = cache[template]
   else if data.cache then tpl = cache[template] = coffeekup.compile(template, data)
