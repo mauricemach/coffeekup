@@ -302,24 +302,28 @@ coffeekup.compile = (template, options = {}) ->
   for t in coffeekup.tags
     if template.indexOf(t) > -1 or hardcoded_locals.indexOf(t) > -1
       tags_used.push t
-      
+  
   tag_functions += "var #{tags_used.join ','};"
   for t in tags_used
     tag_functions += "#{t} = function(){return __ck.tag('#{t}', arguments);};"
 
-  # Main function assembly.
-  code = tag_functions + hardcoded_locals + skeleton
+  # # Main function assembly.
+  code = ""
 
-  code += "__ck.doctypes = #{JSON.stringify coffeekup.doctypes};"
-  code += "__ck.coffeescript_helpers = #{JSON.stringify coffeescript_helpers};"
-  code += "__ck.self_closing = #{JSON.stringify coffeekup.self_closing};"
-
-  # If `locals` is set, wrap the template inside a `with` block. This is the
-  # most flexible but slower approach to specifying local variables.
-  code += 'with(data.locals){' if options.locals
-  code += "(#{template}).call(data);"
-  code += '}' if options.locals
-  code += "return __ck.buffer.join('');"
+  # If bare is used, the main mechanism is stripped from template
+  unless options.bare && !options.core
+    code += tag_functions + hardcoded_locals + skeleton
+    code += "__ck.doctypes = #{JSON.stringify coffeekup.doctypes};"
+    code += "__ck.coffeescript_helpers = #{JSON.stringify coffeescript_helpers};"
+    code += "__ck.self_closing = #{JSON.stringify coffeekup.self_closing};"
+  
+  unless options.core && !options.bare
+    # If `locals` is set, wrap the template inside a `with` block. This is the
+    # most flexible but slower approach to specifying local variables.
+    code += 'with(data.locals){' if options.locals
+    code += "(#{template}).call(data);"
+    code += '}' if options.locals
+    code += "return __ck.buffer.join('');"
   
   new Function('data', code)
 

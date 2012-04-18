@@ -49,7 +49,9 @@ usage = '''
 '''
 
 switches = [
-  ['--js', 'compile template to js function']
+  ['-j', '--js', 'compile template to js function (template + embedded renderer)']
+  ['-b', '--bare', 'use with -j to compile template to js (template only)' ]
+  ['-c', '--core', 'use with -j to compile renderer to js (renderer only)' ]
   ['-n', '--namespace [name]', 'global object holding the templates (default: "templates")']
   ['-w', '--watch', 'watch templates for changes, and recompile']
   ['-o', '--output [dir]', 'set the directory for compiled html']
