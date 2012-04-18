@@ -1,10 +1,10 @@
 # **CoffeeKup** lets you to write HTML templates in 100% pure
 # [CoffeeScript](http://coffeescript.org).
-# 
+#
 # You can run it on [node.js](http://nodejs.org) or the browser, or compile your
 # templates down to self-contained javascript functions, that will take in data
 # and options and return generated HTML on any JS runtime.
-# 
+#
 # The concept is directly stolen from the amazing
 # [Markaby](http://markaby.rubyforge.org/) by Tim Fletcher and why the lucky
 # stiff.
@@ -93,7 +93,7 @@ coffeekup.self_closing = merge_elements 'void', 'obsolete_void'
 
 # This is the basic material from which compiled templates will be formed.
 # It will be manipulated in its string form at the `coffeekup.compile` function
-# to generate the final template function. 
+# to generate the final template function.
 skeleton = (data = {}) ->
   # Whether to generate formatted HTML with indentation and line breaks, or
   # just the natural "faux-minified" output.
@@ -106,7 +106,7 @@ skeleton = (data = {}) ->
   # Internal CoffeeKup stuff.
   __ck =
     buffer: []
-      
+
     esc: (txt) ->
       if data.autoescape then h(txt) else String(txt)
 
@@ -124,15 +124,15 @@ skeleton = (data = {}) ->
 
     render_idclass: (str) ->
       classes = []
-        
+
       for i in str.split '.'
         if '#' in i
           id = i.replace '#', ''
         else
           classes.push i unless i is ''
-            
+
       text " id=\"#{id}\"" if id
-      
+
       if classes.length > 0
         text " class=\""
         for c in classes
@@ -144,7 +144,7 @@ skeleton = (data = {}) ->
       for k, v of obj
         # `true` is rendered as `selected="selected"`.
         v = k if typeof v is 'boolean' and v
-        
+
         # Functions are rendered in an executable form.
         v = "(#{v}).call(this);" if typeof v is 'function'
 
@@ -157,39 +157,40 @@ skeleton = (data = {}) ->
           # strings, numbers, arrays and functions are rendered "as is".
           text " #{prefix + k}=\"#{@esc(v)}\""
 
-    render_contents: (contents) ->
+    render_contents: (contents, safe) ->
+      safe ?= false
       switch typeof contents
         when 'string', 'number', 'boolean'
-          text @esc(contents)
+          text if safe then contents else @esc(contents)
         when 'function'
           text '\n' if data.format
           @tabs++
           result = contents.call data
           if typeof result is 'string'
             @indent()
-            text @esc(result)
+            text if safe then result else @esc(result)
             text '\n' if data.format
           @tabs--
           @indent()
 
     render_tag: (name, idclass, attrs, contents) ->
       @indent()
-    
+
       text "<#{name}"
       @render_idclass(idclass) if idclass
       @render_attrs(attrs) if attrs
-  
+
       if name in @self_closing
         text ' />'
         text '\n' if data.format
       else
         text '>'
-  
+
         @render_contents(contents)
 
         text "</#{name}>"
         text '\n' if data.format
-  
+
       null
 
   tag = (name, args...) ->
@@ -225,11 +226,14 @@ skeleton = (data = {}) ->
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
-    
+
   doctype = (type = 'default') ->
     text __ck.doctypes[type]
     text '\n' if data.format
-    
+
+  safe = (val) ->
+    __ck.render_contents(val, true)
+
   text = (txt) ->
     __ck.buffer.push String(txt)
     null
@@ -237,7 +241,7 @@ skeleton = (data = {}) ->
   comment = (cmt) ->
     text "<!--#{cmt}-->"
     text '\n' if data.format
-  
+
   coffeescript = (param) ->
     switch typeof param
       # `coffeescript -> alert 'hi'` becomes:
@@ -253,11 +257,11 @@ skeleton = (data = {}) ->
       when 'object'
         param.type = 'text/coffeescript'
         script param
-  
+
   # Conditional IE comments.
   ie = (condition, contents) ->
     __ck.indent()
-    
+
     text "<!--[if #{condition}]>"
     __ck.render_contents(contents)
     text "<![endif]-->"
@@ -284,9 +288,9 @@ coffeekup.compile = (template, options = {}) ->
 
   # If an object `hardcode` is provided, insert the stringified value
   # of each variable directly in the function body. This is a less flexible but
-  # faster alternative to the standard method of using `with` (see below). 
+  # faster alternative to the standard method of using `with` (see below).
   hardcoded_locals = ''
-  
+
   if options.hardcode
     for k, v of options.hardcode
       if typeof v is 'function'
@@ -298,11 +302,11 @@ coffeekup.compile = (template, options = {}) ->
   # all hundred-odd tags wasting space in the compiled function.
   tag_functions = ''
   tags_used = []
-  
+
   for t in coffeekup.tags
     if template.indexOf(t) > -1 or hardcoded_locals.indexOf(t) > -1
       tags_used.push t
-      
+
   tag_functions += "var #{tags_used.join ','};"
   for t in tags_used
     tag_functions += "#{t} = function(){return __ck.tag('#{t}', arguments);};"
@@ -320,16 +324,16 @@ coffeekup.compile = (template, options = {}) ->
   code += "(#{template}).call(data);"
   code += '}' if options.locals
   code += "return __ck.buffer.join('');"
-  
+
   new Function('data', code)
 
 cache = {}
 
 # Template in, HTML out. Accepts functions or strings as does `coffeekup.compile`.
-# 
+#
 # Accepts an option `cache`, by default `false`. If set to `false` templates will
 # be recompiled each time.
-# 
+#
 # `options` is just a convenience parameter to pass options separately from the
 # data, but the two will be merged and passed down to the compiler (which uses
 # `locals` and `hardcode`), and the template (which understands `locals`, `format`
@@ -348,24 +352,24 @@ unless window?
     # Legacy adapters for when CoffeeKup expected data in the `context` attribute.
     simple: coffeekup.render
     meryl: coffeekup.render
-    
+
     express:
       TemplateError: class extends Error
         constructor: (@message) ->
           Error.call this, @message
           Error.captureStackTrace this, arguments.callee
         name: 'TemplateError'
-        
-      compile: (template, data) -> 
+
+      compile: (template, data) ->
         # Allows `partial 'foo'` instead of `text @partial 'foo'`.
         data.hardcode ?= {}
         data.hardcode.partial = ->
           text @partial.apply @, arguments
-        
+
         TemplateError = @TemplateError
         try tpl = coffeekup.compile(template, data)
         catch e then throw new TemplateError "Error compiling #{data.filename}: #{e.message}"
-        
+
         return ->
           try tpl arguments...
           catch e then throw new TemplateError "Error rendering #{data.filename}: #{e.message}"
