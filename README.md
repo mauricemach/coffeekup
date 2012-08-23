@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/mauricemach/coffeekup.png)](http://travis-ci.org/mauricemach/coffeekup)
 # CoffeeKup <☕/>
 ## Markup as CoffeeScript
 
